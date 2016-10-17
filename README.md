@@ -1,2 +1,2 @@
-# innovativeprojects-surveys
-Surveys app with anonimity
+# innovativeproject-surveys
+Surveys app with anonimity in mind
