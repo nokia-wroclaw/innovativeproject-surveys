@@ -1,0 +1,50 @@
+New log file opened at Mon Oct 24 19:14:20 CEST 2016 by 8904@FantyG-Comp
+Taking next connection to: 59632
+New client attempting to connect on port: 59633-59632
+  Address = /192.168.56.1:59632
+This client on port 59633 has uuid ce34d7fe-ab76-4316-8a90-9833d32d68f4 configName activator humanReadableName Activator protocolVersion 3 featureTags Vector()
+Connected Clients: activator-ce34d7fe-ab76-4316-8a90-9833d32d68f4
+Taking next connection to: 59632
+New client attempting to connect on port: 59659-59632
+  Address = /192.168.56.1:59632
+Handshake exception on socket: 59659
+sbt.impl.ipc.HandshakeException: Unable to perform handshake
+	at sbt.impl.ipc.Peer.handshake(IPC.scala:46)
+	at sbt.impl.ipc.MultiClientServer.<init>(IPC.scala:150)
+	at sbt.server.SbtServerSocketHandler$$anon$1.run(SbtServerSocketHandler.scala:43)
+Caused by: java.net.SocketException: Software caused connection abort: recv failed
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(SocketInputStream.java:116)
+	at java.net.SocketInputStream.read(SocketInputStream.java:170)
+	at java.net.SocketInputStream.read(SocketInputStream.java:141)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:265)
+	at java.io.DataInputStream.readInt(DataInputStream.java:387)
+	at sbt.impl.ipc.Peer.receive(IPC.scala:95)
+	at sbt.impl.ipc.Peer.handshake(IPC.scala:49)
+	... 2 more
+Taking next connection to: 59632
+New client attempting to connect on port: 59660-59632
+  Address = /192.168.56.1:59632
+This client on port 59660 has uuid a7e4af00-18ea-49f1-928e-5fbb652b0621 configName play-fork-run humanReadableName Play Fork Run protocolVersion 1 featureTags Vector()
+Connected Clients: activator-ce34d7fe-ab76-4316-8a90-9833d32d68f4, play-fork-run-a7e4af00-18ea-49f1-928e-5fbb652b0621
+Taking next connection to: 59632
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 59632
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 59632
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 59632
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 59632
+Checking to see if clients are empty...
+No non-daemon clients connected after 3 min. Shutting down.
+1 daemon clients are connected.
+Server socket thread exiting.
+1 clients open, will close them...
+All client sockets have been closed.
+Closing the 8904@FantyG-Comp logs at Mon Oct 24 19:30:52 CEST 2016, goodbye.
