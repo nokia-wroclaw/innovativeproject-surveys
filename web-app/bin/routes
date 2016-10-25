@@ -18,4 +18,4 @@ POST	/app/login							controllers.AccountController.loginPost
 
 
 #Swagger
-GET     /swagger.json           controllers.ApiHelpController.getResources
+#GET     /swagger.json           controllers.ApiHelpController.getResources
