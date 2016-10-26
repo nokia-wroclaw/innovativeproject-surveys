@@ -1,0 +1,11 @@
+package accounts;
+
+import javax.persistant.*;
+
+@Entity
+public class UserAccount extends Model{
+
+	@Id
+	public String id;
+	
+}
