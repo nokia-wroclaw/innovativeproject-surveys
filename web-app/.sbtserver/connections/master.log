@@ -1,100 +1,25 @@
-New log file opened at Tue Oct 25 23:15:04 CEST 2016 by 2524@komputer-oli
-Taking next connection to: 54412
-New client attempting to connect on port: 54413-54412
-  Address = /192.168.56.1:54412
-This client on port 54413 has uuid 5d3ffa6f-147d-46ce-b430-a18c893b9aa3 configName activator humanReadableName Activator protocolVersion 3 featureTags Vector()
-Connected Clients: activator-5d3ffa6f-147d-46ce-b430-a18c893b9aa3
-Taking next connection to: 54412
-New client attempting to connect on port: 54432-54412
-  Address = /192.168.56.1:54412
-Handshake exception on socket: 54432
-sbt.impl.ipc.HandshakeException: Unable to perform handshake
-	at sbt.impl.ipc.Peer.handshake(IPC.scala:46)
-	at sbt.impl.ipc.MultiClientServer.<init>(IPC.scala:150)
-	at sbt.server.SbtServerSocketHandler$$anon$1.run(SbtServerSocketHandler.scala:43)
-Caused by: java.net.SocketException: Software caused connection abort: recv failed
-	at java.net.SocketInputStream.socketRead0(Native Method)
-	at java.net.SocketInputStream.socketRead(Unknown Source)
-	at java.net.SocketInputStream.read(Unknown Source)
-	at java.net.SocketInputStream.read(Unknown Source)
-	at java.io.BufferedInputStream.fill(Unknown Source)
-	at java.io.BufferedInputStream.read(Unknown Source)
-	at java.io.DataInputStream.readInt(Unknown Source)
-	at sbt.impl.ipc.Peer.receive(IPC.scala:95)
-	at sbt.impl.ipc.Peer.handshake(IPC.scala:49)
-	... 2 more
-Taking next connection to: 54412
-New client attempting to connect on port: 54433-54412
-  Address = /192.168.56.1:54412
-This client on port 54433 has uuid 82f7b140-c58d-4fa0-94ff-bcb22e261aa8 configName play-fork-run humanReadableName Play Fork Run protocolVersion 1 featureTags Vector()
-Connected Clients: activator-5d3ffa6f-147d-46ce-b430-a18c893b9aa3, play-fork-run-82f7b140-c58d-4fa0-94ff-bcb22e261aa8
-Taking next connection to: 54412
+New log file opened at Wed Oct 26 19:37:24 CEST 2016 by 456@FantyG-Comp
+Taking next connection to: 50721
+New client attempting to connect on port: 50722-50721
+  Address = /192.168.56.1:50721
+This client on port 50722 has uuid 1f544a23-134f-40f1-965f-ff99d9a4e79a configName activator humanReadableName Activator protocolVersion 3 featureTags Vector()
+Connected Clients: activator-1f544a23-134f-40f1-965f-ff99d9a4e79a
+Taking next connection to: 50721
 Checking to see if clients are empty...
 We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
+Taking next connection to: 50721
 Checking to see if clients are empty...
 We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
+Taking next connection to: 50721
 Checking to see if clients are empty...
 We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
+Taking next connection to: 50721
 Checking to see if clients are empty...
 We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 54412
+Taking next connection to: 50721
 Checking to see if clients are empty...
 No non-daemon clients connected after 3 min. Shutting down.
 Server socket thread exiting.
 0 clients open, will close them...
 All client sockets have been closed.
-Closing the 2524@komputer-oli logs at Wed Oct 26 00:21:59 CEST 2016, goodbye.
+Closing the 456@FantyG-Comp logs at Wed Oct 26 19:52:24 CEST 2016, goodbye.

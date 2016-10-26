@@ -1,0 +1,110 @@
+2016-10-26 19:13:09,203 ERROR [Worker-1] - System.err - [org.eclipse.debug.core] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.debug.core.model.IDebugModelProvider
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:15:00,796 ERROR [Worker-3] - System.err - [org.eclipse.debug.core] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.debug.core.model.IDebugModelProvider
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:15:11,019 ERROR [main] - System.err - [org.eclipse.jdt.launching] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.jdt.launching.JavaRuntime
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:15:56,551  WARN [ModalContext] - ScalaProject - Project web-app has platform default sourceLevel.
+2016-10-26 19:15:56,551  WARN [ModalContext] - ScalaProject - Project web-app runs on platform default installation.
+2016-10-26 19:15:58,457  WARN [ModalContext] - ScalaProject - Project web-app has platform default sourceLevel.
+2016-10-26 19:15:58,457  WARN [ModalContext] - ScalaProject - Project web-app runs on platform default installation.
+2016-10-26 19:16:00,708  WARN [Worker-2] - ScalaProject - Project web-app has platform default sourceLevel.
+2016-10-26 19:16:00,708  WARN [Worker-2] - ScalaProject - Project web-app runs on platform default installation.
+2016-10-26 19:16:01,094  WARN [main] - org.scala-ide.sdt.core - org.scala-ide.sdt.core - org.scala-ide.sdt.core - 0 - Preference scala.compiler.sourceLevel was uninitialized for web-app, setting default to 2.11.
+2016-10-26 19:16:01,094  WARN [main] - org.scala-ide.sdt.core - org.scala-ide.sdt.core - org.scala-ide.sdt.core - 0 - Preference scala.compiler.installation was uninitialized for web-app, setting default to 2.11.
+2016-10-26 19:16:30,084 ERROR [Worker-1] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:18:56,108 ERROR [Worker-5] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:19:41,734 ERROR [Worker-0] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:19:49,812 ERROR [main] - System.err - [org.eclipse.jdt.debug] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.jdt.debug.core.IJavaLineBreakpoint
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:20:05,098 ERROR [Worker-4] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:20:18,800 ERROR [Worker-0] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:20:19,246 ERROR [main] - System.err - [org.eclipse.jdt.debug.ui] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.jdt.internal.debug.ui.actions.RetargettableActionAdapterFactory
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:20:26,735 ERROR [main] - System.err - [org.eclipse.jdt.junit] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.jdt.internal.junit.ui.JUnitQuickFixProcessor
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:23:43,207 ERROR [Worker-4] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:24:11,891 ERROR [Worker-5] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:24:23,200 ERROR [Worker-7] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:29:49,915 ERROR [Worker-0] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:31:20,133 ERROR [Worker-5] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:33:18,387 ERROR [Worker-7] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:35:36,442 ERROR [Worker-8] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:36:14,426 ERROR [Worker-7] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:37:16,767 ERROR [Worker-2] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:40:46,064 ERROR [Worker-7] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:42:18,854 ERROR [Worker-1] - System.err - [org.eclipse.jdt.launching] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.jdt.internal.launching.JREContainerInitializer
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:42:18,938 ERROR [Worker-1] - System.err - [org.eclipse.debug.core] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.debug.core.ILaunchesListener
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:42:28,386  WARN [main] - org.scala-ide.sdt.core - org.scala-ide.sdt.core - org.scala-ide.sdt.core - 0 - Preference scala.compiler.sourceLevel was uninitialized for web-app, setting default to 2.11.
+2016-10-26 19:42:28,412  WARN [main] - org.scala-ide.sdt.core - org.scala-ide.sdt.core - org.scala-ide.sdt.core - 0 - Preference scala.compiler.installation was uninitialized for web-app, setting default to 2.11.
+2016-10-26 19:42:29,517 ERROR [Worker-1] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:42:32,614 ERROR [main] - System.err - [org.eclipse.jdt.junit] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.jdt.internal.junit.ui.JUnitQuickFixProcessor
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:42:32,852 ERROR [main] - System.err - [org.eclipse.jdt.debug.ui] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.jdt.internal.debug.ui.actions.RetargettableActionAdapterFactory
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:42:32,911 ERROR [main] - System.err - [org.eclipse.jdt.debug] error can't determine modifiers of missing type org.eclipse.pde.internal.ui.wizards.imports.PluginImportHelper
+when weaving type org.eclipse.jdt.debug.core.IJavaHotCodeReplaceListener
+when weaving classes 
+when weaving 
+ [Xlint:cantFindType]
+2016-10-26 19:42:37,224 ERROR [Worker-9] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:46:28,090 ERROR [Worker-8] - SbtBuildReporter - suppressed error in Java file /web-app/app/accounts/UserAccount.java:20: identifier expected but `}' found.
+2016-10-26 19:49:34,906 ERROR [Worker-1] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:49:40,296 ERROR [Worker-10] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:50:01,645 ERROR [Worker-4] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:50:36,186 ERROR [Worker-10] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath
+2016-10-26 19:51:02,230 ERROR [Worker-0] - SbtBuildReporter - suppressed error in Java file /web-app/app/controllers/AccountController.java:1: package controllers contains object and package with same name: ApiHelpController
+one of them needs to be removed from classpath

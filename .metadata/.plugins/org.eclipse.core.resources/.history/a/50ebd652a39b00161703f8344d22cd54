@@ -1,0 +1,11 @@
+package accounts;
+
+import javax.persistant.*;
+
+@Entity
+public class UserAccount {
+
+	@Id
+	public String id;
+	
+}
