@@ -1,0 +1,9 @@
+/web-app/logs
+/web-app/target
+/web-app/.idea
+/web-app/.idea_modules
+/web-app/.classpath
+/web-app/.project
+/web-app/.settings
+/web-app/RUNNING_PID
+/web-app/bin/
