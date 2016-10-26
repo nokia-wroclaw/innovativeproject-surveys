@@ -3,6 +3,8 @@ package controllers;
 
 import java.util.List;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import com.avaje.ebean.Model;
 
 import play.data.DynamicForm;
@@ -47,15 +49,26 @@ public class AccountController extends Controller {
 		@SuppressWarnings("rawtypes")
 		UserAccount user = UserAccount.find.byId(login);
 		if(user != null) {
-			return ok(register.render("Ten login już istnieje!"));
+			return badRequest(register.render("Ten login już istnieje!"));
 		}
 		if(!password.equals(rePassword)) {
-			return ok(register.render("Hasła nie pasują do siebie!"));
+			return badRequest(register.render("Hasła nie pasują do siebie!"));
 		}
+		String link = RandomStringUtils.random(50);
+		List<UnactivatedAccount> unactiv = UnactivatedAccount.find.all();
+		if (unactiv != null) {
+			for (int i = 0; i < unactiv.size(); i++) {
+				if (unactiv.get(i).activationLink.equals(link)) {
+					i = 0;
+					link = RandomStringUtils.random(50);
+				}
+			}
+		}
+		UnactivatedAccount newAcc = new UnactivatedAccount(login, password, firstName,
+				lastName, email, link);
 		
-		
-		
-		Un
-		return ok(logged.render(""));
+		/*newAcc.save();*/
+		return ok(logged.render(login+" zarejestrowano! Aktywacja <a href=\"localhost/activ/"+link+
+				"\">link<\\a>"));
 	}
 }
