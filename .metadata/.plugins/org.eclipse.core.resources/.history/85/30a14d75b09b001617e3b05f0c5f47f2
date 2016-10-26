@@ -1,0 +1,8 @@
+@* register Template File *@
+@(msg: String)
+@main("Rejestruj"){
+	@if(msg != ""){
+		<div class="error">@msg</div>
+	}
+	<form action=""></form>
+}

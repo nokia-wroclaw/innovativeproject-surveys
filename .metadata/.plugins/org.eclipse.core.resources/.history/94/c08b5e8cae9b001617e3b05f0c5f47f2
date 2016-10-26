@@ -1,0 +1,8 @@
+package accounts;
+
+import java.util.Date;
+
+public class UnactivatedAccount extends UserAccount {
+	public Date expiredDate = new Date(System.currentTimeMillis()+172800000); //48h to activate
+	
+}

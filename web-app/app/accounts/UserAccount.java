@@ -1,5 +1,6 @@
 package accounts;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -17,17 +18,22 @@ public class UserAccount extends Model{
 	public String lastName;
 	
 	
-	public Date createdTime;
+	public String[] guestSurvId;
+	public String[] adminSurvId;
+	
+	public Date createdTime = new Date();
+	public String email;
+	public static Finder<String, UserAccount> find = new Finder<String, UserAccount>(UserAccount.class);
 	
 	public UserAccount(String login, String password,
-			String firstName, String lastName) {
+			String firstName, String lastName, String email) {
 		this.login = login;
 		this.password = password;
 		this.lastName = lastName;
 		this.firstName = firstName;
+		this.email = email;
 		
 		this.createdTime = new Date();
-		
 	}
 	
 	public boolean checkPassword(String password) {
