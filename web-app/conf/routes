@@ -19,6 +19,8 @@ POST	/login							controllers.AccountController.loginPost
 GET		/register						controllers.AccountController.registerGet
 POST	/register						controllers.AccountController.registerPost
 
+POST	/activ/@link					controllers.AccountController.activate(@link)
 
+POST	/clean							controllers.AccountController.clean
 #Swagger
 #GET     /swagger.json           controllers.ApiHelpController.getResources
