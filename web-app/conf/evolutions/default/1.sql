@@ -4,8 +4,9 @@
 # --- !Ups
 
 create table unactivated_account (
+  activation_link               varchar(255) not null,
   expired_date                  timestamp,
-  activation_link               varchar(255)
+  constraint pk_unactivated_account primary key (activation_link)
 );
 
 create table user_account (

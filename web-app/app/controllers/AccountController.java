@@ -15,9 +15,9 @@ import play.data.Form;
 import play.mvc.*;
 import views.html.*;
 
-import play.libs.mailer.Email;
-import play.libs.mailer.MailerClient;
-import javax.inject.Inject;
+//import play.libs.mailer.Email;
+//import play.libs.mailer.MailerClient;
+//import javax.inject.Inject;
 
 /**Controler managing all account featers.
  * 
@@ -73,8 +73,7 @@ public class AccountController extends Controller {
 				lastName, email, link);
 		
 		newAcc.save();
-		return ok(logged.render(login+" zarejestrowano! Aktywacja <a href=\"localhost/activ/"+link+
-				"\">link<\\a>"));
+		return ok(logged.render(link));
 	}
 	
 	/*public void sendAccEmail (String email, String link, String firstName) {

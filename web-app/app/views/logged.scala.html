@@ -1,11 +1,19 @@
 @* logged Template File *@
-@(param: String)
+@(link: String)
 
-@main("zalogowany"){
+@main("Zalogowany"){
+	@if(link != "") {
+		<div class="container">
+			<form action="/activ/@link" method="POST"?>
+			<button type="submit" class="btn btn-primary">Aktywuj!</button>
+			</form>
+		</div>
+	}
 	<div class="container">
 		<form>
-			<label for="toInvite">Zaproú do wype≥nienia ankiety</label>
-			<button type="submit" class="btn btn-primary">Zaproú</button>
+			<label for="toInvite">Zapro≈õ do serwisu</label>
+			<input type="email" name="email" class="form-control">
+			<button type="submit" class="btn btn-primary">Zapro≈õ</button>
 		</form>
 	</div>
 }
