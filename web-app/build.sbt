@@ -2,10 +2,7 @@ name := """play-java"""
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayJava)
-
-lazy val myProject = (project in file("."))
-  .enablePlugins(PlayJava, PlayEbean)
+lazy val root = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
 scalaVersion := "2.11.7"
 
@@ -20,11 +17,4 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies += javaJdbc
-
-fork in run := true
-
-fork in run := true
-
-fork in run := true
-
-fork in run := true
+libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.0-P25-B3"
