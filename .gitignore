@@ -7,4 +7,5 @@
 /web-app/.settings
 /web-app/RUNNING_PID
 /web-app/bin/
+/web-app/.sbtserver/
 /.metadata/

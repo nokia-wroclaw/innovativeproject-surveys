@@ -1,10 +1,18 @@
 @* login Template File *@
 @main("Login page"){
 	
-	<form method="POST" action="/app/login">
-		Login: <input type="text" name="login">
-		Has�o: <input type="password" name="passwd">
-		<input type="submit">
-	</form>
-	
+	<div class="container">
+		<h2>Logowanie</h2>
+		<form method="POST" action="/app/login">
+			<div class="form-group">
+				<label for="login">Login:</label>	
+		 		<input type="text" class="form-control" name="login" placeholder="Wpisz swój login">
+			</div>
+			<div class="form-group">
+				<label for="pwd">Hasło:</label>
+				<input type="password" class="form-control" name="passwd" placeholder="Wpisz swoje  hasło">
+			</div>		
+			<button type="submit" class="btn btn-defoult">Zaloguj</button>
+		</form>
+	</div>
 }

@@ -17199,3 +17199,7 @@ Sending msg to client activator-93bb2831-605b-4bf4-a0e2-61c0aab7f2bd: DetachedLo
 Sending msg to client activator-93bb2831-605b-4bf4-a0e2-61c0aab7f2bd: DetachedLogEvent(LogMessage(debug,> server-post-command-cleanup))
 Sending msg to client activator-93bb2831-605b-4bf4-a0e2-61c0aab7f2bd: ExecutionSuccess(23)
 Sending msg to client activator-93bb2831-605b-4bf4-a0e2-61c0aab7f2bd: DetachedLogEvent(LogMessage(debug,> server-handle-next-server-request))
+Client activator-93bb2831-605b-4bf4-a0e2-61c0aab7f2bd closed, java.net.SocketException: Connection reset, shutting down
+Stopping client.
+Client activator-93bb2831-605b-4bf4-a0e2-61c0aab7f2bd thread exiting.
+Dropping message (0,ReceivedResponse()) to dead client activator-93bb2831-605b-4bf4-a0e2-61c0aab7f2bd
