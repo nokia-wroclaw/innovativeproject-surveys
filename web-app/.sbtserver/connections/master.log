@@ -1,31 +1,37 @@
-New log file opened at Thu Oct 27 02:15:41 CEST 2016 by 6812@komputer-oli
-Taking next connection to: 58269
-New client attempting to connect on port: 58270-58269
-  Address = /100.93.121.157:58269
-This client on port 58270 has uuid d46e7901-8ba8-4f4c-ada6-24bcd187a9e0 configName play-fork-run humanReadableName Play Fork Run protocolVersion 1 featureTags Vector()
-Connected Clients: play-fork-run-d46e7901-8ba8-4f4c-ada6-24bcd187a9e0
-Taking next connection to: 58269
+New log file opened at Thu Oct 27 14:10:18 CEST 2016 by 12920@komputer-oli
+Taking next connection to: 60343
+New client attempting to connect on port: 60344-60343
+  Address = /192.168.56.1:60343
+This client on port 60344 has uuid 2391ff06-977e-4018-9828-e769223f7029 configName activator humanReadableName Activator protocolVersion 3 featureTags Vector()
+Connected Clients: activator-2391ff06-977e-4018-9828-e769223f7029
+Taking next connection to: 60343
+New client attempting to connect on port: 60345-60343
+  Address = /192.168.56.1:60343
+Handshake exception on socket: 60345
+sbt.impl.ipc.HandshakeException: Unable to perform handshake
+	at sbt.impl.ipc.Peer.handshake(IPC.scala:46)
+	at sbt.impl.ipc.MultiClientServer.<init>(IPC.scala:150)
+	at sbt.server.SbtServerSocketHandler$$anon$1.run(SbtServerSocketHandler.scala:43)
+Caused by: java.net.SocketException: Software caused connection abort: recv failed
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.socketRead(Unknown Source)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at java.net.SocketInputStream.read(Unknown Source)
+	at java.io.BufferedInputStream.fill(Unknown Source)
+	at java.io.BufferedInputStream.read(Unknown Source)
+	at java.io.DataInputStream.readInt(Unknown Source)
+	at sbt.impl.ipc.Peer.receive(IPC.scala:95)
+	at sbt.impl.ipc.Peer.handshake(IPC.scala:49)
+	... 2 more
+Taking next connection to: 60343
+New client attempting to connect on port: 60346-60343
+  Address = /192.168.56.1:60343
+This client on port 60346 has uuid 494fc12f-a197-4b1d-9c4a-e2f499dffaa1 configName activator humanReadableName Activator protocolVersion 3 featureTags Vector()
+Connected Clients: activator-2391ff06-977e-4018-9828-e769223f7029, activator-494fc12f-a197-4b1d-9c4a-e2f499dffaa1
+Taking next connection to: 60343
 Checking to see if clients are empty...
 We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 58269
+Taking next connection to: 60343
 Checking to see if clients are empty...
 We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 58269
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 58269
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 58269
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 58269
-Checking to see if clients are empty...
-We have 1 non-daemon clients, continuing serving connections.
-Taking next connection to: 58269
-Checking to see if clients are empty...
-No non-daemon clients connected after 3 min. Shutting down.
-Server socket thread exiting.
-0 clients open, will close them...
-All client sockets have been closed.
-Closing the 6812@komputer-oli logs at Thu Oct 27 02:36:41 CEST 2016, goodbye.
+Taking next connection to: 60343
