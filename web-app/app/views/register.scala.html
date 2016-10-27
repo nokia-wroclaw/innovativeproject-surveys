@@ -4,13 +4,35 @@
 	@if(msg != ""){
 		<div class="error">@msg</div>
 	}
-	<form method="POST" action="/register">
-		Login: <input type="text" name="login" required><br>
-		HasÅ‚o: <input type="password" name="password" required><br>
-		PowtÃ³rz hasï¿½o: <input type="password" name="rePassword" required><br>
-		ImiÄ™: <input type="text" name="firstName" required><br>
-		Nazwisko: <input type="text" name="lastName" required><br>
-		E-mail: <input type="email" name="email" required><br>
-		<input type="submit" value="Rejestruj">
-	</form>
+	
+	<div class="container">
+		<h2>Rejestracja</h2>
+		<form method="POST" action="/register">
+			<div class="form-group">
+				<label for="login">Login:</label>
+				<input type="text" class="form-control" name="login" placeholder="Wpisz swój login" required>
+			</div>
+			<div class="form-group">
+				<label for="pwd">Has³o:</label> 
+				<input type="password" class="form-control" name="password" placeholder="Wpisz has³o" required>
+			</div>
+			<div class="form-group">
+				<label for="pwd">Powtórz has³o:</label> 
+				<input type="password" class="form-control" name="rePassword" placeholder="Powtórz has³o" required>
+			</div>
+			<div class="form-group">
+				<label for="name">Imiê:</label> 
+				<input type="text" class="form-control" name="firstName" placeholder="Wpisz swoje imiê" required>
+			</div>
+			<div class="form-group">
+				<label for="surname">Nazwisko:</label>
+				<input type="text" class="form-control" name="lastName" placeholder="Wpisz swoje nazwisko" required>
+			</div>
+			<div class="form-group">
+				<label for="email">E-mail:</label>
+				<input type="email" class="form-control" name="email" placeholder="Wpisz swój adres e-mail" required><br>
+			</div>
+			<button type="submit" class="btn btn-defoult">Zarejestruj</button>
+		</form>
+	</div>
 }

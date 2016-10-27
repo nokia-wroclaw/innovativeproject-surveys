@@ -1,0 +1,31 @@
+New log file opened at Thu Oct 27 02:15:41 CEST 2016 by 6812@komputer-oli
+Taking next connection to: 58269
+New client attempting to connect on port: 58270-58269
+  Address = /100.93.121.157:58269
+This client on port 58270 has uuid d46e7901-8ba8-4f4c-ada6-24bcd187a9e0 configName play-fork-run humanReadableName Play Fork Run protocolVersion 1 featureTags Vector()
+Connected Clients: play-fork-run-d46e7901-8ba8-4f4c-ada6-24bcd187a9e0
+Taking next connection to: 58269
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 58269
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 58269
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 58269
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 58269
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 58269
+Checking to see if clients are empty...
+We have 1 non-daemon clients, continuing serving connections.
+Taking next connection to: 58269
+Checking to see if clients are empty...
+No non-daemon clients connected after 3 min. Shutting down.
+Server socket thread exiting.
+0 clients open, will close them...
+All client sockets have been closed.
+Closing the 6812@komputer-oli logs at Thu Oct 27 02:36:41 CEST 2016, goodbye.
