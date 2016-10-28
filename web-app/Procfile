@@ -1,0 +1,1 @@
+web: target/universal/stage/bin/play-getting-started -Dhttp.port=${PORT} -Dplay.crypto.secret="BeCdeb2D4eA4DaA32bE4E92888afbCdA38BC5efcB4BADBeF31" -Dplay.evolutions.db.default.autoApply=true
