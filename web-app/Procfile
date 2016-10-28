@@ -1,1 +1,1 @@
-web: play run -Dhttp.port=${PORT} -Dplay.crypto.secret="BeCdeb2D4eA4DaA32bE4E92888afbCdA38BC5efcB4BADBeF31" -Dplay.evolutions.db.default.autoApply=true
+web: play run -Dhttp.port=${PORT} -Dplay.crypto.secret="BeCdeb2D4eA4DaA32bE4E92888afbCdA38BC5efcB4BADBeF31" -Dplay.evolutions.db.default.autoApply=true -Ddb.default.driver=org.postgresql.Driver -Ddb.default.url=${DATABASE_URL}
