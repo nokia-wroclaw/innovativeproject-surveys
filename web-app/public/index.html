@@ -7,9 +7,44 @@
         <link rel="stylesheet" media="screen" href="">
         <link rel="shortcut icon" type="image/png" href="">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src=""></script>
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>-->
     </head>
     <body>
-        Hi, index!
-    </body>
+			<h2>Logowanie</h2>
+			<div id="error" class="">
+				
+			</div>
+			<div ng-app="loginApp" ng-controler="loginController">
+				<input type="text" id="login" value="{{login}}">
+				<input type="password" id="password" value="{{password}}">
+				<button id="loginBtn">Login</button>
+			</div>
+			<script>
+				
+				/*var loginApp = angular.module("loginApp", []);*/
+				$("#error").hide();
+				
+				/*loginApp.controller("loginController", function($scope){
+					$scope.login = "";
+					$scope.password = "";
+				});*/
+				
+				loginClick = function(){
+					var user = {};
+					user.login = $("#login").val();
+					user.password = $("#password").val();
+					$.post("/app/login", user, function(data, status){
+						$("#error").html("Data: "+data+" stat: "+status);
+						$("#error").show();
+						console.log("success");
+					}).fail(function(data, status){
+						$("#error").html("Data: "+JSON.stringify(data)+" stat: "+status);
+						$("#error").show();
+						console.log("fail");
+					});
+				}
+				$("#loginBtn").click(loginClick);
+				
+			</script>
+		</body>
 </html>

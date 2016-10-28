@@ -9,6 +9,7 @@ import models.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.avaje.ebean.Model;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import play.data.DynamicForm;
 import play.data.Form;
@@ -36,9 +37,24 @@ public class AccountController extends Controller {
 	}
 	
 	public Result loginPost(){
-		@SuppressWarnings("deprecation")
-		DynamicForm dynamicForm = Form.form().bindFromRequest();
-		return ok(logged.render("Zalogowany jako: "+dynamicForm.get("login")));
+		JsonNode jsNode = request().body().asJson();
+		if (jsNode == null) {
+			return status(403, "JSON wanted!");
+		}
+		String login = jsNode.findPath("login").textValue();
+		String password = jsNode.findPath("password").textValue();
+		if (login == null || password == null) {
+			return badRequest("Login or password not set.");
+		}
+		UserAccount ua = UserAccount.find.byId(login);
+		if (ua == null) {
+			return status(403, "Zły login!");
+		}
+		if (!ua.checkPassword(password)) {
+			return status(403, "Złe hasło!");
+		}
+		session("login", login);
+		return ok("Zalogowano");
 	}
 	
 	public Result registerPost() {

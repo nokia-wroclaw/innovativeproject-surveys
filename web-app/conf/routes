@@ -13,7 +13,7 @@
 #GET     /exp/assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 #Back-end routes
-PUT		/app/login						controllers.AccountController.loginPost
+POST	/app/login						controllers.AccountController.loginPost
 
 POST	/app/user							controllers.AccountController.registerPost
 
