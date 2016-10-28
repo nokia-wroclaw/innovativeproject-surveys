@@ -10,3 +10,4 @@
 /web-app/.sbtserver/
 /.metadata/
 /.recomenders/
+web-app/project/.sbtserver

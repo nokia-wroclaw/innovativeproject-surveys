@@ -32,7 +32,7 @@ public class AccountController extends Controller {
 		return ok(login.render());
 	}
 	public Result registerGet(){
-		return ok(register.render(""));
+		return ok(/*register.render("")*/);
 	}
 	
 	public Result loginPost(){
@@ -54,10 +54,10 @@ public class AccountController extends Controller {
 		@SuppressWarnings("rawtypes")
 		UserAccount user = UserAccount.find.byId(login);
 		if(user != null) {
-			return ok(register.render("Ten login już istnieje!"));
+			return ok(/*register.render("Ten login już istnieje!")*/);
 		}
 		if(!password.equals(rePassword)) {
-			return ok(register.render("Hasła nie pasują do siebie!"));
+			return ok(/*register.render("Hasła nie pasują do siebie!")*/);
 		}
 		String link = Integer.toHexString(new Random().nextInt(0x1000000));
 		List<UnactivatedAccount> unactiv = UnactivatedAccount.find.all();
@@ -105,6 +105,6 @@ public class AccountController extends Controller {
 			a.delete();
 		}
 		
-		return ok(register.render(""));
+		return ok(/*register.render("")*/);
 	}
 }

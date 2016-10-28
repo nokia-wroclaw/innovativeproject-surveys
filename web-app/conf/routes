@@ -3,28 +3,32 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /exp                           controllers.HomeController.index
+#GET     /exp                           controllers.HomeController.index
 # An example controller showing how to use dependency injection
-GET     /exp/count                      controllers.CountController.count
+#GET     /exp/count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
-GET     /exp/message                    controllers.AsyncController.message
+#GET     /exp/message                    controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /exp/assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+#GET     /exp/assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 #Back-end routes
-POST	/login							controllers.AccountController.loginPost
+PUT		/app/login						controllers.AccountController.loginPost
 
-POST	/register						controllers.AccountController.registerPost
+POST	/app/user							controllers.AccountController.registerPost
 
-POST	/activ/:link					controllers.AccountController.activate(link: String)
+PUT		/app/activ/:link					controllers.AccountController.activate(link: String)
 
-#Deleting all accounts
-GET		/clean							controllers.AccountController.clean
+#Deleting all accounts (only for develop)
+GET		/app/clean							controllers.AccountController.clean
 
 #Front-end routes
+GET		/								controllers.Assets.at(path = "/public", file="index.html")
+
 GET		/login							controllers.AccountController.loginGet
 GET		/register						controllers.AccountController.registerGet
+#javascript
+GET		/js/*file						controllers.Assets.at(path = "/public/javascripts", file)
 
 
 #Swagger
