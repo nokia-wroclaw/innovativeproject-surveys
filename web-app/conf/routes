@@ -12,15 +12,20 @@ GET     /exp/message                    controllers.AsyncController.message
 # Map static resources from the /public folder to the /assets URL path
 GET     /exp/assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-#Not examples
-GET		/login							controllers.AccountController.loginGet
+#Back-end routes
 POST	/login							controllers.AccountController.loginPost
 
-GET		/register						controllers.AccountController.registerGet
 POST	/register						controllers.AccountController.registerPost
 
 POST	/activ/:link					controllers.AccountController.activate(link: String)
 
+#Deleting all accounts
 GET		/clean							controllers.AccountController.clean
+
+#Front-end routes
+GET		/login							controllers.AccountController.loginGet
+GET		/register						controllers.AccountController.registerGet
+
+
 #Swagger
 #GET     /swagger.json           controllers.ApiHelpController.getResources
