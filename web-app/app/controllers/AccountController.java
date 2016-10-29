@@ -44,28 +44,33 @@ public class AccountController extends Controller {
 		String login = jsNode.findPath("login").textValue();
 		String password = jsNode.findPath("password").textValue();
 		if (login == null || password == null) {
-			return badRequest("Login or password not set.");
+			return status(403, "Login or password not set.");
 		}
 		UserAccount ua = UserAccount.find.byId(login);
 		if (ua == null) {
-			return status(403, "Zły login!");
+			return status(403, "Bad login");
 		}
 		if (!ua.checkPassword(password)) {
-			return status(403, "Złe hasło!");
+			return status(403, "Bad password");
 		}
 		session("login", login);
 		return ok("Zalogowano");
 	}
 	
-	public Result registerPost() {
+	public Result userPut(String login) {
 		
-		DynamicForm dynamicForm = Form.form().bindFromRequest();
-		String login = dynamicForm.get("login");
-		String password = dynamicForm.get("password");
-		String rePassword = dynamicForm.get("rePassword");
-		String firstName = dynamicForm.get("firstName");
-		String lastName = dynamicForm.get("lastName");
-		String email = dynamicForm.get("email");
+		JsonNode registerJson = request().body().asJson();
+		if(registerJson == null) {
+			return status(403, "JSON wanted!");
+		}
+		if (login.equals("")){
+			return status(403, "Empty login");
+		}
+		String password = registerJson.get("login").asText();
+		String rePassword = registerJson.get("login").asText();
+		String firstName = registerJson.get("login").asText();
+		String lastName = registerJson.get("login").asText();
+		String email = registerJson.get("login").asText();
 		
 		@SuppressWarnings("rawtypes")
 		UserAccount user = UserAccount.find.byId(login);

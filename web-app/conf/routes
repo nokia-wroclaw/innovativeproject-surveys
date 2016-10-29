@@ -15,9 +15,9 @@
 #Back-end routes
 POST	/app/login						controllers.AccountController.loginPost
 
-POST	/app/user							controllers.AccountController.registerPost
+PUT		/app/user/:login				controllers.AccountController.userPut(login: String)
 
-PUT		/app/activ/:link					controllers.AccountController.activate(link: String)
+PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
 
 #Deleting all accounts (only for develop)
 GET		/app/clean							controllers.AccountController.clean
@@ -25,10 +25,11 @@ GET		/app/clean							controllers.AccountController.clean
 #Front-end routes
 GET		/								controllers.Assets.at(path = "/public", file="index.html")
 
-GET		/login							controllers.AccountController.loginGet
-GET		/register						controllers.AccountController.registerGet
-#javascript
+GET		/login							controllers.Assets.at(path = "/public", file="login.html")
+GET		/register						controllers.Assets.at(path = "/public", file="register.html")
+#javascript and css
 GET		/js/*file						controllers.Assets.at(path = "/public/javascripts", file)
+GET		/css/*file						controllers.Assets.at(path = "/public/stylesheets", file)
 
 
 #Swagger
