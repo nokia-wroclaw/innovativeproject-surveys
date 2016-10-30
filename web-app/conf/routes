@@ -18,6 +18,8 @@ POST	/app/login						controllers.AccountController.loginPost
 PUT		/app/user/:login				controllers.AccountController.userPut(login: String)
 
 PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
+#Test mail
+GET     /invite/*email                  controllers.AccountController.invite(email: String)
 
 #Deleting all accounts (only for develop)
 GET		/app/clean							controllers.AccountController.clean

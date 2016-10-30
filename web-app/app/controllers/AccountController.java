@@ -16,9 +16,9 @@ import play.data.Form;
 import play.mvc.*;
 import views.html.*;
 
-//import play.libs.mailer.Email;
-//import play.libs.mailer.MailerClient;
-//import javax.inject.Inject;
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerClient;
+import javax.inject.Inject;
 
 /**Controler managing all account featers.
  * 
@@ -27,7 +27,7 @@ import views.html.*;
  */
 public class AccountController extends Controller {
 	
-	/*@Inject MailerClient mailerClient;*/
+	@Inject MailerClient mailerClient;
 	
 	public Result loginGet(){
 		return ok(login.render());
@@ -55,6 +55,18 @@ public class AccountController extends Controller {
 		}
 		session("login", login);
 		return ok("Zalogowano");
+	}
+	
+	public void sendAccEmail (String email, String link, String firstName) {
+		Email email1 = new Email();
+		email1.setSubject("Rejestracja na surveys");
+		email1.setFrom("Surveys <registration@surveys.com>");
+		email1.addTo(email);
+		email1.setBodyText("Hi "+firstName+"!\n\nOto link aktywacyjny: http://localhost:9000/activ/"+link);
+		String id = mailerClient.send(email1);
+		
+		
+		
 	}
 	
 	public Result userPut(String login) {
@@ -94,17 +106,23 @@ public class AccountController extends Controller {
 				lastName, email, link);
 		
 		newAcc.save();
+		sendAccEmail(email, link, firstName);
 		return ok(logged.render(link));
 	}
 	
-	/*public void sendAccEmail (String email, String link, String firstName) {
+     public Result invite(String email){
+		
 		Email email1 = new Email();
 		email1.setSubject("Rejestracja na surveys");
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText("Hi "+firstName+"!\n\nOto link aktywacyjny: http://localhost/activ/"+link);
-		mailerClient.send(email1);
-	}*/
+		email1.setBodyText("Zostałeś zaproszony do http://localhost:9000/register . Kliknij link i zarejestruj swoje konto");
+		String id = mailerClient.send(email1);
+		
+		return ok("Jest dobrze");
+		
+	}
+
 	
 	public Result activate (String link) {
 		UnactivatedAccount ua = UnactivatedAccount.find.byId(link);
