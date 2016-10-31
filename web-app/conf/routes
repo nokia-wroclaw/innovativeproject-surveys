@@ -14,12 +14,10 @@
 
 #Back-end routes
 POST	/app/login						controllers.AccountController.loginPost
-
+POST	/app/invitation				    controllers.AccountController.invite
 PUT		/app/user/:login				controllers.AccountController.userPut(login: String)
 
 PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
-#Test mail
-GET     /invite/*email                  controllers.AccountController.invite(email: String)
 
 #Deleting all accounts (only for develop)
 GET		/app/clean							controllers.AccountController.clean
@@ -29,6 +27,10 @@ GET		/								controllers.Assets.at(path = "/public", file="index.html")
 
 GET		/login							controllers.Assets.at(path = "/public", file="login.html")
 GET		/register						controllers.Assets.at(path = "/public", file="register.html")
+
+#Test mail                                
+GET     /invitations                    controllers.Assets.at(path = "/public", file="invite.html")
+
 #javascript and css
 GET		/js/*file						controllers.Assets.at(path = "/public/javascripts", file)
 GET		/css/*file						controllers.Assets.at(path = "/public/stylesheets", file)
