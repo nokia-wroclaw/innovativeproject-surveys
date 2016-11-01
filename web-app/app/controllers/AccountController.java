@@ -110,7 +110,19 @@ public class AccountController extends Controller {
 		return ok(logged.render(link));
 	}
 	
-     public Result invite(String email){
+	public Result invite(){
+		
+		JsonNode jsNode = request().body().asJson();
+		if (jsNode == null) {
+			return status(403, "JSON wanted!");
+		}
+		String email = jsNode.findPath("mail").textValue();
+			
+		
+		if (email.equals("")) {
+			return status(403, "empty");
+		}
+		
 		
 		Email email1 = new Email();
 		email1.setSubject("Rejestracja na surveys");
@@ -119,7 +131,16 @@ public class AccountController extends Controller {
 		email1.setBodyText("Zostałeś zaproszony do http://localhost:9000/register . Kliknij link i zarejestruj swoje konto");
 		String id = mailerClient.send(email1);
 		
-		return ok("Jest dobrze");
+		if(id != null){
+			
+			return status(403, "good");
+		}
+		
+	
+		
+		session("email", email);
+
+		return ok(("Poprawnie wyslano zaproszenie"));
 		
 	}
 
