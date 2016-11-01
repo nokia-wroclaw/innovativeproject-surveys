@@ -45,5 +45,12 @@
         android:layout_below="@+id/etPassword"
         android:text="Zaloguj się" />
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Zarejestruj się"
+        android:id="@+id/RegisterLink"
+        android:layout_below="@+id/bSignIn"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
