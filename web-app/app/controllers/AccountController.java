@@ -8,6 +8,7 @@ import models.*;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Model;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -15,9 +16,9 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.*;
 import views.html.*;
-
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
+
 import javax.inject.Inject;
 
 /**Controler managing all account featers.
@@ -28,13 +29,6 @@ import javax.inject.Inject;
 public class AccountController extends Controller {
 	
 	@Inject MailerClient mailerClient;
-	
-	public Result loginGet(){
-		return ok(login.render());
-	}
-	public Result registerGet(){
-		return ok(/*register.render("")*/);
-	}
 	
 	public Result loginPost(){
 		JsonNode jsNode = request().body().asJson();
@@ -53,7 +47,7 @@ public class AccountController extends Controller {
 		if (!ua.checkPassword(password)) {
 			return status(403, "Bad password");
 		}
-		session("login", login);
+		session().put("login", login);
 		return ok("Zalogowano");
 	}
 	
@@ -78,19 +72,23 @@ public class AccountController extends Controller {
 		if (login.equals("")){
 			return status(403, "Empty login");
 		}
-		String password = registerJson.get("login").asText();
-		String rePassword = registerJson.get("login").asText();
-		String firstName = registerJson.get("login").asText();
-		String lastName = registerJson.get("login").asText();
-		String email = registerJson.get("login").asText();
+		String password = registerJson.get("password").asText();
+		String rePassword = registerJson.get("rePassword").asText();
+		String firstName = registerJson.get("firstName").asText();
+		String lastName = registerJson.get("lastName").asText();
+		String email = registerJson.get("email").asText();
 		
 		@SuppressWarnings("rawtypes")
 		UserAccount user = UserAccount.find.byId(login);
+		/*List<UserAccount> userEm = UserAccount.find.where().eq("email", email).findList();
+		if(userEm.size() != 0){
+			return status(404, "Konto o takim e-mail już istnieje!");
+		}*/
 		if(user != null) {
-			return ok(/*register.render("Ten login już istnieje!")*/);
+			return status(404, "Ten login już istnieje!");
 		}
 		if(!password.equals(rePassword)) {
-			return ok(/*register.render("Hasła nie pasują do siebie!")*/);
+			return status(404, "Hasła do siebie nie pasują!");
 		}
 		String link = Integer.toHexString(new Random().nextInt(0x1000000));
 		List<UnactivatedAccount> unactiv = UnactivatedAccount.find.all();
@@ -107,7 +105,7 @@ public class AccountController extends Controller {
 		
 		newAcc.save();
 		sendAccEmail(email, link, firstName);
-		return ok(logged.render(link));
+		return ok("Registrated");
 	}
 	
 	public Result invite(){
