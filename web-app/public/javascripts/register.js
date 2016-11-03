@@ -19,7 +19,7 @@ registerSub = function(event){
 		},
 		error: function(data, status){
 			if (data.status == 200) {
-				window.location.replace("/invitation")
+				window.location.replace("/invitations")
 			}
 			$("#error").html(data.responseText);
 			$("#error").show();
