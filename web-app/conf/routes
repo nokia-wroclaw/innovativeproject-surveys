@@ -23,7 +23,9 @@ PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
 GET		/app/clean							controllers.AccountController.clean
 
 #Front-end routes
-GET		/								controllers.Assets.at(path = "/public", file="index.html")
+#GET		/								controllers.Assets.at(path = "/public", file="index.html")
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /                       	    controllers.Application.index
 
 GET		/login							controllers.Assets.at(path = "/public", file="login.html")
 GET		/register						controllers.Assets.at(path = "/public", file="register.html")
