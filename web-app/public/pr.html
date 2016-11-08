@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+	<head>
+		<title>Nokia-Survey</title>
+		<meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="shortcut icon" type="image/png" href="">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>-->
+    </head>
+    <body>
+		<h2>Creator Ankiety: </h2>
+			<div id="error" class="">
+				
+			</div>
+		<div class="container row">
+			<form id="createForm" class="col-md-4">
+	
+				<div class="form-group">
+					<label for="nam">Name: </label>
+					<input type="text" id="name" value="" class="form-control" placeholder="Podaj nazwe dla ankiety">
+				</div>
+				<div class="form-group">
+					<label for="des">Description: </label>
+					<input type="text" id="description" value="" class="form-control" placeholder="Podaj opis dla ankiety">
+				</div>
+				<div class="form-group">
+					<label for="mai">Mail: </label>
+					<input type="mail" id="email" value="" class="form-control" placeholder="Podaj swoj mail">
+				</div>
+				<div class="form-group">
+					<label for="pyt1">Pytanie 1</label>
+					<input type="text" id="question" value="" class="form-control" placeholder="Miejsce na 1 pytanie">
+				</div>
+				<div class="form-group">
+					<label for="pyt2">Pytanie 2</label>
+					<input type="text" id="question1" value="" class="form-control" placeholder="Miejsce na 2 pytanie">
+				</div>
+				<div class="form-group">
+					<label for="pyt3">Pytanie 3</label>
+					<input type="text" id="question2" value="" class="form-control" placeholder="Miejsce na 3 pytanie">
+				</div>
+				<div class="form-group">
+					<label for="pyt4">Pytanie 4</label>
+					<input type="text" id="question3" value="" class="form-control" placeholder="Miejsce na 4 pytanie">
+				</div>
+				<div class="form-group">
+					<button id="loginBtn" class="btn btn-primary">Stworz ankiete</button>
+				</div>
+			</form>
+		</div>
+		<script src="/js/create.js"></script>
+	</body>
+</html>
