@@ -11,3 +11,4 @@
 /.metadata/
 /.recomenders/
 web-app/project/.sbtserver
+.recommenders/
