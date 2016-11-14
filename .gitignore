@@ -12,3 +12,7 @@
 /.recomenders/
 web-app/project/.sbtserver
 .recommenders/
+front-app/node_modules
+front-app/typings
+front-app/npm-debug.log
+front-app/extracted
