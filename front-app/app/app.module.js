@@ -47,6 +47,7 @@ var AppModule = (function () {
                 index_3.AlertService,
                 index_3.AuthenticationService,
                 index_3.UserService,
+                index_3.InviteService
             ],
             bootstrap: [app_component_1.AppComponent]
         }), 

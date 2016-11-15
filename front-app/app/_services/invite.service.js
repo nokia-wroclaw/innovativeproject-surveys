@@ -11,39 +11,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 require('rxjs/add/operator/map');
-var AuthenticationService = (function () {
-    function AuthenticationService(http) {
+var InviteService = (function () {
+    function InviteService(http) {
         this.http = http;
     }
-    AuthenticationService.prototype.login = function (username, password) {
+    InviteService.prototype.invite = function (email) {
         var headers = new http_1.Headers();
         headers.append("Content-Type", "application/json");
-        headers.append("Accept", "application/json");
+        //headers.append("Accept", "application/json");
         var options = new http_1.RequestOptions({
             method: http_1.RequestMethod.Post,
-            url: 'http://localhost:9000/app/login',
+            url: 'http://localhost:9000/app/invitation',
             headers: headers,
-            body: JSON.stringify({ login: username, password: password })
+            body: JSON.stringify({ email: email })
         });
         return this.http.request(new http_1.Request(options))
             .map(function (response) {
-            var user = response.json();
-            console.log(JSON.stringify(user));
-            if (user /*&& user.token*/) {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                localStorage.setItem('currentUser', JSON.stringify(user));
-            }
+            var resp = response.json();
+            console.log(JSON.stringify(resp));
         });
     };
-    AuthenticationService.prototype.logout = function () {
-        // remove user from local storage to log user out
-        localStorage.removeItem('currentUser');
-    };
-    AuthenticationService = __decorate([
+    InviteService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http])
-    ], AuthenticationService);
-    return AuthenticationService;
+    ], InviteService);
+    return InviteService;
 }());
-exports.AuthenticationService = AuthenticationService;
-//# sourceMappingURL=authentication.service.js.map
+exports.InviteService = InviteService;
+//# sourceMappingURL=invite.service.js.map

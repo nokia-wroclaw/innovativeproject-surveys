@@ -10,28 +10,40 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var index_1 = require('../_services/index');
+var index_2 = require('../_services/index');
 var HomeComponent = (function () {
-    function HomeComponent(userService) {
+    function HomeComponent(userService, inviteService, alertService) {
         this.userService = userService;
-        this.users = [];
+        this.inviteService = inviteService;
+        this.alertService = alertService;
+        this.sendingInvite = false;
+        this.model = {};
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     }
     HomeComponent.prototype.ngOnInit = function () {
-        this.loadAllUsers();
     };
-    HomeComponent.prototype.deleteUser = function (id) {
+    HomeComponent.prototype.invite = function () {
         var _this = this;
-        this.userService.delete(id).subscribe(function () { _this.loadAllUsers(); });
-    };
-    HomeComponent.prototype.loadAllUsers = function () {
-        //this.userService.getAll().subscribe(users => { this.users = users; });
+        this.sendingInvite = true;
+        console.log("Sending invitation!");
+        this.inviteService.invite(this.model.email)
+            .subscribe(function (data) {
+            console.log("Success");
+            _this.alertService.success('Invite successful', true);
+            _this.sendingInvite = false;
+        }, function (error) {
+            console.log("Fail");
+            console.log(error);
+            _this.alertService.error(error);
+            _this.sendingInvite = false;
+        });
     };
     HomeComponent = __decorate([
         core_1.Component({
             moduleId: module.id,
             templateUrl: 'home.component.html'
         }), 
-        __metadata('design:paramtypes', [index_1.UserService])
+        __metadata('design:paramtypes', [index_1.UserService, index_2.InviteService, index_1.AlertService])
     ], HomeComponent);
     return HomeComponent;
 }());

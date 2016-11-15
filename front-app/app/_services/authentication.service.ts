@@ -9,7 +9,7 @@ export class AuthenticationService {
     login(username, password) {
 			var headers = new Headers();
 			headers.append("Content-Type", "application/json");
-			//headers.append("Accept", "application/json");
+			headers.append("Accept", "application/json");
 			var options = new RequestOptions({
 				method: RequestMethod.Post,
 				url: 'http://localhost:9000/app/login',
@@ -17,15 +17,14 @@ export class AuthenticationService {
 				body: JSON.stringify({ login: username, password: password })
 			});
       return this.http.request(new Request(options))
-            /*.map((response: Response) => {
-                // login successful if there's a jwt token in the response
-								console.log("Working map!");
+            .map((response: Response) => {
                 let user = response.json();
-                /*if (user && user.token) {
+								console.log(JSON.stringify(user));
+                if (user /*&& user.token*/) {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     localStorage.setItem('currentUser', JSON.stringify(user));
                 }
-            })*/;
+            });
     }
 
     logout() {
