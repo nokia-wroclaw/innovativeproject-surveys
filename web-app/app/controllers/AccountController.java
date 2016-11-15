@@ -72,18 +72,54 @@ public class AccountController extends Controller {
 		if (login.equals("")){
 			return status(403, "Empty login");
 		}
+		if(registerJson.get("password") == null){
+			return status(403, "Password wanted");
+		}
+		if(registerJson.get("rePassword") == null){
+			return status(403, "Password wanted");
+		}
+		if(registerJson.get("firstName") == null){
+			return status(403, "Password wanted");
+		}
+		if(registerJson.get("lastName") == null){
+			return status(403, "Password wanted");
+		}
+		if(registerJson.get("email") == null){
+			return status(403, "Password wanted");
+		}
+		
 		String password = registerJson.get("password").asText();
 		String rePassword = registerJson.get("rePassword").asText();
 		String firstName = registerJson.get("firstName").asText();
 		String lastName = registerJson.get("lastName").asText();
 		String email = registerJson.get("email").asText();
 		
+		if(password == null || password.equals("")){
+			return status(403, "Password wanted");
+		}
+		
+		if(rePassword == null || rePassword.equals("")){
+			return status(403, "Password wanted");
+		}
+		
+		if(firstName == null || firstName.equals("")){
+			return status(403, "First name wanted");
+		}
+		
+		if(lastName == null || lastName.equals("")){
+			return status(403, "Last name wanted");
+		}
+		
+		if(email == null || email.equals("")){
+			return status(403, "Email wanted");
+		}
+		
 		@SuppressWarnings("rawtypes")
 		UserAccount user = UserAccount.find.byId(login);
-		/*List<UserAccount> userEm = UserAccount.find.where().eq("email", email).findList();
+		List<UserAccount> userEm = UserAccount.find.where().eq("email", email).findList();
 		if(userEm.size() != 0){
 			return status(404, "Konto o takim e-mail już istnieje!");
-		}*/
+		}
 		if(user != null) {
 			return status(404, "Ten login już istnieje!");
 		}

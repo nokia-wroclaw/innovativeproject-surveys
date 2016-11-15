@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Http, Headers, Response, RequestOptions, RequestMethod, Request } from '@angular/http';
+import { RegistrationUser } from '../_models/index';
 
 @Injectable()
 export class UserService {
     constructor(private http: Http) { }
-
+	
     getAll() {
         return this.http.get('https://survey-innoproject.herokuapp.com/app/users', this.jwt()).map((response: Response) => response.json());
     }
@@ -13,8 +14,16 @@ export class UserService {
         return this.http.get('https://survey-innoproject.herokuapp.com/app/users/' + id, this.jwt()).map((response: Response) => response.json());
     }
 
-    create(user) {
-        return this.http.post('https://survey-innoproject.herokuapp.com/app/users/'+user.login, user, this.jwt()).map((response: Response) => response.json());
+    create(user: RegistrationUser) {
+		var header = new Headers();
+		header.append("Content-Type", "application/json");
+		var options = new RequestOptions({
+			method: RequestMethod.Put,
+			url: 'http://localhost:9000/app/user/'+user.login,
+			headers: header,
+			body: JSON.stringify(user),
+		})
+        return this.http.request(new Request(options));
     }
 
     update(user) {

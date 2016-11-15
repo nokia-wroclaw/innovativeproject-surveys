@@ -21,7 +21,15 @@ var UserService = (function () {
         return this.http.get('https://survey-innoproject.herokuapp.com/app/users/' + id, this.jwt()).map(function (response) { return response.json(); });
     };
     UserService.prototype.create = function (user) {
-        return this.http.post('https://survey-innoproject.herokuapp.com/app/users/' + user.login, user, this.jwt()).map(function (response) { return response.json(); });
+        var header = new http_1.Headers();
+        header.append("Content-Type", "application/json");
+        var options = new http_1.RequestOptions({
+            method: http_1.RequestMethod.Put,
+            url: 'http://localhost:9000/app/user/' + user.login,
+            headers: header,
+            body: JSON.stringify(user),
+        });
+        return this.http.request(new http_1.Request(options));
     };
     UserService.prototype.update = function (user) {
         return this.http.put('https://survey-innoproject.herokuapp.com/app/users/' + user.login, user, this.jwt()).map(function (response) { return response.json(); });

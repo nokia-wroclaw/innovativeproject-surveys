@@ -24,9 +24,11 @@ var RegisterComponent = (function () {
         this.loading = true;
         this.userService.create(this.model)
             .subscribe(function (data) {
-            _this.alertService.success('Registration successful', true);
+            console.log(JSON.stringify(data));
+            _this.alertService.success('Registration successful! Check your email to activate the account', true);
             _this.router.navigate(['/login']);
         }, function (error) {
+            console.log(JSON.stringify(error));
             _this.alertService.error(error);
             _this.loading = false;
         });

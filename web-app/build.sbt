@@ -22,3 +22,4 @@ libraryDependencies += "com.typesafe.play" %% "play-mailer" % "5.0.0"
 libraryDependencies += javaJdbc
 libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.0-P25-B3"
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
+libraryDependencies += filters

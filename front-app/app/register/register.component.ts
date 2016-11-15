@@ -11,21 +11,23 @@ import { AlertService, UserService } from '../_services/index';
 export class RegisterComponent {
     model: any = {};
     loading = false;
-
+	
     constructor(
         private router: Router,
         private userService: UserService,
-        private alertService: AlertService) { }
+        private alertService: AlertService) {	}
 
     register() {
         this.loading = true;
         this.userService.create(this.model)
             .subscribe(
                 data => {
-                    this.alertService.success('Registration successful', true);
+					console.log(JSON.stringify(data));
+                    this.alertService.success('Registration successful! Check your email to activate the account', true);
                     this.router.navigate(['/login']);
                 },
                 error => {
+					console.log(JSON.stringify(error));
                     this.alertService.error(error);
                     this.loading = false;
                 });
