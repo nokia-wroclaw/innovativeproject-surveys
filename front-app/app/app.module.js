@@ -24,6 +24,7 @@ var index_3 = require('./_services/index');
 var index_4 = require('./home/index');
 var index_5 = require('./login/index');
 var index_6 = require('./register/index');
+var index_7 = require('./surveyView/index');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -40,14 +41,16 @@ var AppModule = (function () {
                 index_1.AlertComponent,
                 index_4.HomeComponent,
                 index_5.LoginComponent,
-                index_6.RegisterComponent
+                index_6.RegisterComponent,
+                index_7.SurveyViewComponent
             ],
             providers: [
                 index_2.AuthGuard,
                 index_3.AlertService,
                 index_3.AuthenticationService,
                 index_3.UserService,
-                index_3.InviteService
+                index_3.InviteService,
+                index_3.SurveyService
             ],
             bootstrap: [app_component_1.AppComponent]
         }), 

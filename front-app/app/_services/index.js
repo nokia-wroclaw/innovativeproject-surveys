@@ -6,4 +6,5 @@ __export(require('./alert.service'));
 __export(require('./authentication.service'));
 __export(require('./user.service'));
 __export(require('./invite.service'));
+__export(require('./survey.service'));
 //# sourceMappingURL=index.js.map

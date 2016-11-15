@@ -13,10 +13,11 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, UserService, InviteService } from './_services/index';
+import { AlertService, AuthenticationService, UserService, InviteService, SurveyService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
+import { SurveyViewComponent } from './surveyView/index'
 
 @NgModule({
     imports: [
@@ -30,14 +31,16 @@ import { RegisterComponent } from './register/index';
         AlertComponent,
         HomeComponent,
         LoginComponent,
-        RegisterComponent
+        RegisterComponent,
+		SurveyViewComponent
     ],
     providers: [
         AuthGuard,
         AlertService,
         AuthenticationService,
         UserService,
-				InviteService
+		InviteService,
+		SurveyService
         // providers used to create fake backend
         //fakeBackendProvider,
         //MockBackend,

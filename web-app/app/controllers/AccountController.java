@@ -152,7 +152,7 @@ public class AccountController extends Controller {
 		if (jsNode == null) {
 			return status(403, "JSON wanted!");
 		}
-		String email = jsNode.findPath("mail").textValue();
+		String email = jsNode.findPath("email").textValue();
 			
 		
 		if (email.equals("")) {
@@ -169,7 +169,7 @@ public class AccountController extends Controller {
 		
 		if(id != null){
 			
-			return status(403, "good");
+			return status(200, Json.toJson(new Message("Invitation sended!")));
 		}
 		
 	
@@ -180,6 +180,7 @@ public class AccountController extends Controller {
 		
 	}
 
+	
 	
 	public Result activate (String link) {
 		UnactivatedAccount ua = UnactivatedAccount.find.byId(link);
@@ -203,4 +204,11 @@ public class AccountController extends Controller {
 		
 		return ok(/*register.render("")*/);
 	}
+}
+
+class Message{
+	public String message;
+	public Message(String msg) {
+		message = msg;
+}
 }

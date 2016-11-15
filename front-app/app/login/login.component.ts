@@ -28,12 +28,12 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
                 data => {
-									console.log("Success");
+					console.log("Success");
                   this.router.navigate(['/']);
                 },
                 error => {
-									console.log("Fail");
-									console.log(JSON.stringify(error));
+					console.log("Fail");
+					console.log(JSON.stringify(error));
                   this.alertService.error(error);
                   this.loading = false;
                 });
