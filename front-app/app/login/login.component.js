@@ -30,11 +30,10 @@ var LoginComponent = (function () {
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(function (data) {
             console.log("Success");
-            localStorage.setItem('currentUser', JSON.stringify({ username: _this.model.username }));
             _this.router.navigate(['/']);
         }, function (error) {
             console.log("Fail");
-            console.log(error);
+            console.log(JSON.stringify(error));
             _this.alertService.error(error);
             _this.loading = false;
         });

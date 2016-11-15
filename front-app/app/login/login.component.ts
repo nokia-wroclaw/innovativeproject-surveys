@@ -29,12 +29,11 @@ export class LoginComponent implements OnInit {
             .subscribe(
                 data => {
 									console.log("Success");
-									localStorage.setItem('currentUser', JSON.stringify({username: this.model.username}));
                   this.router.navigate(['/']);
                 },
                 error => {
 									console.log("Fail");
-									console.log(error);
+									console.log(JSON.stringify(error));
                   this.alertService.error(error);
                   this.loading = false;
                 });

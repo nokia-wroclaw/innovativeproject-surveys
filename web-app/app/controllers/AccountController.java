@@ -16,6 +16,7 @@ import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.*;
 import views.html.*;
+import play.libs.Json;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 
@@ -48,7 +49,8 @@ public class AccountController extends Controller {
 			return status(403, "Bad password");
 		}
 		session().put("login", login);
-		return ok("Zalogowano");
+		JsonNode jsUser = Json.toJson(ua);
+		return ok(jsUser);
 	}
 	
 	public void sendAccEmail (String email, String link, String firstName) {
