@@ -17,11 +17,6 @@ export class AuthenticationService {
 				body: JSON.stringify({ login: username, password: password })
 			});
       return this.http.request(new Request(options))
-<<<<<<< HEAD
-	  
-	}  
-	
-=======
             .map((response: Response) => {
                 let user = response.json();
 								console.log(JSON.stringify(user));
@@ -31,8 +26,6 @@ export class AuthenticationService {
                 }
             });
     }
-
->>>>>>> front-app/home-page
     logout() {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');

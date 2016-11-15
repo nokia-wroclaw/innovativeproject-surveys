@@ -1,8 +1,5 @@
 package filters;
-<<<<<<< HEAD
 
-=======
->>>>>>> front-app/home-page
 import play.mvc.EssentialFilter;
 import play.filters.cors.CORSFilter;
 import play.http.DefaultHttpFilters;
