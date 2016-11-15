@@ -21,7 +21,7 @@ var SurveyService = (function () {
         headers.append("Accept", "application/json");
         var options = new http_1.RequestOptions({
             method: http_1.RequestMethod.Get,
-            url: 'http://localhost:9000/app/surveys' + id,
+            url: 'http://localhost:9000/app/surveys/' + id,
             headers: headers
         });
         return this.http.request(new http_1.Request(options))

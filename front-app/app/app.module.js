@@ -48,8 +48,6 @@ var AppModule = (function () {
                 index_3.AuthenticationService,
                 index_3.UserService,
                 index_3.InviteService,
-                index_3.SurveyService,
-                index_3.InviteService,
                 index_3.SurveyService
             ],
             bootstrap: [app_component_1.AppComponent]

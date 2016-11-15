@@ -15,4 +15,6 @@
        </div>
 		</form>
     <p><a [routerLink]="['/login']">Logout</a></p>
+	<p><input type="text" class="form-control" name="id" [(ngModel)]="surv.id" #id="ngModel" />
+	<button class="btn btn-primary" (click)="surveyGo()">Go to survey</button></p>
 </div>

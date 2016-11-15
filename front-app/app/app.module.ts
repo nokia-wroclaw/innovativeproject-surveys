@@ -28,18 +28,16 @@ import { SurveyCreationComponent } from './survey-creation/index'
         HomeComponent,
         LoginComponent,
         RegisterComponent,
-				SurveyViewComponent
-				SurveyCreationComponent
+		SurveyViewComponent,
+		SurveyCreationComponent
     ],
     providers: [
         AuthGuard,
         AlertService,
         AuthenticationService,
         UserService,
-				InviteService,
-				SurveyService
-				InviteService,
-				SurveyService
+		InviteService,
+		SurveyService
     ],
     bootstrap: [AppComponent]
 })

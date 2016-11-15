@@ -4,6 +4,9 @@ import { AlertService, SurveyService } from '../_services/index';
 
 @Component({
     moduleId: module.id,
-    templateUrl: 'login.component.html'
+    templateUrl: 'survey-result.component.html'
 })
 
+export class SurveyResultComponent {
+	
+}

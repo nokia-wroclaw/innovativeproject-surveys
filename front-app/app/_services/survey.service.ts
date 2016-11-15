@@ -15,7 +15,7 @@ export class SurveyService {
 			headers.append("Accept", "application/json");
 			var options = new RequestOptions({
 				method: RequestMethod.Get,
-				url: 'http://localhost:9000/app/surveys'+id,
+				url: 'http://localhost:9000/app/surveys/'+id,
 				headers: headers
 			});
 		return this.http.request(new Request(options))
