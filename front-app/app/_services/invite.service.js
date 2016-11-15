@@ -18,7 +18,7 @@ var InviteService = (function () {
     InviteService.prototype.invite = function (email) {
         var headers = new http_1.Headers();
         headers.append("Content-Type", "application/json");
-        //headers.append("Accept", "application/json");
+        headers.append("Accept", "application/json");
         var options = new http_1.RequestOptions({
             method: http_1.RequestMethod.Post,
             url: 'http://localhost:9000/app/invitation',

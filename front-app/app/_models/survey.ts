@@ -1,5 +1,5 @@
 export class Survey {
-    name: String;
+  name: String;
 	description: String;
 	email: String;
 	question: String;

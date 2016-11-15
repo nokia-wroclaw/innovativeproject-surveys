@@ -3,11 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }    from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-// used to create fake backend
-//import { fakeBackendProvider } from './_helpers/index';
-//import { MockBackend, MockConnection } from '@angular/http/testing';
-//import { BaseRequestOptions } from '@angular/http';
-
 import { AppComponent }  from './app.component';
 import { routing }        from './app.routing';
 
@@ -18,6 +13,7 @@ import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 import { SurveyViewComponent } from './surveyView/index'
+import { SurveyCreationComponent } from './survey-creation/index'
 
 @NgModule({
     imports: [
@@ -32,19 +28,18 @@ import { SurveyViewComponent } from './surveyView/index'
         HomeComponent,
         LoginComponent,
         RegisterComponent,
-		SurveyViewComponent
+				SurveyViewComponent
+				SurveyCreationComponent
     ],
     providers: [
         AuthGuard,
         AlertService,
         AuthenticationService,
         UserService,
-		InviteService,
-		SurveyService
-        // providers used to create fake backend
-        //fakeBackendProvider,
-        //MockBackend,
-        //BaseRequestOptions
+				InviteService,
+				SurveyService
+				InviteService,
+				SurveyService
     ],
     bootstrap: [AppComponent]
 })

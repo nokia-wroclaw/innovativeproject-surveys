@@ -12,10 +12,6 @@ var core_1 = require('@angular/core');
 var platform_browser_1 = require('@angular/platform-browser');
 var forms_1 = require('@angular/forms');
 var http_1 = require('@angular/http');
-// used to create fake backend
-//import { fakeBackendProvider } from './_helpers/index';
-//import { MockBackend, MockConnection } from '@angular/http/testing';
-//import { BaseRequestOptions } from '@angular/http';
 var app_component_1 = require('./app.component');
 var app_routing_1 = require('./app.routing');
 var index_1 = require('./_directives/index');
@@ -25,6 +21,7 @@ var index_4 = require('./home/index');
 var index_5 = require('./login/index');
 var index_6 = require('./register/index');
 var index_7 = require('./surveyView/index');
+var index_8 = require('./survey-creation/index');
 var AppModule = (function () {
     function AppModule() {
     }
@@ -42,13 +39,16 @@ var AppModule = (function () {
                 index_4.HomeComponent,
                 index_5.LoginComponent,
                 index_6.RegisterComponent,
-                index_7.SurveyViewComponent
+                index_7.SurveyViewComponent,
+                index_8.SurveyCreationComponent
             ],
             providers: [
                 index_2.AuthGuard,
                 index_3.AlertService,
                 index_3.AuthenticationService,
                 index_3.UserService,
+                index_3.InviteService,
+                index_3.SurveyService,
                 index_3.InviteService,
                 index_3.SurveyService
             ],

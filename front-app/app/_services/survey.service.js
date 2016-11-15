@@ -45,6 +45,37 @@ var SurveyService = (function () {
             console.log(JSON.stringify(resp));
         });
     };
+    SurveyService.prototype.createSurvey = function (survey) {
+        var headers = new http_1.Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
+        var options = new http_1.RequestOptions({
+            method: http_1.RequestMethod.Post,
+            url: 'http://localhost:9000/app/surveys',
+            headers: headers,
+            body: JSON.stringify(survey)
+        });
+        return this.http.request(new http_1.Request(options))
+            .map(function (response) {
+            var resp = response.json();
+            console.log(JSON.stringify(resp));
+        });
+    };
+    SurveyService.prototype.getResult = function (id) {
+        var headers = new http_1.Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
+        var options = new http_1.RequestOptions({
+            method: http_1.RequestMethod.Get,
+            url: 'http://localhost:9000/app/surveys/' + id + '/result',
+            headers: headers
+        });
+        return this.http.request(new http_1.Request(options))
+            .map(function (response) {
+            var resp = response.json();
+            console.log(JSON.stringify(resp));
+        });
+    };
     SurveyService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http])
