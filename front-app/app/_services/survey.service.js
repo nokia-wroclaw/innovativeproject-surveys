@@ -11,19 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 require('rxjs/add/operator/map');
-var InviteService = (function () {
-    function InviteService(http) {
+var SurveyService = (function () {
+    function SurveyService(http) {
         this.http = http;
     }
-    InviteService.prototype.invite = function (email) {
+    SurveyService.prototype.createSurvey = function (survey) {
         var headers = new http_1.Headers();
         headers.append("Content-Type", "application/json");
         headers.append("Accept", "application/json");
         var options = new http_1.RequestOptions({
             method: http_1.RequestMethod.Post,
-            url: 'http://localhost:9000/app/invitation',
+            url: 'http://localhost:9000/app/surveys',
             headers: headers,
-            body: JSON.stringify({ email: email })
+            body: JSON.stringify(survey)
         });
         return this.http.request(new http_1.Request(options))
             .map(function (response) {
@@ -31,11 +31,26 @@ var InviteService = (function () {
             console.log(JSON.stringify(resp));
         });
     };
-    InviteService = __decorate([
+    SurveyService.prototype.getResult = function (id) {
+        var headers = new http_1.Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
+        var options = new http_1.RequestOptions({
+            method: http_1.RequestMethod.Get,
+            url: 'http://localhost:9000/app/surveys/' + id + '/result',
+            headers: headers
+        });
+        return this.http.request(new http_1.Request(options))
+            .map(function (response) {
+            var resp = response.json();
+            console.log(JSON.stringify(resp));
+        });
+    };
+    SurveyService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http])
-    ], InviteService);
-    return InviteService;
+    ], SurveyService);
+    return SurveyService;
 }());
-exports.InviteService = InviteService;
-//# sourceMappingURL=invite.service.js.map
+exports.SurveyService = SurveyService;
+//# sourceMappingURL=survey.service.js.map

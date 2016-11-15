@@ -6,10 +6,11 @@ import 'rxjs/add/operator/map'
 @Injectable()
 export class InviteService {
     constructor(private http: Http) { }
+		
     invite(email) {
 			var headers = new Headers();
 			headers.append("Content-Type", "application/json");
-			//headers.append("Accept", "application/json");
+			headers.append("Accept", "application/json");
 			var options = new RequestOptions({
 				method: RequestMethod.Post,
 				url: 'http://localhost:9000/app/invitation',
