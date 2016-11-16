@@ -29,7 +29,7 @@ var RegisterComponent = (function () {
             _this.router.navigate(['/login']);
         }, function (error) {
             console.log(JSON.stringify(error));
-            _this.alertService.error(error);
+            _this.alertService.error(error.json().message);
             _this.loading = false;
         });
     };

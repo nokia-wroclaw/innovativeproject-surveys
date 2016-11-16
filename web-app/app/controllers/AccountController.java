@@ -34,19 +34,19 @@ public class AccountController extends Controller {
 	public Result loginPost(){
 		JsonNode jsNode = request().body().asJson();
 		if (jsNode == null) {
-			return status(403, "JSON wanted!");
+			return status(403, Json.toJson(new Message("JSON wanted!")));
 		}
 		String login = jsNode.findPath("login").textValue();
 		String password = jsNode.findPath("password").textValue();
 		if (login == null || password == null) {
-			return status(403, "Login or password not set.");
+			return status(403, Json.toJson(new Message("Login or password not set.")));
 		}
 		UserAccount ua = UserAccount.find.byId(login);
 		if (ua == null) {
-			return status(403, "Bad login");
+			return status(403, Json.toJson(new Message("Bad login")));
 		}
 		if (!ua.checkPassword(password)) {
-			return status(403, "Bad password");
+			return status(403, Json.toJson(new Message("Bad password")));
 		}
 		session().put("login", login);
 		JsonNode jsUser = Json.toJson(ua);
@@ -58,7 +58,7 @@ public class AccountController extends Controller {
 		email1.setSubject("Rejestracja na surveys");
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText("Hi "+firstName+"!\n\nOto link aktywacyjny: http://localhost:9000/activ/"+link);
+		email1.setBodyText("Hi "+firstName+"!\n\nOto link aktywacyjny: http://localhost:3000/activ/"+link);
 		String id = mailerClient.send(email1);
 		
 		
@@ -69,25 +69,25 @@ public class AccountController extends Controller {
 		
 		JsonNode registerJson = request().body().asJson();
 		if(registerJson == null) {
-			return status(403, "JSON wanted!");
+			return status(403, Json.toJson(new Message("JSON wanted!")));
 		}
 		if (login.equals("")){
-			return status(403, "Empty login");
+			return status(403, Json.toJson(new Message("Empty login")));
 		}
 		if(registerJson.get("password") == null){
-			return status(403, "Password wanted");
+			return status(403, Json.toJson(new Message("Password wanted")));
 		}
 		if(registerJson.get("rePassword") == null){
-			return status(403, "Password wanted");
+			return status(403, Json.toJson(new Message("Password wanted")));
 		}
 		if(registerJson.get("firstName") == null){
-			return status(403, "Password wanted");
+			return status(403, Json.toJson(new Message("Password wanted")));
 		}
 		if(registerJson.get("lastName") == null){
-			return status(403, "Password wanted");
+			return status(403, Json.toJson(new Message("Password wanted")));
 		}
 		if(registerJson.get("email") == null){
-			return status(403, "Password wanted");
+			return status(403, Json.toJson(new Message("Password wanted")));
 		}
 		
 		String password = registerJson.get("password").asText();
@@ -97,36 +97,36 @@ public class AccountController extends Controller {
 		String email = registerJson.get("email").asText();
 		
 		if(password == null || password.equals("")){
-			return status(403, "Password wanted");
+			return status(403, Json.toJson(new Message("Password wanted")));
 		}
 		
 		if(rePassword == null || rePassword.equals("")){
-			return status(403, "Password wanted");
+			return status(403, Json.toJson(new Message("Password wanted")));
 		}
 		
 		if(firstName == null || firstName.equals("")){
-			return status(403, "First name wanted");
+			return status(403, Json.toJson(new Message("First name wanted")));
 		}
 		
 		if(lastName == null || lastName.equals("")){
-			return status(403, "Last name wanted");
+			return status(403, Json.toJson(new Message("Last name wanted")));
 		}
 		
 		if(email == null || email.equals("")){
-			return status(403, "Email wanted");
+			return status(403, Json.toJson(new Message("Email wanted")));
 		}
 		
 		@SuppressWarnings("rawtypes")
 		UserAccount user = UserAccount.find.byId(login);
 		List<UserAccount> userEm = UserAccount.find.where().eq("email", email).findList();
 		if(userEm.size() != 0){
-			return status(404, "Konto o takim e-mail już istnieje!");
+			return status(403, Json.toJson(new Message("User with this e-mail already exists!")));
 		}
 		if(user != null) {
-			return status(404, "Ten login już istnieje!");
+			return status(403, Json.toJson(new Message("User with this login already exists!")));
 		}
 		if(!password.equals(rePassword)) {
-			return status(404, "Hasła do siebie nie pasują!");
+			return status(403, Json.toJson(new Message("Passwords don't match!")));
 		}
 		String link = Integer.toHexString(new Random().nextInt(0x1000000));
 		List<UnactivatedAccount> unactiv = UnactivatedAccount.find.all();
@@ -143,7 +143,7 @@ public class AccountController extends Controller {
 		
 		newAcc.save();
 		sendAccEmail(email, link, firstName);
-		return ok("Registrated");
+		return ok(Json.toJson(new Message("Registrated")));
 	}
 	
 	public Result invite(){
@@ -164,7 +164,7 @@ public class AccountController extends Controller {
 		email1.setSubject("Rejestracja na surveys");
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText("Zostałeś zaproszony do http://localhost:9000/register . Kliknij link i zarejestruj swoje konto");
+		email1.setBodyText("Zostałeś zaproszony do http://localhost:3000/register . Kliknij link i zarejestruj swoje konto");
 		String id = mailerClient.send(email1);
 		
 		if(id != null){
@@ -202,7 +202,7 @@ public class AccountController extends Controller {
 			a.delete();
 		}
 		
-		return ok(/*register.render("")*/);
+		return ok();
 	}
 }
 
