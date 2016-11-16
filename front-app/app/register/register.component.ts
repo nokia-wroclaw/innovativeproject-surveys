@@ -28,7 +28,7 @@ export class RegisterComponent {
                 },
                 error => {
 					console.log(JSON.stringify(error));
-                    this.alertService.error(error);
+                    this.alertService.error(error.json().message);
                     this.loading = false;
                 });
     }

@@ -34,7 +34,7 @@ var LoginComponent = (function () {
         }, function (error) {
             console.log("Fail");
             console.log(JSON.stringify(error));
-            _this.alertService.error(error);
+            _this.alertService.error(error.json().message);
             _this.loading = false;
         });
         this.loading = false;

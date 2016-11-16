@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
                 error => {
 					console.log("Fail");
 					console.log(JSON.stringify(error));
-                  this.alertService.error(error);
+                  this.alertService.error(error.json().message);
                   this.loading = false;
                 });
 				this.loading = false;
