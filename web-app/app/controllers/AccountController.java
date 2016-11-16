@@ -58,7 +58,7 @@ public class AccountController extends Controller {
 		email1.setSubject("Rejestracja na surveys");
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText("Hi "+firstName+"!\n\nOto link aktywacyjny: http://localhost:9000/activ/"+link);
+		email1.setBodyText("Hi "+firstName+"!\n\nOto link aktywacyjny: http://localhost:3000/activ/"+link);
 		String id = mailerClient.send(email1);
 		
 		
@@ -164,7 +164,7 @@ public class AccountController extends Controller {
 		email1.setSubject("Rejestracja na surveys");
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText("Zostałeś zaproszony do http://localhost:9000/register . Kliknij link i zarejestruj swoje konto");
+		email1.setBodyText("Zostałeś zaproszony do http://localhost:3000/register . Kliknij link i zarejestruj swoje konto");
 		String id = mailerClient.send(email1);
 		
 		if(id != null){
