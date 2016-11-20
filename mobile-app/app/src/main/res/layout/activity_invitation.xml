@@ -5,7 +5,7 @@
     android:padding="@dimen/activity_horizontal_margin">
 
     <TextView
-        android:id="@+id/tvWelcomeMsg"
+        android:id="@+id/tvMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -14,21 +14,28 @@
         android:text="hello world"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Invite"
-        android:id="@+id/tvInviteLink"
-        android:layout_below="@+id/tvWelcomeMsg"
-        android:layout_centerHorizontal="true" />
+        android:ems="10"
+        android:id="@+id/etEmail"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/tvMsg"
+        android:hint="Enter email address of person you want to invite" />
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open surveys"
-        android:id="@+id/bGo"
-        android:layout_below="@+id/tvInviteLink"
+        android:text="Invite"
+        android:id="@+id/bInvite"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/etEmail" />
+
+
 
 </RelativeLayout>

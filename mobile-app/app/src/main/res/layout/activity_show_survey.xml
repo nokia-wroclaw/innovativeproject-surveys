@@ -5,30 +5,37 @@
     android:padding="@dimen/activity_horizontal_margin">
 
     <TextView
-        android:id="@+id/tvWelcomeMsg"
+        android:id="@+id/tvMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="hello world"
+        android:text="Survey"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/tvQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/tvMsg"
+        android:text="Question"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Invite"
-        android:id="@+id/tvInviteLink"
-        android:layout_below="@+id/tvWelcomeMsg"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open surveys"
-        android:id="@+id/bGo"
-        android:layout_below="@+id/tvInviteLink"
+        android:ems="10"
+        android:id="@+id/tvAnswers"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/tvQuestion"
+        android:text="Answers"/>
+
 
 </RelativeLayout>

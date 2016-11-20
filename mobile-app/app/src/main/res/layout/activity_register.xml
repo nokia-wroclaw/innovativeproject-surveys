@@ -15,18 +15,43 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:hint="Imię" />
+        android:hint="Name" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/etUsername"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/etLastName"
+        android:hint="Surname "
         android:layout_below="@+id/etName"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etEmail"
+        android:layout_below="@+id/etLastName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:hint="Nazwa użytkownika" />
+        android:hint="Email" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etLogin"
+        android:layout_below="@+id/etEmail"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:hint="Login" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -34,20 +59,36 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/etPassword"
-        android:layout_below="@+id/etUsername"
+        android:layout_below="@+id/etLogin"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:hint="Hasło" />
+        android:hint="Password" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/etPassword2"
+        android:layout_below="@+id/etPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:hint="Repeat password" />
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Zarejestruj"
+        android:text="Sign in"
         android:id="@+id/bRegister"
-        android:layout_below="@+id/etAge"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/etPassword2" />
+
+
 
 </RelativeLayout>

@@ -3,6 +3,8 @@ package com.toshiba.ankiety;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -11,17 +13,32 @@ public class UserAreaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_area);
+        TextView tvInviteLink = (TextView) findViewById(R.id.tvInviteLink);
+        Button bGo = (Button) findViewById(R.id.bGo);
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        String username = intent.getStringExtra("username");
+        String name = intent.getStringExtra("login");
 
         TextView tvWelcomeMsg = (TextView) findViewById(R.id.tvWelcomeMsg);
-        EditText etUsername = (EditText) findViewById(R.id.etUsername);
 
         // Display user details
-        String message = name + " welcome to your user area";
+        String message = name + "! Welcome to survey app with anonimity";
         tvWelcomeMsg.setText(message);
-        etUsername.setText(username);
+
+        tvInviteLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent invitationIntent = new Intent(UserAreaActivity.this, InvitationActivity.class);
+                UserAreaActivity.this.startActivity(invitationIntent);
+            }
+        });
+
+        bGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserAreaActivity.this, GetSurveyActivity.class);
+                UserAreaActivity.this.startActivity(intent);
+            }
+        });
     }
 }
