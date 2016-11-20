@@ -1,216 +1,179 @@
 package controllers;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import models.Question;
 import models.Response;
 import models.Survey;
+import models.UserAccount;
+import play.libs.Json;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 public class SurveyController extends Controller {
-	
-
-	  
+		  
 	@Inject MailerClient mailerClient;
 	
-	// tworzy ankiete i wysyla na podany adres
+	/**
+	 *  The method create Survey 
+	 *   @return Created Survey
+	 */
 	public Result SurveyPut(){
 		
-		JsonNode survey = request().body().asJson();
-		if(survey == null) {
-			return status(403, "JSON wanted!");
+		JsonNode surveyJson = request().body().asJson();
+		if(surveyJson == null) {
+			return status(403, Json.toJson(new Message("JSON wanted!")));
+		}	
+		String name = surveyJson.get("name").asText();
+		String description = surveyJson.get("description").asText();
+		String email = surveyJson.get("email").asText();
+		String login = session().get("login");
+		
+		if(login == null){
+			status(404, Json.toJson(new Message("You arent logged in")));
 		}
+		UserAccount ua = UserAccount.find.byId(login);		
+				
+		Survey survey = new Survey(name,description,email);
+		survey.userAccount = ua;
+		survey.save();
+		JsonNode surveyJs = Json.toJson(survey);
 		
-		 String name = survey.get("name").asText();
-	     String description = survey.get("description").asText();
-	     String email = survey.get("email").asText();
-	     
-	     String question = survey.get("question").asText();
-	     String question1 = survey.get("question1").asText();
-	     String question2 = survey.get("question2").asText();
-	     String question3 = survey.get("question3").asText();
-	
-	    Survey obiekt = new Survey(name, description, email);
-	    
-	    obiekt.setIp("");
-	    
-	    obiekt.save();
-		Question q = new Question(question);
-		Question q1 = new Question(question1);
-		Question q2 = new Question(question2);
-		Question q3 = new Question(question3);
-		
-
-		q.survey = obiekt;
-		q1.survey = obiekt;
-		q2.survey = obiekt;
-		q3.survey = obiekt;
-		
-		q.save();
-		
-		q1.save();
-		q2.save();
-		q3.save();
-		
-		
-     	obiekt.update();
-     	
-     	
-     	Email email1 = new Email();
+		Email email1 = new Email();
 		email1.setSubject("Stworzona ankieta");
 		email1.setFrom("Surveys <from@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText("Została stworzona ankieta na http://localhost:9000/app/surveys/" + obiekt.id + " . " );
+		email1.setBodyText("Została stworzona ankieta na http://localhost:3000/app/surveys/" + survey.id + "/answer . " );
 		String id =  mailerClient.send(email1);
-			
 		
-		if(id != null){
-			
-			return status(403, "good");
+		if(id == null){
+			status(404, Json.toJson(new Message("Problem with send Email")));
 		}
-		
-		
-		
-		return ok("Została stworzona ankieta na http://localhost:9000/app/surveys/" + obiekt.id );
+		return ok(surveyJs); 
 	}
 	
-	// uzupelnianie ankiety po ip
-	public Result fillSurvey(Integer id) {
-
-		JsonNode survey = request().body().asJson();
-		//if(survey == null) {
-		//	return status(403, "JSON wanted!");
-		//}
+	/**
+	 *  The method will add one question to Survey 
+	 *  @return The question, which has been added...
+	 */
+	public Result addQuestion(Integer id) {
 		
-
-		String ip = request().remoteAddress();
+		JsonNode surveyJson = request().body().asJson();
+		if(surveyJson == null) {
+			return status(403, Json.toJson(new Message("JSON wanted!")));
+		}	
+		//It gives the user who is logged on
+		String login = session().get("login");
 		
+		if(login == null){
+			status(404, Json.toJson(new Message("You arent logged in")));
+		}	
+		List<Survey> survey1 = Survey.find
+	   			 .select("*")
+	             .where()
+	             .eq("user_account_login", login)
+	             .eq("id", id)
+	             .findList();
 		
-		List<Response> findIp = Response.find
-		        .where()
-		        .eq("ip", ip)
-		        .eq("survey_id", id)
-		        .findList();
-
-		if(findIp.isEmpty()){ // jesli to ip nie wypelnilo jeszcze ankiety 
+		if(!survey1.get(0).userAccount.login.equals(login)){
+			status(404,  Json.toJson(new Message("Dont have permission")));
+		}		
+		Survey survey = Survey.find.byId(id);
 		
-			Survey obiekt = Survey.find.byId(id);
-			
-			// test bez front-endu
-			
-			String ans = "odp 1";
-	        String ans1 = "odp 2";
-	        String ans2 = "odp 3";
-	        String ans3 = "odp 4";
-	        
-	       /* 
-	        String ans = survey.get("question").asText();
-		     String ans1 = survey.get("question1").asText();
-		     String ans2 = survey.get("question2").asText();
-		     String ans3 = survey.get("question3").asText(); */
+		String quest = surveyJson.get("question").asText();		
+		Question question = new Question(quest);
+		question.survey = survey;
+		question.save();
+		status(200, Json.toJson(new Message("Added question")));
+		
+		JsonNode questionJs = Json.toJson(question);
+		
+		return ok(questionJs);			
+	}
+	
+	/**
+	 *  The method will fill all Survey answer  
+	 *   @return All responses from logged user
+	 */
+	public Result fillAnswer(Integer id) {
+		
+		JsonNode surveyJson = request().body().asJson();
+		if(surveyJson == null) {
+			return status(403, Json.toJson(new Message("JSON wanted!")));
+		}		
+		String login = session().get("login");
+		
+		if(login == null){
+			status(404, Json.toJson(new Message("You arent logged in")));
+		}		
+		Survey survey = Survey.find.byId(id);
+		UserAccount userAccount = UserAccount.find.byId(login);
+		
+		List<Question> allquestions = Question.find
+	   			 .select("*")
+	             .where()
+	             .eq("survey_id", id)
+	             .findList();
+		
+		String answer;
+				
+		for(int i=0; i < allquestions.size(); i++){
+			answer =  surveyJson.get("answer"+i).asText();
+			Response repsponse1 = new Response(answer);
+			repsponse1.survey = survey;
+			repsponse1.question = allquestions.get(i);
+			repsponse1.userAccount = userAccount;
+		}	
+		List<Response> allResponse = Response.find
+	   			 .select("*")
+	             .where()
+	             .eq("survey_id", id)
+	             .eq("user_account_login", login)
+	             .findList();
+	  
+		JsonNode ResponseJs = Json.toJson(allResponse);
+		// This will send recently added question
+		return ok(ResponseJs);		
+	}
+	
+	/**
+	 *  The method return all responses from logged user
+	 *  @return All responses from logged user
+	 */
+	
+     public Result getResult(Integer id)  { 
+    	 
+    	 JsonNode surveyJson = request().body().asJson();
+ 		if(surveyJson == null) {
+ 			return status(403, Json.toJson(new Message("JSON wanted!")));
+ 		} 		
+ 		String login = session().get("login");
+ 		
+ 		if(login == null){
+ 			status(404, Json.toJson(new Message("You arent logged in")));
+ 		}	
+    	 List<Response> allResponse = Response.find
+	   			 .select("*")
+	             .where()
+	             .eq("survey_id", id)
+	             .eq("user_account_login", login)
+	             .findList();
+    	 
+    	 JsonNode ResponseJs = Json.toJson(allResponse);
+    	 
+ 		return ok(ResponseJs);
+     } 
      
-			List<Question> items = Question.find
-			        .where()
-			        .eq("survey_id", id)
-			        .findList();
-			
-			
-			 String a = items.get(0).text;
-			 Response res1 = new Response(a, ans, ip);
-			 res1.save();
-			 res1.question = items.get(0);
-			 res1.survey = obiekt;
-			 res1.update();
-			 
-			 String b = items.get(1).text;
-			 Response res2 = new Response(b, ans1, ip);
-			 res2.save();
-			 res2.question = items.get(1);
-			 res2.survey = obiekt;
-			 res2.update();
-			 
-			 String c = items.get(2).text;
-			 Response res3 = new Response(c, ans2, ip);
-			 res3.save();
-			 res3.question = items.get(2);
-			 res3.survey = obiekt;
-			 res3.update();
-			 
-			 String da = items.get(3).text;
-			 Response res4 = new Response(da, ans3, ip);
-			 res4.save(); 
-			 res4.question = items.get(3);
-			 res4.survey = obiekt;
-			 res4.update();
-		}else{ // tutaj jest modyfikacja odp z juz istniejacego ip w bazie dla danej ankiety
-	
-		
-			String ans = "Zmodyfikowana odp inna 1";
-	        String ans1 = "Zmodyfikowana odp inna 2";
-	        String ans2 = "Zmodyfikowana odp inna 3";
-	        String ans3 = "Zmodyfikowana odp inna 4";
-	        
-	        /* 
-	        String ans = survey.get("question").asText();
-		     String ans1 = survey.get("question1").asText();
-		     String ans2 = survey.get("question2").asText();
-		     String ans3 = survey.get("question3").asText(); */
-			
-	        findIp.get(0).answer = ans;
-	        findIp.get(0).update();
-	        findIp.get(1).answer = ans1;
-	        findIp.get(1).update();
-	        findIp.get(2).answer = ans2;
-	        findIp.get(2).update();
-	        findIp.get(3).answer = ans3;
-	        findIp.get(3).update(); 
-		}
-	
-		return ok("Ankieta wypelniona sprawdz: [...]/app/surveys/id");	
-		
-	}
-	
-      // wyniki dla danej id ankiety i ip requesta
-     public Result resul(Integer id)  {
-    	 
-    	 String ip = request().remoteAddress();
-    	 
-    	 // pobieram wyniki dla danego ip i danego id ankiety
-    	 
- 		List<Response> items = Response.find
- 		        .where()
- 		        .eq("survey_id", id)
- 		        .eq("ip", ip)
- 		        .findList();
- 		
- 		
- 		if(items.isEmpty()){
- 			
- 			return ok("Ankieta nie jest wypelniona. Link do wypelnienia: [...]/app/surveys/id/answer");
- 		}
- 		
- 		
- 			//obiekt.save();
- 			return ok("Wyniki ankiety \n" +   "Pytanie: " + items.get(0).text + " Odpowiedź: " + items.get(0).answer + "\n"
- 					+   "Pytanie: " + items.get(1).text + " Odpowiedź: " + items.get(1).answer + "\n"
- 					+   "Pytanie: " + items.get(2).text + " Odpowiedź: " + items.get(2).answer + "\n"
- 					+   "Pytanie: " + items.get(3).text + " Odpowiedź: " + items.get(3).answer + "\n");
- 		
-  
-    	 
+     class Message{
+    		public String message;
+    		public Message(String msg) {
+    			message = msg;
+    	} 		
      }
-	
-	
 }

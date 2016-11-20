@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.avaje.ebean.Model;
-import com.avaje.ebean.Model.Finder;
+
 
 @Entity
 public class Response extends Model {
@@ -15,25 +15,26 @@ public class Response extends Model {
 	
 	@Id
 	public Integer id;
-	public String text;
 	public String answer;
-	public String ip;
-
-	//public Integer survey_id;
 	
 	@ManyToOne
 	public Question question;
 	@ManyToOne
 	public Survey survey;
-
-	 
+	@ManyToOne
+	public UserAccount userAccount;
+	
 	public static Finder<Integer, Response> find = new Finder<Integer, Response>(Response.class);
 	
-	public Response(String text, String answer, String ip) {
-		this.text = text;
-		this.answer = answer;
-		this.ip = ip;
-
-		
+	public Response(String answer) {
+		this.answer = answer;	
+	}
+	
+	public void setQuestion(String name){
+		this.answer = name;
+	}
+	
+	public String getQuestion(){
+		return answer;
 	}
 }

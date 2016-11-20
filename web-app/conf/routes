@@ -19,9 +19,10 @@ PUT		/app/user/:login				controllers.AccountController.userPut(login: String)
 
 PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
 
-POST	/app/surveys				    controllers.SurveyController.SurveyPut
-GET	    /app/surveys/:id				controllers.SurveyController.resul(id: Integer)
-GET     /app/surveys/:id/answer         controllers.SurveyController.fillSurvey(id: Integer)
+POST  	/app/surveys				    controllers.SurveyController.SurveyPut
+GET	    /app/surveys/:id				controllers.SurveyController.getResult(id: Integer)
+POST	/app/surveys/:id/add			controllers.SurveyController.addQuestion(id: Integer)
+POST    /app/surveys/:id/answer         controllers.SurveyController.fillAnswer(id: Integer)
 
 #Deleting all accounts (only for develop)
 GET		/app/clean							controllers.AccountController.clean
@@ -31,8 +32,6 @@ GET		/								controllers.Assets.at(path = "/public", file="index.html")
 
 GET		/login							controllers.Assets.at(path = "/public", file="login.html")
 GET		/register						controllers.Assets.at(path = "/public", file="register.html")
-
-GET     /surveys/new                    controllers.Assets.at(path = "/public", file="pr.html")
 
 #Test mail                                
 GET     /invitations                    controllers.Assets.at(path = "/public", file="invite.html")

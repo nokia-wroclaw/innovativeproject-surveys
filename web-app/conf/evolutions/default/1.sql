@@ -5,7 +5,7 @@
 
 create table question (
   id                            integer not null,
-  text                          varchar(255),
+  question                      varchar(255),
   survey_id                     integer,
   constraint pk_question primary key (id)
 );
@@ -13,11 +13,10 @@ create sequence question_seq;
 
 create table response (
   id                            integer not null,
-  text                          varchar(255),
   answer                        varchar(255),
-  ip                            varchar(255),
   question_id                   integer,
   survey_id                     integer,
+  user_account_login            varchar(255),
   constraint pk_response primary key (id)
 );
 create sequence response_seq;
@@ -27,7 +26,7 @@ create table survey (
   name                          varchar(255),
   description                   varchar(255),
   email                         varchar(255),
-  ip                            varchar(255),
+  user_account_login            varchar(255),
   constraint pk_survey primary key (id)
 );
 create sequence survey_seq;
@@ -40,9 +39,9 @@ create table unactivated_account (
 
 create table user_account (
   login                         varchar(255) not null,
-  password                      varchar(255),
-  first_name                    varchar(255),
-  last_name                     varchar(255),
+  password                      varchar(100),
+  first_name                    varchar(100),
+  last_name                     varchar(100),
   created_time                  timestamp,
   email                         varchar(255),
   constraint pk_user_account primary key (login)
@@ -57,6 +56,12 @@ create index ix_response_question_id on response (question_id);
 alter table response add constraint fk_response_survey_id foreign key (survey_id) references survey (id) on delete restrict on update restrict;
 create index ix_response_survey_id on response (survey_id);
 
+alter table response add constraint fk_response_user_account_login foreign key (user_account_login) references user_account (login) on delete restrict on update restrict;
+create index ix_response_user_account_login on response (user_account_login);
+
+alter table survey add constraint fk_survey_user_account_login foreign key (user_account_login) references user_account (login) on delete restrict on update restrict;
+create index ix_survey_user_account_login on survey (user_account_login);
+
 
 # --- !Downs
 
@@ -68,6 +73,12 @@ drop index if exists ix_response_question_id;
 
 alter table response drop constraint if exists fk_response_survey_id;
 drop index if exists ix_response_survey_id;
+
+alter table response drop constraint if exists fk_response_user_account_login;
+drop index if exists ix_response_user_account_login;
+
+alter table survey drop constraint if exists fk_survey_user_account_login;
+drop index if exists ix_survey_user_account_login;
 
 drop table if exists question;
 drop sequence if exists question_seq;
