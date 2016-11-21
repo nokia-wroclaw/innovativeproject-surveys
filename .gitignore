@@ -16,3 +16,7 @@ front-app/node_modules
 front-app/typings
 front-app/npm-debug.log
 front-app/extracted
+web-app/front-app/node_modules
+web-app/front-app/typings
+web-app/front-app/npm-debug.log
+web-app/front-app/extracted
