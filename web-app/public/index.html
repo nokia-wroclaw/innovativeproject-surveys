@@ -1,27 +1,13 @@
 <!DOCTYPE html>
 <html lang="pl-PL">
-	<head>
-		<title>Index</title>
-		<meta charset="utf-8">
+    <head>
+        <title>@title</title>
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/css/bootstrap.min.css">
-        <link rel="shortcut icon" type="image/png" href="">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script>
-        <script src="/js/bootstrap.min.js"></script>
-        <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>-->
     </head>
-  	<body>
-  		<script type="text/javascript">
-  			window.onload = function() {
-  				var session = '@Request.RequestContext.HttpContext.Session["login"]';
-  				if (session.localeCompare("") != 0) {
-  					window.location.replace("/login");
-  				} else {
-  					window.location.replace("/user");
-  				}
-  				console.log(typeof(session));
-  			}
-  		</script>
-  	</body>
+    <body>
+        <app-root>Loading...</app-root>
+    </body>
+		<script src="/app.js"></script>
 </html>

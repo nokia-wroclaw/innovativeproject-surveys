@@ -43,7 +43,8 @@ public class SurveyController extends Controller {
 		Survey survey = new Survey(name,description,email);
 		survey.userAccount = ua;
 		survey.save();
-		JsonNode surveyJs = Json.toJson(survey);
+		JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
+		
 		
 		Email email1 = new Email();
 		email1.setSubject("Stworzona ankieta");
@@ -176,4 +177,20 @@ public class SurveyController extends Controller {
     			message = msg;
     	} 		
      }
+}
+
+
+class SurveyJson {
+	public Integer id;
+	
+	public String name;
+	public String description;
+	public String email;
+	
+	public SurveyJson(Survey s) {
+		id = s.id;
+		name = s.name;
+		description = s.description;
+		email = s.email;
+	}
 }
