@@ -53,10 +53,7 @@ export class SurveyService {
 			body: JSON.stringify(survey)
 		});
 		
-    return this.http.request(new Request(options))
-			.map((response: Response) => {
-				let resp = response.json();
-			});
+    return this.http.request(new Request(options));
 	}
 	
 	addQuestion(question: Question, id: String) {
@@ -86,7 +83,7 @@ export class SurveyService {
 			method: RequestMethod.Get,
 			url: 'http://localhost:9000/app/surveys/'+id+'/result',
 			headers: headers
-		});
+		})
 		
     return this.http.request(new Request(options))
 			.map((response: Response) => {
