@@ -28,10 +28,9 @@ POST    /app/surveys/:id/answer         controllers.SurveyController.fillAnswer(
 GET		/app/clean							controllers.AccountController.clean
 
 #Front-end routes
-GET		/								controllers.Assets.at(path = "/public", file="index.html")
+GET		/app.js							controllers.Assets.at(path = "/public/app", file="login.1.0.0.js")
 
-GET		/login							controllers.Assets.at(path = "/public", file="login.html")
-GET		/register						controllers.Assets.at(path = "/public", file="register.html")
+
 
 #Test mail                                
 GET     /invitations                    controllers.Assets.at(path = "/public", file="invite.html")
@@ -39,7 +38,13 @@ GET     /invitations                    controllers.Assets.at(path = "/public", 
 #javascript and css
 GET		/js/*file						controllers.Assets.at(path = "/public/javascripts", file)
 GET		/css/*file						controllers.Assets.at(path = "/public/stylesheets", file)
+GET		/node_modules/*file				controllers.Assets.at(path = "/public/node_modules", file)
 
+GET		/								controllers.HomeController.index()
+GET		/surveyView/:id					controllers.HomeController.index1(id: String)
+GET		/login							controllers.HomeController.index()
+GET		/register						controllers.HomeController.index()
+GET		/surveyCreate					controllers.HomeController.index()
 
 #Swagger
 #GET     /swagger.json           controllers.ApiHelpController.getResources

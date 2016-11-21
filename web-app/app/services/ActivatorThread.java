@@ -21,7 +21,7 @@ public class ActivatorThread extends Thread implements Runnable {
 				e1.printStackTrace();
 			}		
 			
-		    long intervalInMs = 3600*1000; // run every second
+		    long intervalInMs = 1000*3600; // run every second
 		    long nextRun = System.currentTimeMillis() + intervalInMs;
 		    method();
 		    if (nextRun > System.currentTimeMillis()) {
