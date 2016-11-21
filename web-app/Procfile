@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/surveys2 -Dhttp.port=$PORT 
+web: target/universal/stage/bin/surveys2 -Dhttp.port=$PORT -Dplay.evolutions.db.default.autoApplyDowns=true
