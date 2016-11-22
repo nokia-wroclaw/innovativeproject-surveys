@@ -47,7 +47,7 @@ export class SurveyCreationComponent {
 						
 					},
 					error => {
-						this.alertService.error(error.message);
+						this.alertService.error(error.json().message);
 					}
 				);
 		}

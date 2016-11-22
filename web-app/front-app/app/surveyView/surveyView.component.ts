@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { AlertService, SurveyService } from '../_services/index';
-import { Survey } from '../_models/index';
+import { Survey, Question } from '../_models/index';
 
 
 @Component({
@@ -10,8 +10,10 @@ import { Survey } from '../_models/index';
 
 export class SurveyViewComponent implements OnInit{
 	model: any = {};
+	answers = [new Question(1, "")];
 	id: any;
 	survey: any;
+	
 	loading = false;
 	
 	constructor(
@@ -26,15 +28,17 @@ export class SurveyViewComponent implements OnInit{
 
 		this.service.getSurvey(this.id)
 		.subscribe(
-			(survey) => this.survey = survey,
+			(survey) => {
+				console.log(survey);
+			},
 			error =>{
-				this.alertService.error(error);
+				this.alertService.error(error.json().message);
 			});
 	}
 	
 	answer(){
 		this.loading = true;
-        this.service.fillSurvey(this.id)
+        this.service.fillSurvey(this.id, this.answers)
             .subscribe(
                 data => {
 					console.log(JSON.stringify(data));
@@ -43,7 +47,7 @@ export class SurveyViewComponent implements OnInit{
                 },
                 error => {
 					console.log(JSON.stringify(error));
-                    this.alertService.error(error);
+                    this.alertService.error(error.json().message);
                     this.loading = false;
                 });
 	}

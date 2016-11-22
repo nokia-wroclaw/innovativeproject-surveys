@@ -35,8 +35,8 @@ public class SurveyController extends Controller {
 		String email = surveyJson.get("email").asText();
 		String login = session().get("login");
 		
-		if(login == null){
-			status(404, Json.toJson(new Message("You arent logged in")));
+		if(login == null || login.equals("")){
+			return status(404, Json.toJson(new Message("You arent logged in")));
 		}
 		UserAccount ua = UserAccount.find.byId(login);		
 				
@@ -54,7 +54,7 @@ public class SurveyController extends Controller {
 		String id =  mailerClient.send(email1);
 		
 		if(id == null){
-			status(404, Json.toJson(new Message("Problem with send Email")));
+			return status(404, Json.toJson(new Message("Problem with send Email")));
 		}
 		return ok(surveyJs); 
 	}
@@ -123,9 +123,9 @@ public class SurveyController extends Controller {
 	             .findList();
 		
 		String answer;
-				
+		JsonNode questions = surveyJson/*.withArray("questions")*/;
 		for(int i=0; i < allquestions.size(); i++){
-			answer =  surveyJson.get("answer"+i).asText();
+			answer = questions.get(i).get("question").asText();
 			Response repsponse1 = new Response(answer);
 			repsponse1.survey = survey;
 			repsponse1.question = allquestions.get(i);
@@ -149,11 +149,7 @@ public class SurveyController extends Controller {
 	 */
 	
      public Result getResult(Integer id)  { 
-    	 
-    	 JsonNode surveyJson = request().body().asJson();
- 		if(surveyJson == null) {
- 			return status(403, Json.toJson(new Message("JSON wanted!")));
- 		} 		
+    	 		
  		String login = session().get("login");
  		
  		if(login == null){

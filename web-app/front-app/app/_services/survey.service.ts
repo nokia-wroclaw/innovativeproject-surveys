@@ -18,21 +18,18 @@ export class SurveyService {
 				url: 'http://localhost:9000/app/surveys/'+id,
 				headers: headers
 			});
-		return this.http.request(new Request(options))
-            .map((response: Response) => {
-                let resp = response.json();
-								console.log(JSON.stringify(resp));
-            });
+		return this.http.request(new Request(options));
 	}
 	
-	fillSurvey(id){
+	fillSurvey(id, q){
 		var headers = new Headers();
 			headers.append("Content-Type", "application/json");
 			headers.append("Accept", "application/json");
 			var options = new RequestOptions({
-				method: RequestMethod.Get,
-				url: 'http://localhost:9000/app/surveys'+id+'/answer',
-				headers: headers
+				method: RequestMethod.Post,
+				url: 'http://localhost:9000/app/surveys/'+id+'/answer',
+				headers: headers,
+				body: JSON.stringify(q)
 			});
 		return this.http.request(new Request(options))
             .map((response: Response) => {

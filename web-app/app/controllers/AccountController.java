@@ -1,6 +1,5 @@
 package controllers;
 
-
 import java.util.List;
 import java.util.Random;
 
@@ -22,16 +21,18 @@ import play.libs.mailer.MailerClient;
 
 import javax.inject.Inject;
 
-/**Controler managing all account featers.
+/**
+ * Controler managing all account featers.
  * 
  * @author Kamil Malinowski
  *
  */
 public class AccountController extends Controller {
-	
-	@Inject MailerClient mailerClient;
-	
-	public Result loginPost(){
+
+	@Inject
+	MailerClient mailerClient;
+
+	public Result loginPost() {
 		JsonNode jsNode = request().body().asJson();
 		if (jsNode == null) {
 			return status(403, Json.toJson(new Message("JSON wanted!")));
@@ -39,7 +40,8 @@ public class AccountController extends Controller {
 		String login = jsNode.findPath("login").textValue();
 		String password = jsNode.findPath("password").textValue();
 		if (login == null || password == null) {
-			return status(403, Json.toJson(new Message("Login or password not set.")));
+			return status(403,
+					Json.toJson(new Message("Login or password not set.")));
 		}
 		UserAccount ua = UserAccount.find.byId(login);
 		if (ua == null) {
@@ -49,84 +51,88 @@ public class AccountController extends Controller {
 			return status(403, Json.toJson(new Message("Bad password")));
 		}
 		session().put("login", login);
-		JsonNode jsUser = Json.toJson(ua);
+		JsonNode jsUser = Json.toJson(new AccountJson(ua));
 		return ok(jsUser);
 	}
-	
-	public void sendAccEmail (String email, String link, String firstName) {
+
+	public void sendAccEmail(String email, String link, String firstName) {
 		Email email1 = new Email();
 		email1.setSubject("Rejestracja na surveys");
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText("Hi "+firstName+"!\n\nOto link aktywacyjny: http://localhost:3000/activ/"+link);
+		email1.setBodyText("Hi " + firstName
+				+ "!\n\nOto link aktywacyjny: http://localhost:3000/activ/"
+				+ link);
 		String id = mailerClient.send(email1);
-		
-		
-		
+
 	}
-	
+
 	public Result userPut(String login) {
-		
+
 		JsonNode registerJson = request().body().asJson();
-		if(registerJson == null) {
+		if (registerJson == null) {
 			return status(403, Json.toJson(new Message("JSON wanted!")));
 		}
-		if (login.equals("")){
+		if (login.equals("")) {
 			return status(403, Json.toJson(new Message("Empty login")));
 		}
-		if(registerJson.get("password") == null){
+		if (registerJson.get("password") == null) {
 			return status(403, Json.toJson(new Message("Password wanted")));
 		}
-		if(registerJson.get("rePassword") == null){
+		if (registerJson.get("rePassword") == null) {
 			return status(403, Json.toJson(new Message("Password wanted")));
 		}
-		if(registerJson.get("firstName") == null){
+		if (registerJson.get("firstName") == null) {
 			return status(403, Json.toJson(new Message("Password wanted")));
 		}
-		if(registerJson.get("lastName") == null){
+		if (registerJson.get("lastName") == null) {
 			return status(403, Json.toJson(new Message("Password wanted")));
 		}
-		if(registerJson.get("email") == null){
+		if (registerJson.get("email") == null) {
 			return status(403, Json.toJson(new Message("Password wanted")));
 		}
-		
+
 		String password = registerJson.get("password").asText();
 		String rePassword = registerJson.get("rePassword").asText();
 		String firstName = registerJson.get("firstName").asText();
 		String lastName = registerJson.get("lastName").asText();
 		String email = registerJson.get("email").asText();
-		
-		if(password == null || password.equals("")){
+
+		if (password == null || password.equals("")) {
 			return status(403, Json.toJson(new Message("Password wanted")));
 		}
-		
-		if(rePassword == null || rePassword.equals("")){
+
+		if (rePassword == null || rePassword.equals("")) {
 			return status(403, Json.toJson(new Message("Password wanted")));
 		}
-		
-		if(firstName == null || firstName.equals("")){
+
+		if (firstName == null || firstName.equals("")) {
 			return status(403, Json.toJson(new Message("First name wanted")));
 		}
-		
-		if(lastName == null || lastName.equals("")){
+
+		if (lastName == null || lastName.equals("")) {
 			return status(403, Json.toJson(new Message("Last name wanted")));
 		}
-		
-		if(email == null || email.equals("")){
+
+		if (email == null || email.equals("")) {
 			return status(403, Json.toJson(new Message("Email wanted")));
 		}
-		
+
 		@SuppressWarnings("rawtypes")
 		UserAccount user = UserAccount.find.byId(login);
-		List<UserAccount> userEm = UserAccount.find.where().eq("email", email).findList();
-		if(userEm.size() != 0){
-			return status(403, Json.toJson(new Message("User with this e-mail already exists!")));
+		List<UserAccount> userEm = UserAccount.find.where().eq("email", email)
+				.findList();
+		if (userEm.size() != 0) {
+			return status(403, Json.toJson(new Message(
+					"User with this e-mail already exists!")));
 		}
-		if(user != null) {
-			return status(403, Json.toJson(new Message("User with this login already exists!")));
+		if (user != null) {
+			return status(403, Json.toJson(new Message(
+					"User with this login already exists!")));
 		}
-		if(!password.equals(rePassword)) {
-			return status(403, Json.toJson(new Message("Passwords don't match!")));
+		if (!password.equals(rePassword)) {
+			return status(403,
+					Json.toJson(new Message("Passwords don't match!")));
 		}
 		String link = Integer.toHexString(new Random().nextInt(0x1000000));
 		List<UnactivatedAccount> unactiv = UnactivatedAccount.find.all();
@@ -138,51 +144,45 @@ public class AccountController extends Controller {
 				}
 			}
 		}
-		UnactivatedAccount newAcc = new UnactivatedAccount(login, password, firstName,
-				lastName, email, link);
-		
+		UnactivatedAccount newAcc = new UnactivatedAccount(login, password,
+				firstName, lastName, email, link);
+
 		newAcc.save();
 		sendAccEmail(email, link, firstName);
 		return ok(Json.toJson(new Message("Registrated")));
 	}
-	
-	public Result invite(){
-		
+
+	public Result invite() {
+
 		JsonNode jsNode = request().body().asJson();
 		if (jsNode == null) {
 			return status(403, "JSON wanted!");
 		}
 		String email = jsNode.findPath("email").textValue();
-			
-		
+
 		if (email.equals("")) {
 			return status(403, "empty");
 		}
-		
-		
+
 		Email email1 = new Email();
 		email1.setSubject("Rejestracja na surveys");
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
 		email1.setBodyText("Zostałeś zaproszony do http://localhost:3000/register . Kliknij link i zarejestruj swoje konto");
 		String id = mailerClient.send(email1);
-		
-		if(id != null){
-			
+
+		if (id != null) {
+
 			return status(200, Json.toJson(new Message("Invitation sended!")));
 		}
-		
-	
-		
+
 		session("email", email);
 
 		return ok(("Poprawnie wyslano zaproszenie"));
-		
+
 	}
 
-	
-	
-	public Result activate (String link) {
+	public Result activate(String link) {
 		UnactivatedAccount ua = UnactivatedAccount.find.byId(link);
 		if (ua == null) {
 			return ok(activate.render("Zły link aktywacyjny!"));
@@ -191,7 +191,7 @@ public class AccountController extends Controller {
 			return ok(activate.render("Konto aktywowane!"));
 		}
 	}
-	
+
 	public Result clean() {
 		List<UnactivatedAccount> l = UnactivatedAccount.find.all();
 		for (UnactivatedAccount a : l) {
@@ -201,14 +201,29 @@ public class AccountController extends Controller {
 		for (UserAccount a : l1) {
 			a.delete();
 		}
-		
+
 		return ok();
 	}
 }
 
-class Message{
+class Message {
 	public String message;
+
 	public Message(String msg) {
 		message = msg;
+	}
 }
+
+class AccountJson {
+	public String login;
+	public String email;
+	public String firstName;
+	public String lastName;
+
+	public AccountJson(UserAccount ua) {
+		login = ua.login;
+		email = ua.email;
+		firstName = ua.firstName;
+		lastName = ua.lastName;
+	}
 }
