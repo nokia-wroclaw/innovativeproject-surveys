@@ -24,8 +24,9 @@ public class Survey extends Model{
 	public List<Question> question;
 	@OneToMany(mappedBy="survey")
 	public List<Response> response;
-	@ManyToOne
-	public UserAccount userAccount;
+	@OneToMany(mappedBy="survey")
+	public List<SurveyMember> surveyMember;
+	public String adminLogin;
 
 	
 	public static Finder<Integer, Survey> find = new Finder<Integer, Survey>(Survey.class);
