@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.Question;
 import models.Response;
@@ -207,7 +208,7 @@ public class SurveyController extends Controller {
 			repsponse1.save();
 		}*/
 		
-		return ok("Survey filled");
+		return ok("survey filled");
 	}
 
 	/**
@@ -226,6 +227,16 @@ public class SurveyController extends Controller {
 		if (login == null) {
 			status(404, Json.toJson(new Message("You arent logged in")));
 		}
+		
+		Survey survey = Survey.find.byId(id);
+		List<SurveyMember> surMem = SurveyMember.find.select("*").where().eq("survey_id", id)
+				.eq("login", login).findList();
+		
+
+		if (surMem.isEmpty()) {
+			status(404, Json.toJson(new Message("You arent member")));
+		}
+				
 		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
 				.eq("user_account_login", login).findList();
 
@@ -248,8 +259,15 @@ public class SurveyController extends Controller {
 		String login = session().get("login");
 
 		if (login == null) {
-			status(404, Json.toJson(new Message("You arent logged in")));
+			return status(404, Json.toJson(new Message("You arent logged in")));
 		}
+		
+		Survey survey = Survey.find.byId(id);
+		if(!survey.adminLogin.equals(login)){			
+			return status(404, Json.toJson(new Message("You arent admin")));			
+		}
+		
+				
 		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
 				.eq("user_account_login", login).findList();
 
@@ -264,7 +282,7 @@ public class SurveyController extends Controller {
 	 * 
 	 * @return All userSurveys list from logged user
 	 */
-	public Result getUserSurveysId(Integer id) {
+	public Result getUserSurveysId() {
 
 		JsonNode surveyJson = request().body().asJson();
 		if (surveyJson == null) {
@@ -275,12 +293,17 @@ public class SurveyController extends Controller {
 		if (login == null) {
 			status(404, Json.toJson(new Message("You arent logged in")));
 		}
-		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
-				.eq("user_account_login", login).findList();
+		
+		List<SurveyMember> surMem = SurveyMember.find.select("*").where().eq("login", login).findList();
+		
 
-		JsonNode ResponseJs = Json.toJson(allResponse);
+		if (surMem.isEmpty()) {
+			status(404, Json.toJson(new Message("You arent member of any survey")));
+		}	
+		
+		JsonNode surveyJs = Json.toJson(surMem);
+	    return ok(surveyJs); 
 
-		return ok(ResponseJs);
 	}
 
 	
@@ -289,7 +312,7 @@ public class SurveyController extends Controller {
 	 * 
 	 * @return All userSurveys list from Admin user
 	 */
-	public Result getAdminSurveysId(Integer id) {
+	public Result getAdminSurveysId() {
 
 		JsonNode surveyJson = request().body().asJson();
 		if (surveyJson == null) {
@@ -300,12 +323,17 @@ public class SurveyController extends Controller {
 		if (login == null) {
 			status(404, Json.toJson(new Message("You arent logged in")));
 		}
-		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
-				.eq("user_account_login", login).findList();
+		
+		List<Survey> surveylist = Survey.find.select("*").where().eq("adminLogin", login).findList();
+		
 
-		JsonNode ResponseJs = Json.toJson(allResponse);
+		if (surveylist.isEmpty()) {
+			status(404, Json.toJson(new Message("You arent Admin of any survey")));
+		}	
+		
+		JsonNode surveyJs = Json.toJson(surveylist);
+	    return ok(surveyJs); 
 
-		return ok(ResponseJs);
 	}
 
 	class Message {
@@ -333,4 +361,6 @@ class SurveyJson {
 		this.q = q.clone();
 	}
 }
+
+
 
