@@ -66,18 +66,3 @@ public class Survey extends Model{
 	
 	
 }
-
-class SurveyJson {
-	public Integer id;
-	
-	public String name;
-	public String description;
-	public String email;
-	
-	public SurveyJson(Survey s) {
-		id = s.id;
-		name = s.name;
-		description = s.description;
-		email = s.email;
-	}
-}
