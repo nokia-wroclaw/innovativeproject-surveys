@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
 		sendingInvite = false;
 		model: any = {};
 		surv: any = {};
+		logged = true;
 
     constructor(private userService: UserService,
 								private inviteService: InviteService,
