@@ -11,8 +11,8 @@ const appRoutes: Routes = [
     { path: '', component: HomeComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
-	{ path: 'surveyView/:id', component: SurveyViewComponent},
-	{ path: 'surveyCreate', component: SurveyCreationComponent},
+	{ path: 'surveyView/:id', component: SurveyViewComponent, canActivate: [AuthGuard]},
+	{ path: 'surveyCreate', component: SurveyCreationComponent, canActivate: [AuthGuard]},
     // otherwise redirect to home
     { path: '**', redirectTo: '' }
 ];
