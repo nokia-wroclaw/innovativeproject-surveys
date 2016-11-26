@@ -38,37 +38,26 @@ export class SurveyCreationComponent implements OnInit {
     ngOnInit() {
     }
 
-    get questions() : FormArray {
+    get questions(): FormArray {
         return this.surveyForm.get('questions') as FormArray;
     }
 
     create() {
-        /*this.loading = true;
-         let surveyId;
-         this.surveyService.createSurvey(this.model)
-         .subscribe(
-         (response) => {
-         surveyId = response.json().id;
-         this.alertService.success("Survey created successful! E-mail with link to your survey was sended."
-         + " Your survey id is " + surveyId + ".", true);
-         },
-         error => {
-         this.alertService.error(error.json().message);
-         }
-         );
-         for(var i; i < this.id; i++ ){
-         let que = this.questions[i];
-         this.surveyService.addQuestion(que, surveyId)
-         .subscribe(
-         response => {
-
-         },
-         error => {
-         this.alertService.error(error.json().message);
-         }
-         );
-         }
-         this.loading = false;*/
+        this.loading = true;
+        this.buildSurvey();
+        let surveyId;
+        this.surveyService.createSurvey(this.model)
+            .subscribe(
+                (response) => {
+                    surveyId = response.json().id;
+                    this.alertService.success("Survey created successful! E-mail with link to your survey was sended."
+                        + " Your survey id is " + surveyId + ".", true);
+                },
+                error => {
+                    this.alertService.error(error.json().message);
+                }
+            );
+        this.loading = false;
 
     }
 
@@ -79,7 +68,20 @@ export class SurveyCreationComponent implements OnInit {
     }
 
     removeQuestion(i: number) {
-
+        this.questions.removeAt(i);
     }
 
+    buildSurvey(){
+        this.model.name = this.surveyForm.get('name').value;
+        this.model.description = this.surveyForm.get('description').value;
+        this.model.email = this.surveyForm.get('email').value;
+        this.model.questions = [];
+        let id = 1;
+        for(let ques of this.questions.controls){
+            this.model.questions.push({
+                id: id,
+                question: ques.value
+            });
+        }
+    }
 }
