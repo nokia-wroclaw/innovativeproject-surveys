@@ -189,7 +189,7 @@ public class SurveyController extends Controller {
 		
 		int i = 0; 
 		for(JsonNode x : allanswer){
-			answer = surveyJson.get("answer").asText();
+			answer = x.get("answer").asText();
 			Response repsponse1 = new Response(answer);
 			repsponse1.survey = survey;
 			repsponse1.question = allquestions.get(i);
@@ -206,12 +206,8 @@ public class SurveyController extends Controller {
 			repsponse1.userAccount = userAccount;
 			repsponse1.save();
 		}*/
-		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
-				.eq("user_account_login", login).findList();
-
-		JsonNode ResponseJs = Json.toJson(allResponse);
 		
-		return ok(ResponseJs);
+		return ok("Survey filled");
 	}
 
 	/**
