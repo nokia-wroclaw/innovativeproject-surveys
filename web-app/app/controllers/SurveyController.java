@@ -105,7 +105,7 @@ public class SurveyController extends Controller {
 		
 		UserAccount ua = UserAccount.find.byId(login);	
 		
-		if(ua.login != login){
+		if(findSurvey.adminLogin != login){
 			return status(403, Json.toJson(new Message("You dont have permission.")));
 		}
 		Survey survey = Survey.find.byId(id);
