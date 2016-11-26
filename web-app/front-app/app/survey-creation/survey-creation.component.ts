@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
 import {AlertService, SurveyService} from '../_services/index';
 import {Survey, User, Question} from '../_models/index';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
