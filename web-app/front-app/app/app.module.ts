@@ -7,6 +7,7 @@ import { AppComponent }  from './app.component';
 import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
+import { BarsComponent } from './bars/index';
 import { AuthGuard } from './_guards/index';
 import { AlertService, AuthenticationService, UserService, InviteService, SurveyService } from './_services/index';
 import { HomeComponent } from './home/index';
@@ -25,6 +26,7 @@ import { SurveyCreationComponent } from './survey-creation/index'
     declarations: [
         AppComponent,
         AlertComponent,
+        BarsComponent,
         HomeComponent,
         LoginComponent,
         RegisterComponent,
