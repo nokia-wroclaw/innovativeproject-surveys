@@ -48403,8 +48403,10 @@
 	        });
 	    };
 	    HomeComponent.prototype.surveyGo = function () {
-	        console.log("here");
 	        this.router.navigate(['/surveyView', this.surv.id]);
+	    };
+	    HomeComponent.prototype.createSurveyGo = function () {
+	        this.router.navigate(['/surveyCreate']);
 	    };
 	    HomeComponent = __decorate([
 	        core_1.Component({
@@ -48571,6 +48573,7 @@
 	    }
 	    SurveyCreationComponent.prototype.create = function () {
 	        var _this = this;
+	        this.loading = true;
 	        var surveyId;
 	        this.surveyService.createSurvey(this.model)
 	            .subscribe(function (response) {
@@ -48587,6 +48590,7 @@
 	                _this.alertService.error(error.json().message);
 	            });
 	        }
+	        this.loading = false;
 	    };
 	    SurveyCreationComponent.prototype.addQuestion = function () {
 	        this.id++;
@@ -48631,6 +48635,7 @@
 	        this.model = {};
 	        this.answers = [new index_2.Question(1, "")];
 	        this.loading = false;
+	        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 	    }
 	    SurveyViewComponent.prototype.ngOnInit = function () {
 	        var _this = this;
@@ -49502,7 +49507,7 @@
 /* 145 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h1>Hi {{currentUser.firstName}}!</h1>\r\n    <p>You're logged in on Surveys website!!</p>\r\n    <h3>Invite someone!</h3>\r\n\t\t<form name=\"form\" (ngSubmit)=\"f.form.validate && invite()\" #f=\"ngForm\" novalidate>\r\n\t\t\t<div class=\"form-group\" [ngClass]=\"{ 'has-error': f.submitted && !email.valid }\">\r\n           <label for=\"email\">Email</label>\r\n           <input type=\"email\" class=\"form-control\" name=\"email\" [(ngModel)]=\"model.email\" #email=\"ngModel\" required />\r\n           <div *ngIf=\"f.submitted && !email.valid\" class=\"help-block\">Email is required</div>\r\n\t\t\t\t\t <div *ngIf=\"f.form.validate\" class=\"help-block\">Validated</div>\r\n       </div>\r\n\t\t\t<div class=\"form-group\">\r\n           <button [disabled]=\"sendingInvite\" class=\"btn btn-primary\" (click)=\"invite()\">Invite</button>\r\n           <img *ngIf=\"sendingInvite\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\r\n       </div>\r\n\t\t</form>\r\n\t\t<p><input type=\"text\" class=\"form-control\" name=\"id\" [(ngModel)]=\"surv.id\" #id=\"ngModel\" />\r\n\t\t<button class=\"btn btn-primary\" (click)=\"surveyGo()\">Go to survey</button></p>\r\n\t\t<p><a [routerLink]=\"['/surveyCreate']\">Create new survey!</a></p>\r\n\t\t<p><a [routerLink]=\"['/login']\">Logout</a></p>\r\n</div>";
+	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h1>Hi {{currentUser.firstName}}!</h1>\r\n    <p>You're logged in on Surveys website!!</p>\r\n    <h3>Invite someone!</h3>\r\n\t\t<form name=\"form\" (ngSubmit)=\"f.form.validate && invite()\" #f=\"ngForm\" novalidate>\r\n\t\t\t<div class=\"form-group\" [ngClass]=\"{ 'has-error': f.submitted && !email.valid }\">\r\n           <label for=\"email\">Email</label>\r\n           <input type=\"email\" class=\"form-control\" name=\"email\" [(ngModel)]=\"model.email\" #email=\"ngModel\" required />\r\n           <div *ngIf=\"f.submitted && !email.valid\" class=\"help-block\">Email is required</div>\r\n\t\t\t\t\t <div *ngIf=\"f.form.validate\" class=\"help-block\">Validated</div>\r\n       </div>\r\n\t\t\t<div class=\"form-group\">\r\n           <button [disabled]=\"sendingInvite\" class=\"btn btn-primary\" (click)=\"invite()\">Invite</button>\r\n           <img *ngIf=\"sendingInvite\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\r\n       </div>\r\n\t\t</form>\r\n\t\t<p><input type=\"text\" class=\"form-control\" name=\"id\" [(ngModel)]=\"surv.id\" #id=\"ngModel\" />\r\n\t\t<button class=\"btn btn-primary\" (click)=\"surveyGo()\">Go to survey</button></p>\r\n\t\t<p><button class=\"btn btn-primary\" (click)=\"createSurveyGo()\">Create survey</button></p>\r\n\t\t<p><a [routerLink]=\"['/login']\">Logout</a></p>\r\n</div>";
 
 /***/ },
 /* 146 */
@@ -49526,7 +49531,7 @@
 /* 149 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h2>Survey name: {{Survey.name}}</h2>\r\n\t<p><strong>Description:</strong>{{Survey.description}}</p>\r\n    <form name=\"form\" (ngSubmit)=\"f.form.valid && answer()\" #f=\"ngForm\" novalidate>\r\n        <div class=\"form-group\" *ngFor=\"let ans of answers\">\r\n            <label for=\"question\">Question {{ans.id}}</label>\r\n            <textarea type=\"text\" class=\"form-control\" name=\"answer{{ans.id}}\" [(ngModel)]=\"answers[ans.id-1].question\" #answers{{ans.id}}=\"ngModel\" required></textarea>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <button [disabled]=\"loading\" class=\"btn btn-primary\">Submit</button>\r\n            <img *ngIf=\"loading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\r\n            <a [routerLink]=\"['/login']\" class=\"btn btn-link\">Cancel</a>\r\n        </div>\r\n    </form>\r\n</div>\r\n";
+	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h2>Survey name: </h2>\r\n\t<p><strong>Description:</strong></p>\r\n    <form name=\"form\" (ngSubmit)=\"f.form.valid && answer()\" #f=\"ngForm\" novalidate>\r\n        <div class=\"form-group\" *ngFor=\"let ans of answers\">\r\n            <label for=\"question\">Question {{ans.id}}</label>\r\n            <textarea type=\"text\" class=\"form-control\" name=\"answer{{ans.id}}\" [(ngModel)]=\"answers[ans.id-1].question\" #answers{{ans.id}}=\"ngModel\" required></textarea>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <button [disabled]=\"loading\" class=\"btn btn-primary\">Submit</button>\r\n            <img *ngIf=\"loading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\r\n            <a [routerLink]=\"['/']\" class=\"btn btn-link\">Cancel</a>\r\n        </div>\r\n    </form>\r\n</div>\r\n";
 
 /***/ },
 /* 150 */

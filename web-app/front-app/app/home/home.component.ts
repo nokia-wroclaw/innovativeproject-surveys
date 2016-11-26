@@ -43,7 +43,10 @@ export class HomeComponent implements OnInit {
                 });
 		}
 	surveyGo() {
-		console.log("here");
 		this.router.navigate(['/surveyView', this.surv.id]);
+	}
+
+	createSurveyGo() {
+		this.router.navigate(['/surveyCreate']);
 	}
 }
