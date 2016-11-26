@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { AlertService, SurveyService } from '../_services/index';
-import { Survey, Question } from '../_models/index';
+import { Survey, Question, User } from '../_models/index';
 
 
 @Component({
@@ -12,7 +12,8 @@ export class SurveyViewComponent implements OnInit{
 	model: any = {};
 	answers = [new Question(1, "")];
 	id: any;
-	survey: any;
+	survey: any;    //survey
+	currentUser: User;
 	
 	loading = false;
 	
@@ -21,7 +22,9 @@ export class SurveyViewComponent implements OnInit{
 		private router: Router,
 		private service: SurveyService,
 		private alertService: AlertService
-	) {}
+	) {
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    }
 	
 	ngOnInit() {
 		this.id = +this.route.snapshot.params['id'];

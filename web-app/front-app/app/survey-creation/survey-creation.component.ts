@@ -28,6 +28,7 @@ export class SurveyCreationComponent {
 	}
 	
 	create() {
+		this.loading = true;
 		let surveyId;
 		this.surveyService.createSurvey(this.model)
 			.subscribe(
@@ -51,6 +52,7 @@ export class SurveyCreationComponent {
 					}
 				);
 		}
+		this.loading = false;
 	}
 	
 	addQuestion() {
