@@ -21,3 +21,9 @@ web-app/front-app/typings
 web-app/front-app/npm-debug.log
 web-app/front-app/extracted
 web-app/public/node_modules
+.idea/Surveys-Nokia.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+web-app/conf/evolutions/default/1.sql
