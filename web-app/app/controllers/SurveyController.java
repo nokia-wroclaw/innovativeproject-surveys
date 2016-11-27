@@ -106,7 +106,7 @@ public class SurveyController extends Controller {
 		
 		UserAccount ua = UserAccount.find.byId(login);	
 		
-		if(!survey.adminLogin.equals(login)){
+		if(!findSurvey.adminLogin.equals(login)){
 			return status(403, Json.toJson(new Message("You dont have permission.")));
 		}
 		Survey survey = Survey.find.byId(id);
@@ -225,7 +225,7 @@ public class SurveyController extends Controller {
 		String login = session().get("login");
 
 		if (login == null) {
-			status(404, Json.toJson(new Message("You arent logged in")));
+			return status(404, Json.toJson(new Message("You arent logged in")));
 		}
 		
 		Survey survey = Survey.find.byId(id);
@@ -234,7 +234,7 @@ public class SurveyController extends Controller {
 		
 
 		if (surMem.isEmpty()) {
-			status(404, Json.toJson(new Message("You arent member")));
+			return status(404, Json.toJson(new Message("You arent member")));
 		}
 				
 		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
@@ -291,14 +291,14 @@ public class SurveyController extends Controller {
 		String login = session().get("login");
 
 		if (login == null) {
-			status(404, Json.toJson(new Message("You arent logged in")));
+			return status(404, Json.toJson(new Message("You arent logged in")));
 		}
 		
 		List<SurveyMember> surMem = SurveyMember.find.select("*").where().eq("login", login).findList();
 		
 
 		if (surMem.isEmpty()) {
-			status(404, Json.toJson(new Message("You arent member of any survey")));
+			return status(404, Json.toJson(new Message("You arent member of any survey")));
 		}	
 		
 		JsonNode surveyJs = Json.toJson(surMem);
@@ -321,14 +321,14 @@ public class SurveyController extends Controller {
 		String login = session().get("login");
 
 		if (login == null) {
-			status(404, Json.toJson(new Message("You arent logged in")));
+			return status(404, Json.toJson(new Message("You arent logged in")));
 		}
 		
 		List<Survey> surveylist = Survey.find.select("*").where().eq("adminLogin", login).findList();
 		
 
 		if (surveylist.isEmpty()) {
-			status(404, Json.toJson(new Message("You arent Admin of any survey")));
+			return status(404, Json.toJson(new Message("You arent Admin of any survey")));
 		}	
 		
 		JsonNode surveyJs = Json.toJson(surveylist);
