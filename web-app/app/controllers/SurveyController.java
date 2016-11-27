@@ -122,8 +122,8 @@ public class SurveyController extends Controller {
 		}	
 		
 		List<Question> allquestions1 = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-		Question arrayquest[] = new Question[allquestions.size()];
-		arrayquest = allquestions.toArray(arrayquest);
+		Question arrayquest[] = new Question[allquestions1.size()];
+		arrayquest = allquestions1.toArray(arrayquest);
 		JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest));
 				
 		return ok(surveyJs);
@@ -133,12 +133,12 @@ public class SurveyController extends Controller {
 		
 		JsonNode jsNode = request().body().asJson();
 		if (jsNode == null) {
-			return status(403, "JSON wanted!");
+			return status(403, Json.toJson(new Message("JSON wanted!")));
 		}
 		String email = jsNode.findPath("email").textValue();
 					
 		if (email.equals("")) {
-			return status(403, "empty");
+			return status(403, Json.toJson(new Message("empty")));
 		}
 		Email email1 = new Email();
 		email1.setSubject("The invitation to the survey");
