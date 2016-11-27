@@ -4,9 +4,8 @@ html {
 }
 
 .alert {
-    padding-top: 10px;
+    padding: 10px 15px 10px 15px;
     margin-bottom: 0px;
-    height: 40px;
 }
 
 a {
@@ -46,13 +45,17 @@ body {
     border-radius: 20px;
 }
 
-h2 {
+h2, h1, h3 {
     color: #fff6fa;
     font-weight: bold;
 }
 
-label {
+label, p {
     color: #fff6fa;
+}
+
+p {
+    text-align: justify;
 }
 
 #component-template {

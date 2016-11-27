@@ -24,3 +24,4 @@ web-app/public/node_modules
 .idea/
 web-app/conf/evolutions/default/1.sql
 web-app/public/app/login.1.0.0.js
+web-app/play-java.iml
