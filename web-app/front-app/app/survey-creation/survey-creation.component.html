@@ -17,7 +17,7 @@
       <div *ngIf="f.submitted && !email.valid" class="help-block">E-mail is required</div>
     </div>
 		<div class="form-group" *ngFor="let qwe of questions">
-			<label for="question">{{qwe.id}}. question</label>
+			<label for="question">{{qwe.id}}. Question</label>
       <input type="text" class="form-control" name="question{{qwe.id}}" [(ngModel)]="questions[qwe.id-1].question" #question{{qwe.id}}="ngModel" />
     </div>
 		<div class="form-group">
