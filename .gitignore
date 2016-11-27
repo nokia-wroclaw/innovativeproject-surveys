@@ -21,3 +21,4 @@ web-app/front-app/typings
 web-app/front-app/npm-debug.log
 web-app/front-app/extracted
 web-app/public/node_modules
+.idea/
