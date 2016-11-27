@@ -18,8 +18,13 @@ export class BarsComponent {
                 private location: Location){}
 
     public isVisible() {
-        let list = ["/login", "/registration"];
+        /*let list = ["/login", "/register"];
         let route = this.location.path();
-        return (list.indexOf(route) > -1);
+        return (list.indexOf(route) > -1);*/
+        if (localStorage.getItem('currentUser')) {
+            // logged in so return true
+            return false;
+        }
+        return true;
     }
 }

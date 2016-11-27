@@ -15,6 +15,8 @@ import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 import { SurveyViewComponent } from './surveyView/index'
 import { SurveyCreationComponent } from './survey-creation/index'
+import { InfoComponent } from './info/index'
+import { InviteComponent } from './invite/index'
 
 @NgModule({
     imports: [
@@ -27,7 +29,9 @@ import { SurveyCreationComponent } from './survey-creation/index'
         AppComponent,
         AlertComponent,
         BarsComponent,
+        InfoComponent,
         HomeComponent,
+        InviteComponent,
         LoginComponent,
         RegisterComponent,
 		SurveyViewComponent,
