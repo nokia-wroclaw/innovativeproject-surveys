@@ -43,7 +43,7 @@ public class ActivatorThread extends Thread implements Runnable {
 		
 		Date dat = new Date(System.currentTimeMillis());
 		if (unactiv != null) {
-			Logger.info("Number of inactive accounts" +  unactiv.size());
+			Logger.info("Number of inactive accounts " +  unactiv.size());
 			for (int i = 0; i < unactiv.size(); i++) {
 				if (unactiv.get(i).expiredDate.compareTo(dat) > 0) {  
 					

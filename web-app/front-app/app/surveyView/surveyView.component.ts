@@ -12,7 +12,7 @@ export class SurveyViewComponent implements OnInit{
 	model: any = {};
 	answers = [new Question(1, "")];
 	id: any;
-	survey: Survey;    //survey
+	survey: Survey = new Survey();    //survey
 	currentUser: User;
 	
 	loading = false;

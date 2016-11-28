@@ -48718,25 +48718,17 @@
 	        this.surveyService = surveyService;
 	        this.alertService = alertService;
 	        this.formBuilder = formBuilder;
+	        this.model = new index_2.Survey();
 	        this.loading = false;
 	        this.surveyForm = new forms_1.FormGroup({
 	            name: new forms_1.FormControl('', forms_1.Validators.required),
-	            description: new forms_1.FormControl(''),
-	            email: new forms_1.FormControl('', forms_1.Validators.required),
+	            description: new forms_1.FormControl('', forms_1.Validators.required),
 	            questions: new forms_1.FormArray([new forms_1.FormGroup({
 	                    question: new forms_1.FormControl('', forms_1.Validators.required)
 	                })], forms_1.Validators.required)
 	        });
 	        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-	        this.model = {
-	            name: "",
-	            description: "",
-	            email: this.currentUser.email,
-	            questions: [new index_2.Question(1, "")]
-	        };
 	    }
-	    SurveyCreationComponent.prototype.ngOnInit = function () {
-	    };
 	    Object.defineProperty(SurveyCreationComponent.prototype, "questions", {
 	        get: function () {
 	            return this.surveyForm.get('questions');
@@ -48761,8 +48753,9 @@
 	    };
 	    SurveyCreationComponent.prototype.addQuestion = function () {
 	        this.questions.push(new forms_1.FormGroup({
-	            question: new forms_1.FormControl('')
+	            question: new forms_1.FormControl('', forms_1.Validators.required)
 	        }));
+	        console.log(this.questions.value);
 	    };
 	    SurveyCreationComponent.prototype.removeQuestion = function (i) {
 	        this.questions.removeAt(i);
@@ -48770,16 +48763,15 @@
 	    SurveyCreationComponent.prototype.buildSurvey = function () {
 	        this.model.name = this.surveyForm.get('name').value;
 	        this.model.description = this.surveyForm.get('description').value;
-	        this.model.email = this.surveyForm.get('email').value;
+	        this.model.email = this.currentUser.email;
 	        this.model.questions = [];
 	        var id = 1;
-	        for (var _i = 0, _a = this.questions.controls; _i < _a.length; _i++) {
+	        for (var _i = 0, _a = this.questions.value; _i < _a.length; _i++) {
 	            var ques = _a[_i];
-	            this.model.questions.push({
-	                id: id,
-	                question: ques.value
-	            });
+	            this.model.questions.push(new index_2.Question(id, ques.question));
+	            id++;
 	        }
+	        console.log(JSON.stringify(this.model));
 	    };
 	    SurveyCreationComponent = __decorate([
 	        core_1.Component({
@@ -48820,6 +48812,7 @@
 	        this.alertService = alertService;
 	        this.model = {};
 	        this.answers = [new index_2.Question(1, "")];
+	        this.survey = new index_2.Survey(); //survey
 	        this.loading = false;
 	        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 	        this.id = +this.route.snapshot.params['id'];
@@ -49729,7 +49722,7 @@
 /* 157 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h1>Create survey!</h1>\r\n    <form [formGroup]=\"surveyForm\" (ngSubmit)=\"create()\" novalidate>\r\n        <div class=\"form-group\">\r\n            <label for=\"name\">Name</label>\r\n            <input type=\"text\" class=\"form-control\" formControlName=\"name\"/>\r\n            <div *ngIf=\"!surveyForm.controls.name.valid\" class=\"help-block\">Name is required</div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"description\">Description</label>\r\n            <input type=\"text\" class=\"form-control\" formControlName=\"description\"/>\r\n            <div *ngIf=\"!surveyForm.controls.description.valid\" class=\"help-block\">Description is required</div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"email\">E-mail</label>\r\n            <input type=\"text\" class=\"form-control\" formControlName=\"email\"/>\r\n            <div *ngIf=\"!surveyForm.controls.email.valid\" class=\"help-block\">E-mail is required</div>\r\n        </div>\r\n        <div formArrayName=\"questions\">\r\n            <div class=\"form-group\" *ngFor=\"let qwe of questions.controls; let i = index\">\r\n                <div [formGroupName]=\"i\">\r\n                    <label for=\"question\">{{i+1}}. Question</label>\r\n                    <input type=\"text\" class=\"form-control\" formControlName=\"question\"/>\r\n                    <button [disabled]=\"loading\" class=\"btn btn-primary\" (click)=\"removeQuestion(i)\">Remove question\r\n                    </button>\r\n                </div>\r\n            </div>\r\n            <button [disabled]=\"loading\" class=\"btn btn-primary\" (click)=\"addQuestion()\">Add question</button>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <button [disabled]=\"loading || !surveyForm.valid\" class=\"btn btn-primary\">Create</button>\r\n            <img *ngIf=\"loading\"\r\n                 src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\"/>\r\n        </div>\r\n    </form>\r\n</div>";
+	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h1>Create survey!</h1>\r\n    <form [formGroup]=\"surveyForm\" (ngSubmit)=\"create()\" novalidate>\r\n        <div class=\"form-group\">\r\n            <label for=\"name\">Name</label>\r\n            <input type=\"text\" class=\"form-control\" formControlName=\"name\"/>\r\n            <div *ngIf=\"!surveyForm.controls.name.valid\" class=\"help-block\">Name is required</div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"description\">Description</label>\r\n            <input type=\"text\" class=\"form-control\" formControlName=\"description\"/>\r\n            <div *ngIf=\"!surveyForm.controls.description.valid\" class=\"help-block\">Description is required</div>\r\n        </div>\r\n        <!--<div class=\"form-group\" [hidden]=\"true\">\r\n            <label for=\"email\">E-mail</label>\r\n            <input type=\"text\" class=\"form-control\" formControlName=\"email\"/>\r\n            <div *ngIf=\"!surveyForm.controls.email.valid\" class=\"help-block\">E-mail is required</div>\r\n        </div>-->\r\n        <div formArrayName=\"questions\">\r\n            <div class=\"form-group\" *ngFor=\"let qwe of questions.controls; let i = index\">\r\n                <div [formGroupName]=\"i\">\r\n                    <label for=\"question\">{{i+1}}. Question</label>\r\n                    <input type=\"text\" class=\"form-control\" formControlName=\"question\"/>\r\n                    <button [disabled]=\"loading\" class=\"btn btn-primary\" (click)=\"removeQuestion(i)\">Remove question\r\n                    </button>\r\n                    <div *ngIf=\"!surveyForm.controls.questions.controls[i].valid\" class=\"help-block\">Question is required</div>\r\n                </div>\r\n            </div>\r\n            <button [disabled]=\"loading\" type=\"button\" class=\"btn btn-primary\" (click)=\"addQuestion()\">Add question\r\n            </button>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <button [disabled]=\"loading || !surveyForm.valid\" class=\"btn btn-primary\">Create</button>\r\n            <img *ngIf=\"loading\"\r\n                 src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\"/>\r\n        </div>\r\n        <button [disabled]=\"loading\" type=\"button\" class=\"btn btn-primary\" (click)=\"buildSurvey()\">Build\r\n        </button>\r\n    </form>\r\n</div>";
 
 /***/ },
 /* 158 */

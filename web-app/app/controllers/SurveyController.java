@@ -18,6 +18,7 @@ import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.Logger;
 
 
 public class SurveyController extends Controller {
@@ -48,8 +49,15 @@ public class SurveyController extends Controller {
 			return status(403, "Don't have permission");
 		}
 		List<Question> questions = Question.find.select("*").where().eq("survey_id", id).findList();
+		for(Question q : questions){
+			q = Question.find.byId(q.id);
+		}
 		Question[] questionArray = new Question[questions.size()];
 		questionArray = questions.toArray(questionArray);
+		for(Question q : questions) {
+			Logger.info("get Question: "+q.getQuestion());
+			Logger.info("get Question id: "+q.id);
+		}
 		SurveyJson surveyJson = new SurveyJson(survey, questionArray);
 		return ok(Json.toJson(surveyJson));
 	}
@@ -80,9 +88,12 @@ public class SurveyController extends Controller {
 		survey.save();
 
 		ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
+		Logger.info("allquestions: "+Json.stringify(allquestion));
 		for(JsonNode x : allquestion){
-			String quest = x.get("question").asText(); 
+			String quest = x.get("question").asText();
+			Logger.info("post question: "+quest);
 			Question question = new Question(quest);
+			Logger.info("post question in Question: "+question.question);
 			question.survey = survey;
 			question.save();
 		}	
@@ -391,6 +402,7 @@ class SurveyJson {
 			this.questions[i] = new QuestionJson(q[i]);
 			this.questions[i].id=i+1;
 		}
+		Logger.info("Send survey:\n"+Json.toJson(this));
 	}
 }
 
@@ -399,8 +411,8 @@ class QuestionJson {
 	public String question;
 
 	public QuestionJson(Question q){
-		id = q.id;
-		question = q.question;
+		this.id = q.id;
+		this.question = q.question;
 	}
 }
 

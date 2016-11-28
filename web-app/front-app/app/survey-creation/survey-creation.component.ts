@@ -7,14 +7,13 @@ import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angul
     templateUrl: 'survey-creation.component.html'
 })
 
-export class SurveyCreationComponent implements OnInit {
-    model: Survey;
+export class SurveyCreationComponent {
+    model: Survey = new Survey();
     currentUser: User;
     loading = false;
     surveyForm = new FormGroup({
         name: new FormControl('', Validators.required),
-        description: new FormControl(''),
-        email: new FormControl('', Validators.required),
+        description: new FormControl('', Validators.required),
         questions: new FormArray(
             [new FormGroup({
                 question: new FormControl('', Validators.required)
@@ -27,15 +26,6 @@ export class SurveyCreationComponent implements OnInit {
                 private alertService: AlertService,
                 private formBuilder: FormBuilder) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.model = {
-            name: "",
-            description: "",
-            email: this.currentUser.email,
-            questions: [new Question(1, "")]
-        };
-    }
-
-    ngOnInit() {
     }
 
     get questions(): FormArray {
@@ -63,8 +53,9 @@ export class SurveyCreationComponent implements OnInit {
 
     addQuestion() {
         this.questions.push(new FormGroup({
-            question: new FormControl('')
-        }))
+            question: new FormControl('', Validators.required)
+        }));
+        console.log(this.questions.value);
     }
 
     removeQuestion(i: number) {
@@ -74,14 +65,13 @@ export class SurveyCreationComponent implements OnInit {
     buildSurvey(){
         this.model.name = this.surveyForm.get('name').value;
         this.model.description = this.surveyForm.get('description').value;
-        this.model.email = this.surveyForm.get('email').value;
+        this.model.email = this.currentUser.email;
         this.model.questions = [];
         let id = 1;
-        for(let ques of this.questions.controls){
-            this.model.questions.push({
-                id: id,
-                question: ques.value
-            });
+        for(let ques of this.questions.value){
+            this.model.questions.push(new Question(id, ques.question));
+            id++;
         }
+        console.log(JSON.stringify(this.model));
     }
 }
