@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.avaje.ebean.Model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 @Entity
@@ -21,10 +22,13 @@ public class Survey extends Model{
 	public String email;
 	
 	@OneToMany(mappedBy="survey")
+	@JsonBackReference
 	public List<Question> question;
 	@OneToMany(mappedBy="survey")
+	@JsonBackReference
 	public List<Response> response;
 	@OneToMany(mappedBy="survey")
+	@JsonBackReference
 	public List<SurveyMember> surveyMember;
 	public String adminLogin;
 

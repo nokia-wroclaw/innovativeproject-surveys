@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.avaje.ebean.Model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class UserAccount extends Model{
@@ -22,6 +23,7 @@ public class UserAccount extends Model{
 	@Column(length=100)
 	public String lastName;	
 	@OneToMany
+	@JsonBackReference
 	public List<Response> response;	
 
 	
