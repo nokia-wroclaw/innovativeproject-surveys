@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 
 import com.avaje.ebean.Model;
 import com.avaje.ebean.Model.Finder;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class SurveyMember extends Model{
@@ -16,6 +17,7 @@ public class SurveyMember extends Model{
 	@Id
 	Integer id;
 	@ManyToOne
+	@JsonManagedReference
 	public Survey survey;
 	public String login;
 
