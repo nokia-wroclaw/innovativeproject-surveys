@@ -333,13 +333,18 @@ public class SurveyController extends Controller {
 		}
 		
 		List<SurveyMember> surMem = SurveyMember.find.select("*").where().eq("login", login).findList();
-		
 
-		if (surMem.isEmpty()) {
+		List<SurveyJson> result = new ArrayList<SurveyJson>();
+		for(SurveyMember sm : surMem){
+			Survey survey = Survey.find.byId(sm.survey.id);
+			result.add(new SurveyJson(survey));
+		}
+
+		/*if (surMem.isEmpty()) {
 			return status(404, Json.toJson(new Message("You arent member of any survey")));
-		}	
+		}*/
 		
-		JsonNode surveyJs = Json.toJson(surMem);
+		JsonNode surveyJs = Json.toJson(result);
 	    return ok(surveyJs); 
 
 	}
@@ -351,10 +356,6 @@ public class SurveyController extends Controller {
 	 */
 	public Result getAdminSurveysId() {
 
-		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
-			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
 		String login = session().get("login");
 
 		if (login == null) {
@@ -362,13 +363,17 @@ public class SurveyController extends Controller {
 		}
 		
 		List<Survey> surveylist = Survey.find.select("*").where().eq("adminLogin", login).findList();
-		
+		List<SurveyJson> result = new ArrayList<SurveyJson>();
+		for(Survey s : surveylist){
+			Survey survey = Survey.find.byId(s.id);
+			result.add(new SurveyJson(survey));
+		}
 
-		if (surveylist.isEmpty()) {
+		/*if (surveylist.isEmpty()) {
 			return status(404, Json.toJson(new Message("You arent Admin of any survey")));
-		}	
+		}*/
 		
-		JsonNode surveyJs = Json.toJson(surveylist);
+		JsonNode surveyJs = Json.toJson(result);
 	    return ok(surveyJs); 
 
 	}
@@ -398,6 +403,20 @@ class SurveyJson {
 		this.questions = new QuestionJson[q.length];
 		for(int i = 0; i < q.length; i++){
 			this.questions[i] = new QuestionJson(q[i]);
+			this.questions[i].id=i+1;
+		}
+		Logger.info("Send survey:\n"+Json.toJson(this));
+	}
+
+	public SurveyJson(Survey s) {
+		List<Question> q = s.question;
+		id = s.id;
+		name = s.name;
+		description = s.description;
+		email = s.email;
+		this.questions = new QuestionJson[q.size()];
+		for(int i = 0; i < q.size(); i++){
+			this.questions[i] = new QuestionJson(q.get(i));
 			this.questions[i].id=i+1;
 		}
 		Logger.info("Send survey:\n"+Json.toJson(this));

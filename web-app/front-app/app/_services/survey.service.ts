@@ -83,4 +83,30 @@ export class SurveyService {
     return this.http.request(new Request(options))
 		.map((response: Response) => response.json());
 	}
+
+	getUserSurveys(){
+		var headers = new Headers();
+		headers.append("Content-Type", "application/json");
+		headers.append("Accept", "application/json");
+
+		var options = new RequestOptions({
+			method: RequestMethod.Get,
+			url: 'http://localhost:9000/app/surveys/result/UserList',
+			headers: headers
+		})
+		return this.http.request(new Request(options));
+	}
+
+	getAdminSurveys(){
+		var headers = new Headers();
+		headers.append("Content-Type", "application/json");
+		headers.append("Accept", "application/json");
+
+		var options = new RequestOptions({
+			method: RequestMethod.Get,
+			url: 'http://localhost:9000/app/surveys/result/AdminList',
+			headers: headers
+		})
+		return this.http.request(new Request(options));
+	}
 }
