@@ -31,11 +31,7 @@ export class SurveyService {
 				headers: headers,
 				body: JSON.stringify(q)
 			});
-		return this.http.request(new Request(options))
-            .map((response: Response) => {
-                let resp = response.json();
-								console.log(JSON.stringify(resp));
-            });
+		return this.http.request(new Request(options));
 	}
 	
 	createSurvey(survey: Survey) {
@@ -65,10 +61,7 @@ export class SurveyService {
 			body: JSON.stringify(question)
 		});
 		
-    return this.http.request(new Request(options))
-			.map((response: Response) => {
-				let resp = response.json();
-			});
+    return this.http.request(new Request(options));
 	}
 	
 	getResult(id) {
@@ -82,10 +75,32 @@ export class SurveyService {
 			headers: headers
 		})
 		
-    return this.http.request(new Request(options))
-			.map((response: Response) => {
-				let resp = response.json();
-				console.log(JSON.stringify(resp));
-			});
+    return this.http.request(new Request(options));
+	}
+
+	getUserSurveys(){
+		var headers = new Headers();
+		headers.append("Content-Type", "application/json");
+		headers.append("Accept", "application/json");
+
+		var options = new RequestOptions({
+			method: RequestMethod.Get,
+			url: 'http://localhost:9000/app/surveys/result/UserList',
+			headers: headers
+		})
+		return this.http.request(new Request(options));
+	}
+
+	getAdminSurveys(){
+		var headers = new Headers();
+		headers.append("Content-Type", "application/json");
+		headers.append("Accept", "application/json");
+
+		var options = new RequestOptions({
+			method: RequestMethod.Get,
+			url: 'http://localhost:9000/app/surveys/result/AdminList',
+			headers: headers
+		})
+		return this.http.request(new Request(options));
 	}
 }

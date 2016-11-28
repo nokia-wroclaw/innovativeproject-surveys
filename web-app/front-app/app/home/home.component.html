@@ -1,16 +1,49 @@
 <div class="col-md-6 col-md-offset-3">
     <h1>Hi {{currentUser.firstName}}!</h1>
     <p>You're logged in on Surveys website!!</p>
+    <h3>You can manage:</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name of survey</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let sur of survey2">
+            <td>{{sur.name}}</td>
+            <td><button class="btn btn-primary" [routerLink]="['/surveyResult', sur.id]">Results</button></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3>You can answer:</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name of survey</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let surv of survey">
+            <td>{{surv.name}}</td>
+            <td><button class="btn btn-primary" [routerLink]="['/surveyView', surv.id]">Fill \ View</button></td>
+        </tr>
+        </tbody>
+    </table>
+
+
     <!--<ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#created">Created surveys</a></li>
-        <li><a data-toggle="tab" href="#answerd">Answerd surveys</a></li>
+        <li class="active"><a [attr.href]="'#'+'created'" data-toggle="tab">Created surveys</a></li>
+        <li><a data-toggle="tab" [attr.href]="'#'+'answered'">Answered surveys</a></li>
     </ul>
     <div class="tab-content">
         <div id="created" class="tab-pane fade in active">
             <p>History of created surveys.</p>
         </div>
-        <div id="answerd" class="tab-pane fade">
-            <p>History of answerd surveys.</p>
+        <div id="answered" class="tab-pane fade">
+            <p>History of answered surveys.</p>
         </div>
     </div>-->
 </div>

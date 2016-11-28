@@ -48136,11 +48136,7 @@
 	            headers: headers,
 	            body: JSON.stringify(q)
 	        });
-	        return this.http.request(new http_1.Request(options))
-	            .map(function (response) {
-	            var resp = response.json();
-	            console.log(JSON.stringify(resp));
-	        });
+	        return this.http.request(new http_1.Request(options));
 	    };
 	    SurveyService.prototype.createSurvey = function (survey) {
 	        var headers = new http_1.Headers();
@@ -48164,10 +48160,7 @@
 	            headers: headers,
 	            body: JSON.stringify(question)
 	        });
-	        return this.http.request(new http_1.Request(options))
-	            .map(function (response) {
-	            var resp = response.json();
-	        });
+	        return this.http.request(new http_1.Request(options));
 	    };
 	    SurveyService.prototype.getResult = function (id) {
 	        var headers = new http_1.Headers();
@@ -48178,11 +48171,29 @@
 	            url: 'http://localhost:9000/app/surveys/' + id + '/result',
 	            headers: headers
 	        });
-	        return this.http.request(new http_1.Request(options))
-	            .map(function (response) {
-	            var resp = response.json();
-	            console.log(JSON.stringify(resp));
+	        return this.http.request(new http_1.Request(options));
+	    };
+	    SurveyService.prototype.getUserSurveys = function () {
+	        var headers = new http_1.Headers();
+	        headers.append("Content-Type", "application/json");
+	        headers.append("Accept", "application/json");
+	        var options = new http_1.RequestOptions({
+	            method: http_1.RequestMethod.Get,
+	            url: 'http://localhost:9000/app/surveys/result/UserList',
+	            headers: headers
 	        });
+	        return this.http.request(new http_1.Request(options));
+	    };
+	    SurveyService.prototype.getAdminSurveys = function () {
+	        var headers = new http_1.Headers();
+	        headers.append("Content-Type", "application/json");
+	        headers.append("Accept", "application/json");
+	        var options = new http_1.RequestOptions({
+	            method: http_1.RequestMethod.Get,
+	            url: 'http://localhost:9000/app/surveys/result/AdminList',
+	            headers: headers
+	        });
+	        return this.http.request(new http_1.Request(options));
 	    };
 	    SurveyService = __decorate([
 	        core_1.Injectable(), 
@@ -48382,6 +48393,7 @@
 	    { path: 'invite', component: index_8.InviteComponent },
 	    { path: 'surveyView/:id', component: index_5.SurveyViewComponent, canActivate: [index_4.AuthGuard] },
 	    { path: 'surveyCreate', component: index_6.SurveyCreationComponent, canActivate: [index_4.AuthGuard] },
+	    /*{ path: 'surveyResult/:id', component: SurveyResultComponent, },*/
 	    // otherwise redirect to home
 	    { path: '**', redirectTo: 'home' }
 	];
@@ -48465,28 +48477,45 @@
 	var index_1 = __webpack_require__(6);
 	var index_2 = __webpack_require__(6);
 	var HomeComponent = (function () {
-	    function HomeComponent(userService, inviteService, alertService, router) {
+	    function HomeComponent(userService, service, alertService, router) {
 	        this.userService = userService;
-	        this.inviteService = inviteService;
+	        this.service = service;
 	        this.alertService = alertService;
 	        this.router = router;
 	        this.model = {};
-	        this.surv = {};
+	        this.survey = [];
+	        this.survey2 = [];
 	        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+	        this.showUserSurveys();
+	        this.showAdminSurveys();
 	    }
 	    HomeComponent.prototype.ngOnInit = function () {
 	    };
-	    HomeComponent.prototype.surveyGo = function () {
-	        this.router.navigate(['/surveyView', this.surv.id]);
+	    HomeComponent.prototype.showUserSurveys = function () {
+	        var _this = this;
+	        this.service.getUserSurveys()
+	            .subscribe(function (survey) {
+	            _this.survey = survey.json();
+	            console.log(JSON.stringify(_this.survey));
+	        }, function (error) {
+	            _this.alertService.error(error.json().message);
+	        });
 	    };
-	    HomeComponent.prototype.createSurveyGo = function () {
-	        this.router.navigate(['/surveyCreate']);
+	    HomeComponent.prototype.showAdminSurveys = function () {
+	        var _this = this;
+	        this.service.getAdminSurveys()
+	            .subscribe(function (survey2) {
+	            _this.survey2 = survey2.json();
+	            console.log(JSON.stringify(_this.survey2));
+	        }, function (error) {
+	            _this.alertService.error(error.json().message);
+	        });
 	    };
 	    HomeComponent = __decorate([
 	        core_1.Component({
 	            template: __webpack_require__(152)
 	        }), 
-	        __metadata('design:paramtypes', [index_1.UserService, index_2.InviteService, index_1.AlertService, router_1.Router])
+	        __metadata('design:paramtypes', [index_1.UserService, index_2.SurveyService, index_1.AlertService, router_1.Router])
 	    ], HomeComponent);
 	    return HomeComponent;
 	}());
@@ -49692,7 +49721,7 @@
 /* 152 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h1>Hi {{currentUser.firstName}}!</h1>\r\n    <p>You're logged in on Surveys website!!</p>\r\n    <!--<ul class=\"nav nav-tabs\">\r\n        <li class=\"active\"><a data-toggle=\"tab\" href=\"#created\">Created surveys</a></li>\r\n        <li><a data-toggle=\"tab\" href=\"#answerd\">Answerd surveys</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\">\r\n        <div id=\"created\" class=\"tab-pane fade in active\">\r\n            <p>History of created surveys.</p>\r\n        </div>\r\n        <div id=\"answerd\" class=\"tab-pane fade\">\r\n            <p>History of answerd surveys.</p>\r\n        </div>\r\n    </div>-->\r\n</div>";
+	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h1>Hi {{currentUser.firstName}}!</h1>\r\n    <p>You're logged in on Surveys website!!</p>\r\n    <h3>You can manage:</h3>\r\n    <table class=\"table\">\r\n        <thead>\r\n        <tr>\r\n            <th>Name of survey</th>\r\n            <th></th>\r\n        </tr>\r\n        </thead>\r\n        <tbody>\r\n        <tr *ngFor=\"let sur of survey2\">\r\n            <td>{{sur.name}}</td>\r\n            <td><button class=\"btn btn-primary\" [routerLink]=\"['/surveyResult', sur.id]\">Results</button></td>\r\n        </tr>\r\n        </tbody>\r\n    </table>\r\n\r\n    <h3>You can answer:</h3>\r\n    <table class=\"table\">\r\n        <thead>\r\n            <tr>\r\n                <th>Name of survey</th>\r\n                <th></th>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n        <tr *ngFor=\"let surv of survey\">\r\n            <td>{{surv.name}}</td>\r\n            <td><button class=\"btn btn-primary\" [routerLink]=\"['/surveyView', surv.id]\">Fill \\ View</button></td>\r\n        </tr>\r\n        </tbody>\r\n    </table>\r\n\r\n\r\n    <!--<ul class=\"nav nav-tabs\">\r\n        <li class=\"active\"><a [attr.href]=\"'#'+'created'\" data-toggle=\"tab\">Created surveys</a></li>\r\n        <li><a data-toggle=\"tab\" [attr.href]=\"'#'+'answered'\">Answered surveys</a></li>\r\n    </ul>\r\n    <div class=\"tab-content\">\r\n        <div id=\"created\" class=\"tab-pane fade in active\">\r\n            <p>History of created surveys.</p>\r\n        </div>\r\n        <div id=\"answered\" class=\"tab-pane fade\">\r\n            <p>History of answered surveys.</p>\r\n        </div>\r\n    </div>-->\r\n</div>";
 
 /***/ },
 /* 153 */
