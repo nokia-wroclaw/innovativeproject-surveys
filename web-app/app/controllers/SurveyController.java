@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -48,13 +49,13 @@ public class SurveyController extends Controller {
 		if(!survey.adminLogin.equals(login) && !member){
 			return status(403, "Don't have permission");
 		}
-		List<Question> questions = Question.find.select("*").where().eq("survey_id", id).findList();
+		/*List<Question> questions = Question.find.select("*").where().eq("survey_id", id).findList();
 		for(Question q : questions){
 			q = Question.find.byId(q.id);
-		}
-		Question[] questionArray = new Question[questions.size()];
-		questionArray = questions.toArray(questionArray);
-		for(Question q : questions) {
+		}*/
+		Question[] questionArray = new Question[survey.question.size()];
+		questionArray = survey.question.toArray(questionArray);
+		for(Question q : survey.question) {
 			Logger.info("get Question: "+q.getQuestion());
 			Logger.info("get Question id: "+q.id);
 		}
@@ -248,7 +249,7 @@ public class SurveyController extends Controller {
 			repsponse1.save();
 		}*/
 		
-		return ok("survey filled");
+		return ok(Json.toJson(new Message("survey filled")));
 	}
 
 	/**
@@ -257,11 +258,6 @@ public class SurveyController extends Controller {
 	 * @return All responses from logged user
 	 */
 	public Result getUserResult(Integer id) {
-
-		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
-			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
 		String login = session().get("login");
 
 		if (login == null) {
@@ -271,16 +267,22 @@ public class SurveyController extends Controller {
 		Survey survey = Survey.find.byId(id);
 		List<SurveyMember> surMem = SurveyMember.find.select("*").where().eq("survey_id", id)
 				.eq("login", login).findList();
-		
 
-		if (surMem.isEmpty()) {
+		if (surMem.isEmpty() && !survey.adminLogin.equals(login)) {
 			return status(404, Json.toJson(new Message("You arent member")));
 		}
 				
 		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
 				.eq("user_account_login", login).findList();
 
-		JsonNode ResponseJs = Json.toJson(allResponse);
+		List<ResponseJson> result = new ArrayList<ResponseJson>();
+		int i = 1;
+		for(Response res : allResponse){
+			result.add(new ResponseJson(res, i));
+			Logger.info("Get userResult "+i+"result: "+res.answer);
+            i++;
+		}
+		JsonNode ResponseJs = Json.toJson(result);
 
 		return ok(ResponseJs);
 	}
@@ -324,10 +326,6 @@ public class SurveyController extends Controller {
 	 */
 	public Result getUserSurveysId() {
 
-		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
-			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
 		String login = session().get("login");
 
 		if (login == null) {
@@ -416,4 +414,13 @@ class QuestionJson {
 	}
 }
 
+class ResponseJson {
+	public int id;
+	public String answer;
+
+	public ResponseJson(Response answer, int id) {
+		this.answer = answer.answer;
+		this.id = id;
+	}
+}
 
