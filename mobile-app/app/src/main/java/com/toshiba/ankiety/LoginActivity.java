@@ -23,6 +23,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -46,6 +48,8 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import cz.msebera.android.httpclient.HttpStatus;
 
 public class LoginActivity extends AppCompatActivity {
     @Override
@@ -77,78 +81,67 @@ public class LoginActivity extends AppCompatActivity {
                     final JSONObject jsonBody = new JSONObject();
                     jsonBody.put("login", username);
                     jsonBody.put("password", password);
-                    final String requestBody = jsonBody.toString();
 
                     new NukeSSLCerts().nuke();
-                    StringRequest stringRequest = new StringRequest(1, "https://survey-innoproject.herokuapp.com/app/login", new Response.Listener<String>() {
-
+                    
+                    JsonObjectRequest stringRequest = new JsonObjectRequest(1, "https://survey-innoproject.herokuapp.com/app/login", jsonBody, new Response.Listener<JSONObject>() {
 
                         @Override
-                        public void onResponse(String response) {
+                        public void onResponse(JSONObject response) {
+
                             etUsername.setText("");
                             etPassword.setText("");
 
-                            if (response.equals("Zalogowano")) {
-                                Intent userAreaIntent = new Intent(LoginActivity.this, UserAreaActivity.class);
-                                userAreaIntent.putExtra("login", username);
-                                LoginActivity.this.startActivity(userAreaIntent);
-                            } else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                                builder.setMessage(response)
-                                        .setNegativeButton("OK", null)
-                                        .create()
-                                        .show();
+                            try{
+                                if (response.getString("login")!=null) {
+                                    Intent userAreaIntent = new Intent(LoginActivity.this, UserAreaActivity.class);
+                                    userAreaIntent.putExtra("login", username);
+                                    LoginActivity.this.startActivity(userAreaIntent);
+                                }
+                                else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                    builder.setMessage(response.toString())
+                                            .setNegativeButton("OK", null)
+                                            .create()
+                                            .show();
+                                }
+                            }catch(JSONException e){
+                                e.printStackTrace();
                             }
                         }
                     }, new Response.ErrorListener() {
+
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                            builder.setMessage("Try again")
+
+                            NetworkResponse networkResponse = error.networkResponse;
+                            if (networkResponse != null && networkResponse.statusCode == 403) {
+
+                                String a = new String(networkResponse.data);
+                                try{
+
+                                    JSONObject jsonObj = new JSONObject(a);
+                                    String b = jsonObj.getString("message");
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                    builder.setMessage(b)
                                     .setNegativeButton("OK", null)
-                                    .create()
-                                    .show();
+                                            .create()
+                                            .show();
 
-                        }
-                    }
-
-
-                    ){
-                        @Override
-                        protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                            try {
-                                String j = new String(response.data,
-                                        HttpHeaderParser.parseCharset(response.headers, "charset=utf-8"));
-                                //String i = response.headers.get("PLAY-SESSION");
-                                return Response.success(j,
-                                        HttpHeaderParser.parseCacheHeaders(response));
-                            } catch (UnsupportedEncodingException e) {
-                                return Response.error(new ParseError(e));
+                                }catch(JSONException e){
+                                    e.printStackTrace();
+                                }
                             }
                         }
-
-
-
+                    }
+                    ){
 
                         @Override
                         public String getBodyContentType() {
                             return String.format("application/json; charset=utf-8");
                         }
 
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            try {
-                                return requestBody == null ? null : requestBody.getBytes("utf-8");
-                            } catch (UnsupportedEncodingException uee) {
-                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
-                                        requestBody, "utf-8");
-                                return null;
-                            }
-                        }
                     };
-
-
-
 
                     RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
                     queue.add(stringRequest);
@@ -156,19 +149,11 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
             }
 
 
 
 
         });
-
-
-
     }
-
-
-
 }
