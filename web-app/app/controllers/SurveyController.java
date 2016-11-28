@@ -379,16 +379,17 @@ class SurveyJson {
 	public String name;
 	public String description;
 	public String email;
-	public QuestionJson q[];
+	public QuestionJson questions[];
 
 	public SurveyJson(Survey s, Question q[]) {
 		id = s.id;
 		name = s.name;
 		description = s.description;
 		email = s.email;
-		this.q = new QuestionJson[q.length];
+		this.questions = new QuestionJson[q.length];
 		for(int i = 0; i < q.length; i++){
-			this.q[i] = new QuestionJson(q[i]);
+			this.questions[i] = new QuestionJson(q[i]);
+			this.questions[i].id=i+1;
 		}
 	}
 }

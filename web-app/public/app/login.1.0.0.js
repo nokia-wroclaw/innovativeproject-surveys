@@ -48813,6 +48813,7 @@
 	var index_2 = __webpack_require__(55);
 	var SurveyViewComponent = (function () {
 	    function SurveyViewComponent(route, router, service, alertService) {
+	        var _this = this;
 	        this.route = route;
 	        this.router = router;
 	        this.service = service;
@@ -48821,16 +48822,16 @@
 	        this.answers = [new index_2.Question(1, "")];
 	        this.loading = false;
 	        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-	    }
-	    SurveyViewComponent.prototype.ngOnInit = function () {
-	        var _this = this;
 	        this.id = +this.route.snapshot.params['id'];
 	        this.service.getSurvey(this.id)
 	            .subscribe(function (survey) {
 	            console.log(survey);
+	            _this.survey = survey.json();
 	        }, function (error) {
 	            _this.alertService.error(error.json().message);
 	        });
+	    }
+	    SurveyViewComponent.prototype.ngOnInit = function () {
 	    };
 	    SurveyViewComponent.prototype.answer = function () {
 	        var _this = this;
@@ -49734,7 +49735,7 @@
 /* 158 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h2>Survey name: </h2>\r\n\t<p><strong>Description:</strong></p>\r\n    <form name=\"form\" (ngSubmit)=\"f.form.valid && answer()\" #f=\"ngForm\" novalidate>\r\n        <div class=\"form-group\" *ngFor=\"let ans of answers\">\r\n            <label for=\"question\">Question {{ans.id}}</label>\r\n            <textarea type=\"text\" class=\"form-control\" name=\"answer{{ans.id}}\" [(ngModel)]=\"answers[ans.id-1].question\" #answers{{ans.id}}=\"ngModel\" required></textarea>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <button [disabled]=\"loading\" class=\"btn btn-primary\">Submit</button>\r\n            <img *ngIf=\"loading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\r\n            <a [routerLink]=\"['/']\" class=\"btn btn-link\">Cancel</a>\r\n        </div>\r\n    </form>\r\n</div>\r\n";
+	module.exports = "<div class=\"col-md-6 col-md-offset-3\">\r\n    <h2>Survey name: {{survey.name}} </h2>\r\n\t<p><strong>Description: {{survey.description}}</strong></p>\r\n    <form name=\"form\" (ngSubmit)=\"f.form.valid && answer()\" #f=\"ngForm\" novalidate>\r\n        <!--<div class=\"form-group\" *ngFor=\"let que of survey.questions\">\r\n            <label>Question {{que.id}}</label>\r\n            <p>{{que.question}}</p>\r\n            <textarea type=\"text\" class=\"form-control\" required></textarea>\r\n        </div>-->\r\n        <div class=\"form-group\">\r\n            <button [disabled]=\"loading\" class=\"btn btn-primary\">Submit</button>\r\n            <img *ngIf=\"loading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\r\n            <a [routerLink]=\"['/']\" class=\"btn btn-link\">Cancel</a>\r\n        </div>\r\n    </form>\r\n</div>\r\n";
 
 /***/ },
 /* 159 */

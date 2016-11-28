@@ -12,7 +12,7 @@ export class SurveyViewComponent implements OnInit{
 	model: any = {};
 	answers = [new Question(1, "")];
 	id: any;
-	survey: any;    //survey
+	survey: Survey;    //survey
 	currentUser: User;
 	
 	loading = false;
@@ -24,19 +24,22 @@ export class SurveyViewComponent implements OnInit{
 		private alertService: AlertService
 	) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    }
-	
-	ngOnInit() {
+
 		this.id = +this.route.snapshot.params['id'];
 
 		this.service.getSurvey(this.id)
-		.subscribe(
-			(survey) => {
-				console.log(survey);
-			},
-			error =>{
-				this.alertService.error(error.json().message);
-			});
+            .subscribe(
+				(survey) => {
+					console.log(survey);
+					this.survey = survey.json();
+				},
+				error =>{
+					this.alertService.error(error.json().message);
+				});
+    }
+	
+	ngOnInit() {
+
 	}
 	
 	answer(){
