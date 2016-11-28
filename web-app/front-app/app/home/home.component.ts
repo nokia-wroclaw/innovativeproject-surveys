@@ -10,7 +10,6 @@ import { InviteService } from '../_services/index';
 
 export class HomeComponent implements OnInit {
     currentUser: User;
-		sendingInvite = false;
 		model: any = {};
 		surv: any = {};
 
@@ -25,25 +24,12 @@ export class HomeComponent implements OnInit {
 			
 		}
 
-    invite() {
-			this.sendingInvite = true;
-			console.log("Sending invitation!");
-			this.inviteService.invite(this.model.email)
-			    .subscribe(
-                data => {
-									console.log("Success");
-                  this.alertService.success('Invite successful', true);
-									this.sendingInvite = false;
-                },
-                error => {
-									console.log("Fail");
-									console.log(error);
-                  this.alertService.error(error);
-									this.sendingInvite = false;
-                });
-		}
+
 	surveyGo() {
-		console.log("here");
 		this.router.navigate(['/surveyView', this.surv.id]);
+	}
+
+	createSurveyGo() {
+		this.router.navigate(['/surveyCreate']);
 	}
 }

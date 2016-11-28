@@ -23,4 +23,5 @@ web-app/front-app/extracted
 web-app/public/node_modules
 .idea/
 web-app/conf/evolutions/default/
+web-app/public/app/login.1.0.0.js
 web-app/play-java.iml
