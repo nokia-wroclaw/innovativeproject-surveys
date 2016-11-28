@@ -24,7 +24,36 @@ public class SurveyController extends Controller {
 
 	@Inject
 	MailerClient mailerClient;
-	
+
+
+	public Result getSurvey(Integer id){
+		String login = session().get("login");
+		if (login == null) {
+			return status(404, Json.toJson(new Message("You arent logged in")));
+		}
+		UserAccount ua = UserAccount.find.byId(login);
+
+		Survey survey = Survey.find.byId(id);
+		if(survey == null){
+			return status(404, Json.toJson(new Message("Survey not find")));
+		}
+		List<SurveyMember> members = SurveyMember.find.select("*").where().eq("login", login).findList();
+		boolean member = false;
+		for(SurveyMember mem : members) {
+			if(mem.survey == survey){
+				member = true;
+			}
+		}
+		if(!survey.adminLogin.equals(login) && !member){
+			return status(403, "Don't have permission");
+		}
+		List<Question> questions = Question.find.select("*").where().eq("survey_id", id).findList();
+		Question[] questionArray = new Question[questions.size()];
+		questionArray = questions.toArray(questionArray);
+		SurveyJson surveyJson = new SurveyJson(survey, questionArray);
+		return ok(Json.toJson(surveyJson));
+	}
+
 	/**
 	 * The method create Survey
 	 * 
@@ -350,16 +379,28 @@ class SurveyJson {
 	public String name;
 	public String description;
 	public String email;
-	public Question q[];
+	public QuestionJson q[];
 
 	public SurveyJson(Survey s, Question q[]) {
 		id = s.id;
 		name = s.name;
 		description = s.description;
 		email = s.email;
-		this.q = q.clone();
+		this.q = new QuestionJson[q.length];
+		for(int i = 0; i < q.length; i++){
+			this.q[i] = new QuestionJson(q[i]);
+		}
 	}
 }
 
+class QuestionJson {
+	public int id;
+	public String question;
+
+	public QuestionJson(Question q){
+		id = q.id;
+		question = q.question;
+	}
+}
 
 

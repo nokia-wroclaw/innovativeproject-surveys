@@ -29,7 +29,7 @@ GET	    /app/surveys/result/AdminList			controllers.SurveyController.getAdminSur
 
 GET	    /app/surveys/:id/admin/result			controllers.SurveyController.getAdminResult(id: Integer)
 GET	    /app/surveys/:id/user/result			controllers.SurveyController.getUserResult(id: Integer)
-
+GET     /app/surveys/:id                controllers.SurveyController.getSurvey(id: Integer)
 
 
 #Deleting all accounts (only for develop)
@@ -51,7 +51,7 @@ GET		/node_modules/*file				controllers.Assets.at(path = "/public/node_modules",
 GET		/								controllers.HomeController.index()
 GET		/home							controllers.HomeController.index()
 GET		/info							controllers.HomeController.index()
-GET		/surveyView/:id					controllers.HomeController.index1(id: String)
+GET		/surveyView/:id					controllers.HomeController.indexWithParameter(id: Integer)
 GET		/login							controllers.HomeController.index()
 GET		/register						controllers.HomeController.index()
 GET		/surveyCreate					controllers.HomeController.index()
