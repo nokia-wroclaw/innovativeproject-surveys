@@ -19,7 +19,7 @@ export class InviteComponent {
         console.log("Sending invitation!");
         this.inviteService.invite(this.model.email)
             .subscribe(
-                data => {
+                () => {
                     console.log("Success");
                     this.alertService.success('Invite successful', true);
                     this.sendingInvite = false;
@@ -27,7 +27,7 @@ export class InviteComponent {
                 error => {
                     console.log("Fail");
                     console.log(error);
-                    this.alertService.error(error);
+                    this.alertService.error(error.json().message);
                     this.sendingInvite = false;
                 });
     }

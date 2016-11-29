@@ -1,112 +1,116 @@
-import { Injectable } from '@angular/core';
-import { Http, Headers, Response, RequestOptions, RequestMethod, Request } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { Survey, Question } from '../_models/index'
+import {Injectable} from '@angular/core';
+import {Http, Headers, Response, RequestOptions, RequestMethod, Request} from '@angular/http';
+import {Observable} from 'rxjs/Observable';
+import {Survey, Question} from '../_models/index'
 import 'rxjs/add/operator/map'
 
 @Injectable()
 export class SurveyService {
 
-	constructor(private http: Http) { }
+    host = "http://localhost:9000/";
 
-	getSurvey(id){
-		var headers = new Headers();
-			headers.append("Content-Type", "application/json");
-			headers.append("Accept", "application/json");
-			var options = new RequestOptions({
-				method: RequestMethod.Get,
-				url: 'http://localhost:9000/app/surveys/'+id,
-				headers: headers
-			});
-		return this.http.request(new Request(options))
-			.map((response: Response) => response.json());
-	}
+    constructor(private http: Http) {
+    }
 
-	fillSurvey(id, q){
-		var headers = new Headers();
-			headers.append("Content-Type", "application/json");
-			headers.append("Accept", "application/json");
-			var options = new RequestOptions({
-				method: RequestMethod.Post,
-				url: 'http://localhost:9000/app/surveys/'+id+'/answer',
-				headers: headers,
-				body: JSON.stringify(q)
-			});
-		return this.http.request(new Request(options))
+    getSurvey(id) {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
+        var options = new RequestOptions({
+            method: RequestMethod.Get,
+            url: this.host + 'app/surveys/' + id,
+            headers: headers
+        });
+        return this.http.request(new Request(options))
             .map((response: Response) => response.json());
-	}
+    }
 
-	createSurvey(survey: Survey) {
-		var headers = new Headers();
-		headers.append("Content-Type", "application/json");
-		headers.append("Accept", "application/json");
+    fillSurvey(id, q) {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
+        var options = new RequestOptions({
+            method: RequestMethod.Post,
+            url: this.host + 'app/surveys/' + id + '/answer',
+            headers: headers,
+            body: JSON.stringify(q)
+        });
+        return this.http.request(new Request(options))
+            .map((response: Response) => response.json());
+    }
 
-		var options = new RequestOptions({
-			method: RequestMethod.Post,
-			url: 'http://localhost:9000/app/surveys',
-			headers: headers,
-			body: JSON.stringify(survey)
-		});
+    createSurvey(survey: Survey) {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
 
-    return this.http.request(new Request(options));
-	}
+        var options = new RequestOptions({
+            method: RequestMethod.Post,
+            url: this.host + 'app/surveys',
+            headers: headers,
+            body: JSON.stringify(survey)
+        });
 
-	addQuestion(question: Question, id: String) {
-		var headers = new Headers();
-		headers.append("Content-Type", "application/json");
-		headers.append("Accept", "application/json");
+        return this.http.request(new Request(options))
+            .map((response: Response) => response.json());
+    }
 
-		var options = new RequestOptions({
-			method: RequestMethod.Post,
-			url: 'http://localhost:9000/app/surveys/'+id+'/add',
-			headers: headers,
-			body: JSON.stringify(question)
-		});
+    addQuestion(question: Question, id: String) {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
 
-    return this.http.request(new Request(options))
-			.map((response: Response) => {
-				let resp = response.json();
-			});
-	}
+        var options = new RequestOptions({
+            method: RequestMethod.Post,
+            url: this.host + 'app/surveys/' + id + '/add',
+            headers: headers,
+            body: JSON.stringify(question)
+        });
 
-	getUserResult(id) {
-		var headers = new Headers();
-		headers.append("Content-Type", "application/json");
-		headers.append("Accept", "application/json");
+        return this.http.request(new Request(options))
+            .map((response: Response) => response.json());
+    }
 
-		var options = new RequestOptions({
-			method: RequestMethod.Get,
-			url: 'http://localhost:9000/app/surveys/'+id+'/user/result',
-			headers: headers
-		})
+    getUserResult(id) {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
 
-    return this.http.request(new Request(options))
-		.map((response: Response) => response.json());
-	}
+        var options = new RequestOptions({
+            method: RequestMethod.Get,
+            url: this.host + 'app/surveys/' + id + '/user/result',
+            headers: headers
+        })
 
-	getUserSurveys(){
-		var headers = new Headers();
-		headers.append("Content-Type", "application/json");
-		headers.append("Accept", "application/json");
+        return this.http.request(new Request(options))
+            .map((response: Response) => response.json());
+    }
 
-		var options = new RequestOptions({
-			method: RequestMethod.Get,
-			url: 'http://localhost:9000/app/surveys/result/UserList',
-			headers: headers
-		})
-		return this.http.request(new Request(options));
-	}
+    getUserSurveys() {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
 
-	getAdminSurveys(){
-		var headers = new Headers();
-		headers.append("Content-Type", "application/json");
-		headers.append("Accept", "application/json");
+        var options = new RequestOptions({
+            method: RequestMethod.Get,
+            url: this.host + 'app/surveys/result/UserList',
+            headers: headers
+        })
+        return this.http.request(new Request(options))
+            .map((response: Response) => response.json());
+    }
 
-		var options = new RequestOptions({
-			method: RequestMethod.Get,
-			url: 'http://localhost:9000/app/surveys/result/AdminList',
-			headers: headers
-		})
-		return this.http.request(new Request(options));
-	}
+    getAdminSurveys() {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
+
+        var options = new RequestOptions({
+            method: RequestMethod.Get,
+            url: this.host + 'app/surveys/result/AdminList',
+            headers: headers
+        })
+        return this.http.request(new Request(options))
+            .map((response: Response) => response.json());
+    }
 }
