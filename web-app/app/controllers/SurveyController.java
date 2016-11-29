@@ -18,6 +18,8 @@ import play.libs.Json;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
+import play.mvc.Http.Cookie;
+import play.mvc.Http.RequestBuilder;
 import play.mvc.Result;
 import play.Logger;
 
@@ -32,8 +34,13 @@ public class SurveyController extends Controller {
     public Result getSurvey(Integer id) {
         String login = session().get("login");
         if (login == null) {
+            String session = request().getHeader("PLAY-SESSION");
+            if(session != null){
+            	login = session;
+            }
             return status(404, Json.toJson(new Message("You arent logged in")));
         }
+        Logger.info("login "+login);
         UserAccount ua = UserAccount.find.byId(login);
 
         Survey survey = Survey.find.byId(id);
@@ -72,13 +79,20 @@ public class SurveyController extends Controller {
     public Result SurveyPut() {
 
         JsonNode surveyJson = request().body().asJson();
-        if (surveyJson == null) {
-            return status(403, Json.toJson(new Message("JSON wanted!")));
+        String login = session().get("login");
+        if (login == null) {
+            String session = request().getHeader("PLAY-SESSION");
+            if(session != null){
+            	login = session;
+            }else{
+            	return status(404, Json.toJson(new Message("You arent logged in")));
+            }
         }
+        Logger.info("login "+login);
         String name = surveyJson.get("name").asText();
         String description = surveyJson.get("description").asText();
         String email = surveyJson.get("email").asText();
-        String login = session().get("login");
+
 
         if (login == null) {
             return status(404, Json.toJson(new Message("You arent logged in")));
@@ -127,8 +141,14 @@ public class SurveyController extends Controller {
     public Result SurveyModification(Integer id) {
 
         JsonNode surveyJson = request().body().asJson();
-        if (surveyJson == null) {
-            return status(403, Json.toJson(new Message("JSON wanted!")));
+        String login = session().get("login");
+        if (login == null) {
+            String session = request().getHeader("PLAY-SESSION");
+            if(session != null){
+            	login = session;
+            }else{
+            	return status(404, Json.toJson(new Message("You arent logged in")));
+            }
         }
 
         Survey findSurvey = Survey.find.byId(id);
@@ -218,9 +238,13 @@ public class SurveyController extends Controller {
             return status(403, Json.toJson(new Message("JSON wanted!")));
         }
         String login = session().get("login");
-
         if (login == null) {
-            return status(404, Json.toJson(new Message("You arent logged in")));
+            String session = request().getHeader("PLAY-SESSION");
+            if(session != null){
+            	login = session;
+            }else{
+            	return status(404, Json.toJson(new Message("You arent logged in")));
+            }
         }
         Survey survey = Survey.find.byId(id);
         UserAccount userAccount = UserAccount.find.byId(login);
@@ -259,10 +283,14 @@ public class SurveyController extends Controller {
      * @return All responses from logged user
      */
     public Result getUserResult(Integer id) {
-        String login = session().get("login");
-
+    	String login = session().get("login");
         if (login == null) {
-            return status(404, Json.toJson(new Message("You arent logged in")));
+            String session = request().getHeader("PLAY-SESSION");
+            if(session != null){
+            	login = session;
+            }else{
+            	return status(404, Json.toJson(new Message("You arent logged in")));
+            }
         }
 
         Survey survey = Survey.find.byId(id);
@@ -294,10 +322,14 @@ public class SurveyController extends Controller {
      * @return All responses from  users from selected survey
      */
     public Result getAdminResult(Integer id) {
-        String login = session().get("login");
-
+    	String login = session().get("login");
         if (login == null) {
-            return status(404, Json.toJson(new Message("You arent logged in")));
+            String session = request().getHeader("PLAY-SESSION");
+            if(session != null){
+            	login = session;
+            }else{
+            	return status(404, Json.toJson(new Message("You arent logged in")));
+            }
         }
 
         Survey survey = Survey.find.byId(id);
@@ -334,10 +366,14 @@ public class SurveyController extends Controller {
      */
     public Result getUserSurveysId() {
 
-        String login = session().get("login");
-
+    	String login = session().get("login");
         if (login == null) {
-            return status(404, Json.toJson(new Message("You arent logged in")));
+            String session = request().getHeader("PLAY-SESSION");
+            if(session != null){
+            	login = session;
+            }else{
+            	return status(404, Json.toJson(new Message("You arent logged in")));
+            }
         }
 
         List<SurveyMember> surMem = SurveyMember.find.select("*").where().eq("login", login).findList();
@@ -364,10 +400,14 @@ public class SurveyController extends Controller {
      */
     public Result getAdminSurveysId() {
 
-        String login = session().get("login");
-
+    	String login = session().get("login");
         if (login == null) {
-            return status(404, Json.toJson(new Message("You arent logged in")));
+            String session = request().getHeader("PLAY-SESSION");
+            if(session != null){
+            	login = session;
+            }else{
+            	return status(404, Json.toJson(new Message("You arent logged in")));
+            }
         }
 
         List<Survey> surveylist = Survey.find.select("*").where().eq("adminLogin", login).findList();
