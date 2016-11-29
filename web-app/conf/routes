@@ -51,11 +51,12 @@ GET		/node_modules/*file				controllers.Assets.at(path = "/public/node_modules",
 GET		/								controllers.HomeController.index()
 GET		/home							controllers.HomeController.index()
 GET		/info							controllers.HomeController.index()
-GET		/surveyView/:id					controllers.HomeController.indexWithParameter(id: Integer)
+GET		/surveyView/:id					controllers.HomeController.indexWithView(id: Integer)
 GET		/login							controllers.HomeController.index()
 GET		/register						controllers.HomeController.index()
 GET		/surveyCreate					controllers.HomeController.index()
 GET		/invite     					controllers.HomeController.index()
+GET     /surveyResult/:id               controllers.HomeController.indexWithResult(id: Integer)
 
 #Swagger
 #GET     /swagger.json           controllers.ApiHelpController.getResources

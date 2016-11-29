@@ -294,11 +294,6 @@ public class SurveyController extends Controller {
      * @return All responses from  users from selected survey
      */
     public Result getAdminResult(Integer id) {
-
-        JsonNode surveyJson = request().body().asJson();
-        if (surveyJson == null) {
-            return status(403, Json.toJson(new Message("JSON wanted!")));
-        }
         String login = session().get("login");
 
         if (login == null) {

@@ -1,3 +1,10 @@
 <div class="col-md-6 col-md-offset-3">
-	{{result}}
+	<h1>Survey name: {{survey.name}}</h1>
+	<h2>Description: {{survey.description}}</h2>
+	<div *ngFor="let q of result.questions; let i=index">
+		<h3>{{q.question}}</h3>
+		<div *ngFor="let r of q.results">
+			{{r}}
+		</div>
+	</div>
 </div>

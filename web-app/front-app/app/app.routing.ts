@@ -8,6 +8,7 @@ import { SurveyViewComponent } from './surveyView/index';
 import { SurveyCreationComponent } from './survey-creation/index';
 import { InfoComponent } from './info/index'
 import { InviteComponent } from './invite/index'
+import { SurveyResultComponent } from './survey-result/index'
 
 const appRoutes: Routes = [
     { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
@@ -17,7 +18,7 @@ const appRoutes: Routes = [
     { path: 'invite', component: InviteComponent },
 	{ path: 'surveyView/:id', component: SurveyViewComponent, canActivate: [AuthGuard]},
 	{ path: 'surveyCreate', component: SurveyCreationComponent, canActivate: [AuthGuard]},
-    /*{ path: 'surveyResult/:id', component: SurveyResultComponent, },*/
+    { path: 'surveyResult/:id', component: SurveyResultComponent, },
     // otherwise redirect to home
     { path: '**', redirectTo: 'home' }
 ];

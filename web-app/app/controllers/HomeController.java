@@ -10,7 +10,11 @@ import views.html.*;
  */
 public class HomeController extends Controller {
 
-    public Result indexWithParameter(Integer param) {
+    public Result indexWithView(Integer param) {
+        return index();
+    }
+
+    public Result indexWithResult(Integer param) {
         return index();
     }
 

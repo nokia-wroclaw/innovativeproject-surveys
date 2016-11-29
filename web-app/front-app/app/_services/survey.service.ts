@@ -86,6 +86,21 @@ export class SurveyService {
             .map((response: Response) => response.json());
     }
 
+    getAllResult(id) {
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
+
+        var options = new RequestOptions({
+            method: RequestMethod.Get,
+            url: this.host + 'app/surveys/' + id + '/admin/result',
+            headers: headers
+        })
+
+        return this.http.request(new Request(options))
+            .map((response: Response) => response.json());
+    }
+
     getUserSurveys() {
         var headers = new Headers();
         headers.append("Content-Type", "application/json");

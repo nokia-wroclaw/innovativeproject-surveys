@@ -17,6 +17,7 @@ import { SurveyViewComponent } from './surveyView/index'
 import { SurveyCreationComponent } from './survey-creation/index'
 import { InfoComponent } from './info/index'
 import { InviteComponent } from './invite/index'
+import { SurveyResultComponent } from './survey-result/index'
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { InviteComponent } from './invite/index'
         LoginComponent,
         RegisterComponent,
 		SurveyViewComponent,
-		SurveyCreationComponent
+		SurveyCreationComponent,
+        SurveyResultComponent
     ],
     providers: [
         AuthGuard,
