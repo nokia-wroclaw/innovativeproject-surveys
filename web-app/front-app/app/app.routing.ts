@@ -4,7 +4,6 @@ import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 import { AuthGuard } from './_guards/index';
-import {BarsComponent} from './bars/index'
 import { SurveyViewComponent } from './surveyView/index';
 import { SurveyCreationComponent } from './survey-creation/index';
 import { InfoComponent } from './info/index'
