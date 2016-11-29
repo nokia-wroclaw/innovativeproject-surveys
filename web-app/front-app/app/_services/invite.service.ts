@@ -6,7 +6,8 @@ import 'rxjs/add/operator/map'
 @Injectable()
 export class InviteService {
 
-    host = "http://localhost:9000/"
+    //host = "http://localhost:9000/";
+    host = "https://survey-innoproject.herokuapp.com/";
 
     constructor(private http: Http) {
     }

@@ -7,7 +7,8 @@ import 'rxjs/add/operator/map'
 @Injectable()
 export class SurveyService {
 
-    host = "http://localhost:9000/";
+    //host = "http://localhost:9000/";
+    host = "https://survey-innoproject.herokuapp.com/";
 
     constructor(private http: Http) {
     }
@@ -124,6 +125,21 @@ export class SurveyService {
             method: RequestMethod.Get,
             url: this.host + 'app/surveys/result/AdminList',
             headers: headers
+        })
+        return this.http.request(new Request(options))
+            .map((response: Response) => response.json());
+    }
+
+    addMember(member, id){
+        var headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Accept", "application/json");
+
+        var options = new RequestOptions({
+            method: RequestMethod.Post,
+            url: this.host + 'app/surveys/'+id+'/invitation',
+            headers: headers,
+            body: JSON.stringify(member)
         })
         return this.http.request(new Request(options))
             .map((response: Response) => response.json());

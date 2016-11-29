@@ -12,12 +12,20 @@ export class SurveyCreationComponent {
     model: Survey = new Survey();
     currentUser: User;
     loading = false;
+    memb = [];
+
     surveyForm = new FormGroup({
         name: new FormControl('', Validators.required),
         description: new FormControl('', Validators.required),
         questions: new FormArray(
             [new FormGroup({
                 question: new FormControl('', Validators.required)
+            })],
+            Validators.required
+        ),
+        members: new FormArray(
+            [new FormGroup({
+                member: new FormControl('', Validators.required)
             })],
             Validators.required
         )
@@ -34,6 +42,10 @@ export class SurveyCreationComponent {
         return this.surveyForm.get('questions') as FormArray;
     }
 
+    get members(): FormArray {
+        return this.surveyForm.get('members') as FormArray;
+    }
+
     create() {
         this.loading = true;
         this.buildSurvey();
@@ -41,7 +53,17 @@ export class SurveyCreationComponent {
             .subscribe(
                 (response) => {
                     this.alertService.success("Survey created successful!.", true);
-                    this.router.navigate(['/']);
+                    for (let memb of this.memb)
+                        this.surveyService.addMember(memb, response.id)
+                            .subscribe(
+                                () => {
+                                    this.router.navigate(['/']);
+                                },
+                                error => {
+                                    this.alertService.error(error.json().message);
+                                    this.loading = false;
+                                }
+                            );
                 },
                 error => {
                     this.alertService.error(error.json().message);
@@ -57,8 +79,19 @@ export class SurveyCreationComponent {
         console.log(this.questions.value);
     }
 
+    addMember() {
+        this.members.push(new FormGroup({
+            member: new FormControl('', Validators.required)
+        }));
+        console.log(this.questions.value);
+    }
+
     removeQuestion(i: number) {
         this.questions.removeAt(i);
+    }
+
+    removeMember(i: number) {
+        this.members.removeAt(i);
     }
 
     buildSurvey() {
@@ -72,5 +105,9 @@ export class SurveyCreationComponent {
             id++;
         }
         console.log(JSON.stringify(this.model));
+        for (let mem of this.members.value) {
+            console.log("member "+JSON.stringify(mem));
+            this.memb.push({email: mem.member});
+        }
     }
 }
