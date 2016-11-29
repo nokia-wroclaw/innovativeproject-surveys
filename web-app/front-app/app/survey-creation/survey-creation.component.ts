@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AlertService, SurveyService} from '../_services/index';
 import {Survey, User, Question} from '../_models/index';
 import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 
 @Component({
     templateUrl: 'survey-creation.component.html'
@@ -24,7 +25,8 @@ export class SurveyCreationComponent {
 
     constructor(private surveyService: SurveyService,
                 private alertService: AlertService,
-                private formBuilder: FormBuilder) {
+                private formBuilder: FormBuilder,
+                private router: Router) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     }
 
@@ -35,20 +37,17 @@ export class SurveyCreationComponent {
     create() {
         this.loading = true;
         this.buildSurvey();
-        let surveyId;
         this.surveyService.createSurvey(this.model)
             .subscribe(
                 (response) => {
-                    surveyId = response.json().id;
-                    this.alertService.success("Survey created successful! E-mail with link to your survey was sended."
-                        + " Your survey id is " + surveyId + ".", true);
+                    this.alertService.success("Survey created successful!.", true);
+                    this.router.navigate(['/']);
                 },
                 error => {
                     this.alertService.error(error.json().message);
+                    this.loading = false;
                 }
             );
-        this.loading = false;
-
     }
 
     addQuestion() {
@@ -62,13 +61,13 @@ export class SurveyCreationComponent {
         this.questions.removeAt(i);
     }
 
-    buildSurvey(){
+    buildSurvey() {
         this.model.name = this.surveyForm.get('name').value;
         this.model.description = this.surveyForm.get('description').value;
         this.model.email = this.currentUser.email;
         this.model.questions = [];
         let id = 1;
-        for(let ques of this.questions.value){
+        for (let ques of this.questions.value) {
             this.model.questions.push(new Question(id, ques.question));
             id++;
         }

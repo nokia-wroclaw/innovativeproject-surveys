@@ -32,6 +32,8 @@ public class AccountController extends Controller {
 	@Inject
 	MailerClient mailerClient;
 
+	private String host = "https://survey-innoproject.herokuapp.com";
+
 	public Result loginPost() {
 		JsonNode jsNode = request().body().asJson();
 		if (jsNode == null) {
@@ -61,7 +63,7 @@ public class AccountController extends Controller {
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
 		email1.setBodyText("Hi " + firstName
-				+ "!\n\nOto link aktywacyjny: http://localhost:3000/activ/"
+				+ "!\n\nOto link aktywacyjny: "+host+"/activ/"
 				+ link);
 		String id = mailerClient.send(email1);
 
@@ -156,12 +158,19 @@ public class AccountController extends Controller {
 
 		JsonNode jsNode = request().body().asJson();
 		if (jsNode == null) {
-			return status(403, "JSON wanted!");
+			return status(403, Json.toJson(new Message("JSON wanted!")));
 		}
 		String email = jsNode.findPath("email").textValue();
 
 		if (email.equals("")) {
-			return status(403, "empty");
+			return status(403, Json.toJson(new Message("Empty email")));
+		}
+
+		List<UserAccount> userEm = UserAccount.find.where().eq("email", email)
+				.findList();
+		if (userEm.size() != 0) {
+			return status(403, Json.toJson(new Message(
+					"User with this e-mail already exists!")));
 		}
 
 		Email email1 = new Email();
@@ -178,17 +187,17 @@ public class AccountController extends Controller {
 
 		session("email", email);
 
-		return ok(("Poprawnie wyslano zaproszenie"));
+		return ok(Json.toJson(new Message("Poprawnie wyslano zaproszenie")));
 
 	}
 
 	public Result activate(String link) {
 		UnactivatedAccount ua = UnactivatedAccount.find.byId(link);
 		if (ua == null) {
-			return ok(activate.render("Zły link aktywacyjny!"));
+			return status(404, Json.toJson(new Message("Zły link aktywacyjny!")));
 		} else {
 			ua.delete();
-			return ok(activate.render("Konto aktywowane!"));
+			return ok(Json.toJson(new Message("Konto aktywowane!")));
 		}
 	}
 

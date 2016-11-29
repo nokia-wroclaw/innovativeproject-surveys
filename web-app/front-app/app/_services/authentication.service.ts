@@ -5,6 +5,9 @@ import 'rxjs/add/operator/map'
 
 @Injectable()
 export class AuthenticationService {
+
+    host = "http://localhost:9000/";
+
     constructor(private http: Http) { }
     login(username, password) {
 			var headers = new Headers();
@@ -12,7 +15,7 @@ export class AuthenticationService {
 			headers.append("Accept", "application/json");
 			var options = new RequestOptions({
 				method: RequestMethod.Post,
-				url: 'http://localhost:9000/app/login',
+				url: this.host+'app/login',
 				headers: headers,
 				body: JSON.stringify({ login: username, password: password })
 			});
