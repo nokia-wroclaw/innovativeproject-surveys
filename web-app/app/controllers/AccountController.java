@@ -150,7 +150,7 @@ public class AccountController extends Controller {
 				firstName, lastName, email, link);
 
 		newAcc.save();
-		sendAccEmail(email, link, firstName);
+		//sendAccEmail(email, link, firstName);
 		return ok(Json.toJson(new Message("Registrated")));
 	}
 
@@ -177,7 +177,7 @@ public class AccountController extends Controller {
 		email1.setSubject("Rejestracja na surveys");
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText("Zostałeś zaproszony do http://localhost:3000/register . Kliknij link i zarejestruj swoje konto");
+		email1.setBodyText("Zostałeś zaproszony do "+host+"/register . Kliknij link i zarejestruj swoje konto");
 		String id = mailerClient.send(email1);
 
 		if (id != null) {

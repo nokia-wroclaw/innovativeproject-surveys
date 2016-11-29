@@ -23,7 +23,7 @@ export class RegisterComponent {
             .subscribe(
                 data => {
 					console.log(JSON.stringify(data));
-                    this.alertService.success('Registration successful! Check your email to activate the account', true);
+                    this.alertService.success('Registration successful!', true);
                     this.router.navigate(['/login']);
                 },
                 error => {

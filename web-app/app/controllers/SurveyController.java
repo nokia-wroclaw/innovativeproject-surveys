@@ -37,8 +37,9 @@ public class SurveyController extends Controller {
             String session = request().getHeader("PLAY-SESSION");
             if(session != null){
             	login = session;
+            } else {
+                return status(404, Json.toJson(new Message("You arent logged in")));
             }
-            return status(404, Json.toJson(new Message("You arent logged in")));
         }
         Logger.info("login "+login);
         UserAccount ua = UserAccount.find.byId(login);
@@ -141,6 +142,10 @@ public class SurveyController extends Controller {
     public Result SurveyModification(Integer id) {
 
         JsonNode surveyJson = request().body().asJson();
+        if(surveyJson == null){
+            return status(404, Json.toJson(new Message("JSON wanted!")));
+        }
+
         String login = session().get("login");
         if (login == null) {
             String session = request().getHeader("PLAY-SESSION");
@@ -160,11 +165,6 @@ public class SurveyController extends Controller {
         String name = surveyJson.get("name").asText();
         String description = surveyJson.get("description").asText();
         String email = surveyJson.get("email").asText();
-        String login = session().get("login");
-
-        if (login == null) {
-            return status(404, Json.toJson(new Message("You arent logged in")));
-        }
 
         UserAccount ua = UserAccount.find.byId(login);
 
