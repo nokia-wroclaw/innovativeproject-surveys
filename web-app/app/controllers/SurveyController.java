@@ -43,7 +43,7 @@ public class SurveyController extends Controller {
         List<SurveyMember> members = SurveyMember.find.select("*").where().eq("login", login).findList();
         boolean member = false;
         for (SurveyMember mem : members) {
-            if (mem.survey == survey) {
+            if (mem.survey.id == survey.id) {
                 member = true;
             }
         }
@@ -178,10 +178,10 @@ public class SurveyController extends Controller {
             return status(403, Json.toJson(new Message("JSON wanted!")));
         }
         String email = jsNode.findPath("email").textValue();
-
-        if (email.equals("")) {
+        if (email == null || email.equals("")) {
             return status(403, Json.toJson(new Message("empty")));
         }
+        Logger.info("Invite "+email+" to "+id);
         Email email1 = new Email();
         email1.setSubject("The invitation to the survey");
         email1.setFrom("Surveys <from@surveys.com>");

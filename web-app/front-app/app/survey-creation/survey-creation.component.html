@@ -11,6 +11,25 @@
             <input type="text" class="form-control" formControlName="description"/>
             <div *ngIf="!surveyForm.controls.description.valid" class="help-block">Description is required</div>
         </div>
+        <h3>Members' emails</h3>
+        <div formArrayName="members">
+            <div class="form-group" *ngFor="let mem of members.controls; let i = index">
+                <div [formGroupName]="i">
+                    <p><input type="text" class="form-control" formControlName="member"/></p>
+                    <div *ngIf="!surveyForm.controls.members.controls[i].valid" class="help-block">Member is
+                        required
+                    </div>
+                    <p>
+                        <button [disabled]="loading" class="btn btn-primary" (click)="removeMember(i)">Remove member
+                        </button>
+                    </p>
+                </div>
+            </div>
+            <p>
+                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="addMember()">Add member
+                </button>
+            </p>
+        </div>
         <!--<div class="form-group" [hidden]="true">
             <label for="email">E-mail</label>
             <input type="text" class="form-control" formControlName="email"/>
@@ -20,7 +39,7 @@
             <div class="form-group" *ngFor="let qwe of questions.controls; let i = index">
                 <div [formGroupName]="i">
                     <label for="question">{{i+1}}. Question</label>
-                    <input type="text" class="form-control" formControlName="question"/>
+                    <p><input type="text" class="form-control" formControlName="question"/></p>
                     <div *ngIf="!surveyForm.controls.questions.controls[i].valid" class="help-block">Question is
                         required
                     </div>

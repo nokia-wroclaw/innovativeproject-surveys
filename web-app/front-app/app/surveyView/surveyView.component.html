@@ -1,6 +1,6 @@
 <div class="col-md-6 col-md-offset-3">
-    <h2>Survey name: {{survey.name}} </h2>
-    <h3><strong>Description: {{survey.description}}</strong></h3>
+    <h2>{{survey.name}} </h2>
+    <h3>{{survey.description}}</h3>
     <form name="form" (ngSubmit)="answer()" [formGroup]="answerForm" novalidate>
         <div formArrayName="answers">
             <div class="form-group" *ngFor="let control of answers.controls; let i=index">
