@@ -81,9 +81,8 @@ public class RegisterActivity extends AppCompatActivity {
                             public void onResponse(JSONObject response) {
 
                                 try{
-                                    String b = response.getString("message");
 
-                                    if (response.equals("Registrated")) {
+                                    if (response.getString("message").equals("Registrated")) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                                         builder.setMessage("Thank you for registration! Please activate account")
                                                 .setNegativeButton("OK", null)
