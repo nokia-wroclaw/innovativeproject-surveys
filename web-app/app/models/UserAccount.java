@@ -21,11 +21,14 @@ public class UserAccount extends Model{
 	@Column(length=100)
 	public String firstName;
 	@Column(length=100)
-	public String lastName;	
+	public String lastName;
+	
 	@OneToMany
 	@JsonBackReference
 	public List<Response> response;	
-
+	@OneToMany
+	public List<Survey> survey;
+	
 	
 	public Date createdTime = new Date();
 	public String email;
@@ -53,6 +56,13 @@ public class UserAccount extends Model{
 	public List<Response> getResponse(){
 		return response;
 	}
-
+	
+	public void setSurveyList(List<Survey> survey){
+		this.survey = survey;
+	}
+	
+	public List<Survey> getSurveyList(){
+		return survey;
+	}
 	
 }

@@ -5,415 +5,192 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import models.Question;
 import models.Response;
 import models.Survey;
-import models.SurveyMember;
 import models.UserAccount;
 import play.libs.Json;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.Logger;
-
 
 public class SurveyController extends Controller {
-
-	@Inject
-	MailerClient mailerClient;
-
-
-	public Result getSurvey(Integer id){
-		String login = session().get("login");
-		if (login == null) {
-			return status(404, Json.toJson(new Message("You arent logged in")));
-		}
-		UserAccount ua = UserAccount.find.byId(login);
-
-		Survey survey = Survey.find.byId(id);
-		if(survey == null){
-			return status(404, Json.toJson(new Message("Survey not find")));
-		}
-		List<SurveyMember> members = SurveyMember.find.select("*").where().eq("login", login).findList();
-		boolean member = false;
-		for(SurveyMember mem : members) {
-			if(mem.survey == survey){
-				member = true;
-			}
-		}
-		if(!survey.adminLogin.equals(login) && !member){
-			return status(403, "Don't have permission");
-		}
-		List<Question> questions = Question.find.select("*").where().eq("survey_id", id).findList();
-		for(Question q : questions){
-			q = Question.find.byId(q.id);
-		}
-		Question[] questionArray = new Question[questions.size()];
-		questionArray = questions.toArray(questionArray);
-		for(Question q : questions) {
-			Logger.info("get Question: "+q.getQuestion());
-			Logger.info("get Question id: "+q.id);
-		}
-		SurveyJson surveyJson = new SurveyJson(survey, questionArray);
-		return ok(Json.toJson(surveyJson));
-	}
-
+		  
+	@Inject MailerClient mailerClient;
+	
 	/**
-	 * The method create Survey
-	 * 
-	 * @return Created Survey
+	 *  The method create Survey 
+	 *   @return Created Survey
 	 */
-	public Result SurveyPut() {
-
+	public Result SurveyPut(){
+		
 		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
+		if(surveyJson == null) {
 			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
+		}	
 		String name = surveyJson.get("name").asText();
 		String description = surveyJson.get("description").asText();
 		String email = surveyJson.get("email").asText();
 		String login = session().get("login");
-
-		if (login == null) {
-			return status(404, Json.toJson(new Message("You arent logged in")));
-		}
-		UserAccount ua = UserAccount.find.byId(login);
 		
-		Survey survey = new Survey(name, description, email);
-		survey.adminLogin = ua.login;
+		if(login == null){
+			status(404, Json.toJson(new Message("You arent logged in")));
+		}
+		UserAccount ua = UserAccount.find.byId(login);		
+				
+		Survey survey = new Survey(name,description,email);
+		survey.userAccount = ua;
 		survey.save();
-
-		ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
-		Logger.info("allquestions: "+Json.stringify(allquestion));
-		for(JsonNode x : allquestion){
-			String quest = x.get("question").asText();
-			Logger.info("post question: "+quest);
-			Question question = new Question(quest);
-			Logger.info("post question in Question: "+question.question);
-			question.survey = survey;
-			question.save();
-		}	
+		JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
 		
-		List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-		Question arrayquest[] = new Question[allquestions.size()];
-		arrayquest = allquestions.toArray(arrayquest);
-		JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest));
 		
 		Email email1 = new Email();
-		email1.setSubject("Created Survey " + name);
+		email1.setSubject("Stworzona ankieta");
 		email1.setFrom("Surveys <from@surveys.com>");
 		email1.addTo(email);
-		email1.setBodyText(
-				"Survey was created on http://localhost:9000/app/surveys/" + survey.id + "/answer . ");
-		String id = mailerClient.send(email1);
-
-		if (id == null) {
-			return status(404, Json.toJson(new Message("Problem with send Email")));
+		email1.setBodyText("Została stworzona ankieta na http://localhost:3000/app/surveys/" + survey.id + "/answer . " );
+		String id =  mailerClient.send(email1);
+		
+		if(id == null){
+			status(404, Json.toJson(new Message("Problem with send Email")));
 		}
-		return ok(surveyJs);
+		return ok(surveyJs); 
 	}
 	
 	/**
-	 * The method create Survey
-	 * 
-	 * @return Created Survey
+	 *  The method will add one question to Survey 
+	 *  @return The question, which has been added...
 	 */
-	public Result SurveyModification(Integer id) {
-
+	public Result addQuestion(Integer id) {
+		
 		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
+		if(surveyJson == null) {
 			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
-		
-		Survey findSurvey = Survey.find.byId(id);
-		
-		if(findSurvey == null){
-			return status(403, Json.toJson(new Message("Survey doesn't exist.")));
-		}
-		
-		String name = surveyJson.get("name").asText();
-		String description = surveyJson.get("description").asText();
-		String email = surveyJson.get("email").asText();
-		String login = session().get("login");
-
-		if (login == null) {
-			return status(404, Json.toJson(new Message("You arent logged in")));
-		}
-		
-		UserAccount ua = UserAccount.find.byId(login);	
-		
-		if(!findSurvey.adminLogin.equals(login)){
-			return status(403, Json.toJson(new Message("You dont have permission.")));
-		}
-		Survey survey = Survey.find.byId(id);
-		List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-		
-		int i = 0;
-		ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
-		for(JsonNode x : allquestion){
-			String quest = x.get("question").asText(); 
-			allquestions.get(i).question = quest;
-			allquestions.get(i).update();	
-			i += 1;
 		}	
+		//It gives the user who is logged on
+		String login = session().get("login");
 		
-		List<Question> allquestions1 = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-		Question arrayquest[] = new Question[allquestions1.size()];
-		arrayquest = allquestions1.toArray(arrayquest);
-		JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest));
-				
-		return ok(surveyJs);
+		if(login == null){
+			status(404, Json.toJson(new Message("You arent logged in")));
+		}	
+		List<Survey> survey1 = Survey.find
+	   			 .select("*")
+	             .where()
+	             .eq("user_account_login", login)
+	             .eq("id", id)
+	             .findList();
+		
+		if(!survey1.get(0).userAccount.login.equals(login)){
+			status(404,  Json.toJson(new Message("Dont have permission")));
+		}		
+		Survey survey = Survey.find.byId(id);
+		
+		String quest = surveyJson.get("question").asText();		
+		Question question = new Question(quest);
+		question.survey = survey;
+		question.save();
+		status(200, Json.toJson(new Message("Added question")));
+		
+		JsonNode questionJs = Json.toJson(question);
+		
+		return ok(questionJs);			
 	}
 	
-	public Result SurveyInvite(Integer id){
-		
-		JsonNode jsNode = request().body().asJson();
-		if (jsNode == null) {
-			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
-		String email = jsNode.findPath("email").textValue();
-					
-		if (email.equals("")) {
-			return status(403, Json.toJson(new Message("empty")));
-		}
-		Email email1 = new Email();
-		email1.setSubject("The invitation to the survey");
-		email1.setFrom("Surveys <from@surveys.com>");
-		email1.addTo(email);
-		email1.setBodyText("You are invited to participate in the survey"
-				+ " http://localhost:9000/app/surveys/" + id + "/answer . ");
-		String ret = mailerClient.send(email1);
-				
-		List<UserAccount> ac = UserAccount.find.select("*").where().eq("email", email).findList();
-		
-		if(ac.isEmpty()){
-			return status(403, Json.toJson(new Message("Not found account!")));
-		}		
-		if(ret == null){			
-			return status(403, Json.toJson(new Message("Problem with send Email")));
-		}		
-		Survey survey = Survey.find.byId(id);
-		SurveyMember sm = new SurveyMember(ac.get(0).login);
-		sm.survey = survey;
-		sm.save();
-		
-		return ok(("Correctly sent invitation"));
-	}
-
 	/**
-	 * The method will fill all Survey answer
-	 * 
-	 * @return All responses from logged user
+	 *  The method will fill all Survey answer  
+	 *   @return All responses from logged user
 	 */
 	public Result fillAnswer(Integer id) {
-
+		
 		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
+		if(surveyJson == null) {
 			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
+		}		
 		String login = session().get("login");
-
-		if (login == null) {
-			return status(404, Json.toJson(new Message("You arent logged in")));
-		}
+		
+		if(login == null){
+			status(404, Json.toJson(new Message("You arent logged in")));
+		}		
 		Survey survey = Survey.find.byId(id);
 		UserAccount userAccount = UserAccount.find.byId(login);
-
-		List<Question> allquestions = Question.find.select("*").where().eq("survey_id", id).findList();
-
+		
+		List<Question> allquestions = Question.find
+	   			 .select("*")
+	             .where()
+	             .eq("survey_id", id)
+	             .findList();
+		
 		String answer;
-		ArrayNode allanswer = (ArrayNode) surveyJson.withArray("Answers");
-		
-		int i = 0; 
-		for(JsonNode x : allanswer){
-			answer = x.get("answer").asText();
+				
+		for(int i=0; i < allquestions.size(); i++){
+			answer =  surveyJson.get("answer"+i).asText();
 			Response repsponse1 = new Response(answer);
 			repsponse1.survey = survey;
 			repsponse1.question = allquestions.get(i);
 			repsponse1.userAccount = userAccount;
-			repsponse1.save();
-			i += 1;
 		}	
-		/*
-		for (int i = 0; i < allquestions.size(); i++) {
-			answer = surveyJson.get("answer" + i).asText();
-			Response repsponse1 = new Response(answer);
-			repsponse1.survey = survey;
-			repsponse1.question = allquestions.get(i);
-			repsponse1.userAccount = userAccount;
-			repsponse1.save();
-		}*/
-		
-		return ok("survey filled");
-	}
-
-	/**
-	 * The method return all answers from logged user from selected survey by id
-	 * 
-	 * @return All responses from logged user
-	 */
-	public Result getUserResult(Integer id) {
-
-		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
-			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
-		String login = session().get("login");
-
-		if (login == null) {
-			return status(404, Json.toJson(new Message("You arent logged in")));
-		}
-		
-		Survey survey = Survey.find.byId(id);
-		List<SurveyMember> surMem = SurveyMember.find.select("*").where().eq("survey_id", id)
-				.eq("login", login).findList();
-		
-
-		if (surMem.isEmpty()) {
-			return status(404, Json.toJson(new Message("You arent member")));
-		}
-				
-		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
-				.eq("user_account_login", login).findList();
-
+		List<Response> allResponse = Response.find
+	   			 .select("*")
+	             .where()
+	             .eq("survey_id", id)
+	             .eq("user_account_login", login)
+	             .findList();
+	  
 		JsonNode ResponseJs = Json.toJson(allResponse);
-
-		return ok(ResponseJs);
+		// This will send recently added question
+		return ok(ResponseJs);		
 	}
-
-	/**
-	 * The method return all answers to Admin user from selected survey by id
-	 * 
-	 * @return All responses from  users from selected survey
-	 */
-	public Result getAdminResult(Integer id) {
-
-		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
-			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
-		String login = session().get("login");
-
-		if (login == null) {
-			return status(404, Json.toJson(new Message("You arent logged in")));
-		}
-		
-		Survey survey = Survey.find.byId(id);
-		if(!survey.adminLogin.equals(login)){			
-			return status(404, Json.toJson(new Message("You arent admin")));			
-		}
-		
-				
-		List<Response> allResponse = Response.find.select("*").where().eq("survey_id", id)
-				.eq("user_account_login", login).findList();
-
-		JsonNode ResponseJs = Json.toJson(allResponse);
-
-		return ok(ResponseJs);
-	}
-
 	
 	/**
-	 * The method return the surveys list which logged user takes part in
-	 * 
-	 * @return All userSurveys list from logged user
+	 *  The method return all responses from logged user
+	 *  @return All responses from logged user
 	 */
-	public Result getUserSurveysId() {
-
-		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
-			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
-		String login = session().get("login");
-
-		if (login == null) {
-			return status(404, Json.toJson(new Message("You arent logged in")));
-		}
-		
-		List<SurveyMember> surMem = SurveyMember.find.select("*").where().eq("login", login).findList();
-		
-
-		if (surMem.isEmpty()) {
-			return status(404, Json.toJson(new Message("You arent member of any survey")));
-		}	
-		
-		JsonNode surveyJs = Json.toJson(surMem);
-	    return ok(surveyJs); 
-
-	}
-
-	/**
-	 * The method return the surveys list which Admin user created
-	 * 
-	 * @return All userSurveys list from Admin user
-	 */
-	public Result getAdminSurveysId() {
-
-		JsonNode surveyJson = request().body().asJson();
-		if (surveyJson == null) {
-			return status(403, Json.toJson(new Message("JSON wanted!")));
-		}
-		String login = session().get("login");
-
-		if (login == null) {
-			return status(404, Json.toJson(new Message("You arent logged in")));
-		}
-		
-		List<Survey> surveylist = Survey.find.select("*").where().eq("adminLogin", login).findList();
-		
-
-		if (surveylist.isEmpty()) {
-			return status(404, Json.toJson(new Message("You arent Admin of any survey")));
-		}	
-		
-		JsonNode surveyJs = Json.toJson(surveylist);
-	    return ok(surveyJs); 
-
-	}
-
-	class Message {
-		public String message;
-
-		public Message(String msg) {
-			message = msg;
-		}
-	}
+	
+     public Result getResult(Integer id)  { 
+    	 
+    	 JsonNode surveyJson = request().body().asJson();
+ 		if(surveyJson == null) {
+ 			return status(403, Json.toJson(new Message("JSON wanted!")));
+ 		} 		
+ 		String login = session().get("login");
+ 		
+ 		if(login == null){
+ 			status(404, Json.toJson(new Message("You arent logged in")));
+ 		}	
+    	 List<Response> allResponse = Response.find
+	   			 .select("*")
+	             .where()
+	             .eq("survey_id", id)
+	             .eq("user_account_login", login)
+	             .findList();
+    	 
+    	 JsonNode ResponseJs = Json.toJson(allResponse);
+    	 
+ 		return ok(ResponseJs);
+     } 
+     
+     class Message{
+    		public String message;
+    		public Message(String msg) {
+    			message = msg;
+    	} 		
+     }
 }
+
 
 class SurveyJson {
 	public Integer id;
-
+	
 	public String name;
 	public String description;
 	public String email;
-	public QuestionJson questions[];
-
-	public SurveyJson(Survey s, Question q[]) {
+	
+	public SurveyJson(Survey s) {
 		id = s.id;
 		name = s.name;
 		description = s.description;
 		email = s.email;
-		this.questions = new QuestionJson[q.length];
-		for(int i = 0; i < q.length; i++){
-			this.questions[i] = new QuestionJson(q[i]);
-			this.questions[i].id=i+1;
-		}
-		Logger.info("Send survey:\n"+Json.toJson(this));
 	}
 }
-
-class QuestionJson {
-	public int id;
-	public String question;
-
-	public QuestionJson(Question q){
-		this.id = q.id;
-		this.question = q.question;
-	}
-}
-
-

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { AlertService, SurveyService } from '../_services/index';
-import { Survey, Question, User } from '../_models/index';
+import { Survey } from '../_models/index';
 
 
 @Component({
@@ -10,11 +10,8 @@ import { Survey, Question, User } from '../_models/index';
 
 export class SurveyViewComponent implements OnInit{
 	model: any = {};
-	answers = [new Question(1, "")];
 	id: any;
-	survey: Survey = new Survey();    //survey
-	currentUser: User;
-	
+	survey: any;
 	loading = false;
 	
 	constructor(
@@ -22,29 +19,22 @@ export class SurveyViewComponent implements OnInit{
 		private router: Router,
 		private service: SurveyService,
 		private alertService: AlertService
-	) {
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
+	) {}
+	
+	ngOnInit() {
 		this.id = +this.route.snapshot.params['id'];
 
 		this.service.getSurvey(this.id)
-            .subscribe(
-				(survey) => {
-					console.log(survey);
-					this.survey = survey.json();
-				},
-				error =>{
-					this.alertService.error(error.json().message);
-				});
-    }
-	
-	ngOnInit() {
-
+		.subscribe(
+			(survey) => this.survey = survey,
+			error =>{
+				this.alertService.error(error);
+			});
 	}
 	
 	answer(){
 		this.loading = true;
-        this.service.fillSurvey(this.id, this.answers)
+        this.service.fillSurvey(this.id)
             .subscribe(
                 data => {
 					console.log(JSON.stringify(data));
@@ -53,7 +43,7 @@ export class SurveyViewComponent implements OnInit{
                 },
                 error => {
 					console.log(JSON.stringify(error));
-                    this.alertService.error(error.json().message);
+                    this.alertService.error(error);
                     this.loading = false;
                 });
 	}

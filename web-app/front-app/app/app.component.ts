@@ -1,9 +1,8 @@
-import { Component, ViewChild } from '@angular/core'
-import { BarsComponent } from './bars/index'
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app',
     templateUrl: 'app.component.html'
 })
 
-export class AppComponent {}
+export class AppComponent { }

@@ -1,8 +1,5 @@
-import {Question} from "../_models/index";
-
 export class Survey {
-    name: String;
-    description: String;
-    email: String;
-    questions: Question[];
+  name: String;
+	description: String;
+	email: String;
 }

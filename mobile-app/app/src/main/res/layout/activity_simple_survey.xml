@@ -11,31 +11,20 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="Survey"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/tvQuestion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/tvMsg"
-        android:text="Question"/>
 
-    <EditText
+    <LinearLayout
+        android:id="@+id/linearMain"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/etAnswer"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/tvQuestion"
-        android:hint="Enter your answer" />
+        android:layout_below="@+id/tvMsg">
+    </LinearLayout>
 
 
     <Button
@@ -45,6 +34,6 @@
         android:id="@+id/bSendAnswer"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/etAnswer" />
+        android:layout_below="@+id/linearMain" />
 
 </RelativeLayout>

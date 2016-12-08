@@ -10,10 +10,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -40,39 +42,49 @@ public class InvitationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String mail = etEmail.getText().toString();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(InvitationActivity.this);
-                builder.setMessage("Invitation email sent")
-                        .setNegativeButton("OK", null)
-                        .create()
-                        .show();
-
                 try {
                     JSONObject jsonBody = new JSONObject();
-                    jsonBody.put("mail", mail);
+                    jsonBody.put("email", mail);
                     final String requestBody = jsonBody.toString();
 
                     new NukeSSLCerts().nuke();
-                    StringRequest stringRequest = new StringRequest(1, "https://survey-innoproject.herokuapp.com/app/invitation", new Response.Listener<String>() {
+                    JsonObjectRequest stringRequest = new JsonObjectRequest(1, "https://survey-innoproject.herokuapp.com/app/invitation",jsonBody, new Response.Listener<JSONObject>() {
                         @Override
-                        public void onResponse(String response) {
-                            etEmail.setText(response);
+                        public void onResponse(JSONObject response) {
 
+                            try{
                                 AlertDialog.Builder builder = new AlertDialog.Builder(InvitationActivity.this);
-                                builder.setMessage(response)
+                                builder.setMessage(response.getString("message"))
                                         .setNegativeButton("OK", null)
                                         .create()
                                         .show();
+                            }catch(JSONException e){
+                                e.printStackTrace();
+                            }
 
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
 
-                            AlertDialog.Builder builder = new AlertDialog.Builder(InvitationActivity.this);
-                            builder.setMessage("Try again")
-                                    .setNegativeButton("OK", null)
-                                    .create()
-                                    .show();
+                            NetworkResponse networkResponse = error.networkResponse;
+                            if (networkResponse != null && networkResponse.statusCode != 200) {
+
+                                String a = new String(networkResponse.data);
+                                try{
+
+                                    JSONObject jsonObj = new JSONObject(a);
+                                    String b = jsonObj.getString("message");
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(InvitationActivity.this);
+                                    builder.setMessage(b)
+                                            .setNegativeButton("OK", null)
+                                            .create()
+                                            .show();
+
+                                }catch(JSONException e){
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }) {
                         @Override
@@ -80,16 +92,6 @@ public class InvitationActivity extends AppCompatActivity {
                             return String.format("application/json; charset=utf-8");
                         }
 
-                        @Override
-                        public byte[] getBody() throws AuthFailureError {
-                            try {
-                                return requestBody == null ? null : requestBody.getBytes("utf-8");
-                            } catch (UnsupportedEncodingException uee) {
-                                VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
-                                        requestBody, "utf-8");
-                                return null;
-                            }
-                        }
                     };
 
                     RequestQueue queue = Volley.newRequestQueue(InvitationActivity.this);
