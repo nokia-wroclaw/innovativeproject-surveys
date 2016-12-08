@@ -21,7 +21,7 @@ public class ActivatorThread extends Thread implements Runnable {
 				e1.printStackTrace();
 			}		
 			
-		    long intervalInMs = 1000*3600; // run every hour
+		    long intervalInMs = 1000*3600; // run every second
 		    long nextRun = System.currentTimeMillis() + intervalInMs;
 		    method();
 		    if (nextRun > System.currentTimeMillis()) {
@@ -43,12 +43,11 @@ public class ActivatorThread extends Thread implements Runnable {
 		
 		Date dat = new Date(System.currentTimeMillis());
 		if (unactiv != null) {
-			Logger.info("Number of inactive accounts " +  unactiv.size());
+			Logger.info("Number of inactive accounts" +  unactiv.size());
 			for (int i = 0; i < unactiv.size(); i++) {
 				if (unactiv.get(i).expiredDate.compareTo(dat) > 0) {  
 					
 				}else{
-					unactiv.get(i).ua.delete();
 					unactiv.get(i).delete();
 					Logger.info("Deleted account");
 		           

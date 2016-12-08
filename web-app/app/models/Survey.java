@@ -27,10 +27,15 @@ public class Survey extends Model{
 	@OneToMany(mappedBy="survey")
 	@JsonBackReference
 	public List<Response> response;
+<<<<<<< HEAD
 	@OneToMany(mappedBy="survey")
 	@JsonBackReference
 	public List<SurveyMember> surveyMember;
 	public String adminLogin;
+=======
+	@ManyToOne
+	public UserAccount userAccount;
+>>>>>>> origin/mobile-application
 
 	
 	public static Finder<Integer, Survey> find = new Finder<Integer, Survey>(Survey.class);
@@ -70,4 +75,19 @@ public class Survey extends Model{
 	}
 	
 	
+}
+
+class SurveyJson {
+	public Integer id;
+	
+	public String name;
+	public String description;
+	public String email;
+	
+	public SurveyJson(Survey s) {
+		id = s.id;
+		name = s.name;
+		description = s.description;
+		email = s.email;
+	}
 }
