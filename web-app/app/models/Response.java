@@ -1,13 +1,11 @@
 package models;
 
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
 import com.avaje.ebean.Model;
-
+import cryptography.PasswordCrypt;
 
 @Entity
 public class Response extends Model {
@@ -21,20 +19,32 @@ public class Response extends Model {
 	public Question question;
 	@ManyToOne
 	public Survey survey;
-	@ManyToOne
-	public UserAccount userAccount;
+
+	public String keyToUser;
 	
 	public static Finder<Integer, Response> find = new Finder<Integer, Response>(Response.class);
 	
 	public Response(String answer) {
-		this.answer = answer;	
+		this.answer = answer;
 	}
 	
 	public void setAnswer(String name){
 		this.answer = name;
 	}
-	
+
 	public String getAnswer(){
-		return answer;
+		return this.answer;
+	}
+
+	public void setUser(String userPassword){
+		try{
+			this.keyToUser = PasswordCrypt.createPassword(userPassword+this.id);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public boolean checkUser(String password){
+		return PasswordCrypt.checkPassword(password+this.id, this.keyToUser);
 	}
 }

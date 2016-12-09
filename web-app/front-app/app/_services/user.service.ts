@@ -13,7 +13,7 @@ export class UserService {
         var header = new Headers();
         header.append("Content-Type", "application/json");
         var options = new RequestOptions({
-            method: RequestMethod.Put,
+            method: RequestMethod.Post,
             url: this.host+'app/user/' + user.login,
             headers: header,
             body: JSON.stringify(user),

@@ -53,6 +53,7 @@ public class AccountController extends Controller {
 			return status(403, Json.toJson(new Message("Bad password")));
 		}
 		session().put("login", login);
+		session().put("password", password);
 		JsonNode jsUser = Json.toJson(new AccountJson(ua));
 		return ok(jsUser);
 	}
@@ -69,7 +70,7 @@ public class AccountController extends Controller {
 
 	}
 
-	public Result userPut(String login) {
+	public Result userPost(String login) {
 
 		JsonNode registerJson = request().body().asJson();
 		if (registerJson == null) {

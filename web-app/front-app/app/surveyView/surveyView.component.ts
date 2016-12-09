@@ -74,6 +74,7 @@ export class SurveyViewComponent {
             });
             i++;
         }
+        console.log(JSON.stringify(answers));
         this.service.fillSurvey(this.id, {Answers: answers})
             .subscribe(
                 data => {
@@ -84,10 +85,6 @@ export class SurveyViewComponent {
                     this.alertService.error(error.message);
                     this.loading = false;
                 });
-    }
-
-    isAnswered() {
-        return this.answered;
     }
 
 }

@@ -15,11 +15,11 @@
 #Back-end routes
 POST	/app/login						controllers.AccountController.loginPost
 POST	/app/invitation				    controllers.AccountController.invite
-PUT		/app/user/:login				controllers.AccountController.userPut(login: String)
+POST    /app/user/:login				controllers.AccountController.userPost(login: String)
 
 PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
 
-POST  	/app/surveys				    controllers.SurveyController.SurveyPut
+POST  	/app/surveys				    controllers.SurveyController.SurveyPost
 POST  	/app/surveys/:id/invitation		controllers.SurveyController.SurveyInvite(id: Integer)
 POST  	/app/surveys/:id			    controllers.SurveyController.SurveyModification(id: Integer)
 POST    /app/surveys/:id/answer         controllers.SurveyController.fillAnswer(id: Integer)

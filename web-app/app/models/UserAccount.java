@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import cryptography.PasswordCrypt;
 
 import com.avaje.ebean.Model;
 
@@ -20,9 +21,7 @@ public class UserAccount extends Model{
 	@Column(length=100)
 	public String firstName;
 	@Column(length=100)
-	public String lastName;	
-	@OneToMany
-	public List<Response> response;	
+	public String lastName;
 
 	
 	public Date createdTime = new Date();
@@ -32,7 +31,11 @@ public class UserAccount extends Model{
 	public UserAccount(String login, String password,
 			String firstName, String lastName, String email) {
 		this.login = login;
-		this.password = password;
+		try {
+			this.password = PasswordCrypt.createPassword(password);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.email = email;
@@ -41,16 +44,6 @@ public class UserAccount extends Model{
 	}
 	
 	public boolean checkPassword(String password) {
-		return password.equals(this.password);
+		return PasswordCrypt.checkPassword(password, this.password);
 	}
-	
-	public void setResponse(List<Response> response){
-		this.response = response;
-	}
-	
-	public List<Response> getResponse(){
-		return response;
-	}
-
-	
 }
