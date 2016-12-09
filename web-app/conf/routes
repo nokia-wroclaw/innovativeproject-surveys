@@ -20,9 +20,17 @@ PUT		/app/user/:login				controllers.AccountController.userPut(login: String)
 PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
 
 POST  	/app/surveys				    controllers.SurveyController.SurveyPut
-GET	    /app/surveys/:id				controllers.SurveyController.getResult(id: Integer)
-POST	/app/surveys/:id/add			controllers.SurveyController.addQuestion(id: Integer)
+POST  	/app/surveys/:id/invitation		controllers.SurveyController.SurveyInvite(id: Integer)
+POST  	/app/surveys/:id			    controllers.SurveyController.SurveyModification(id: Integer)
 POST    /app/surveys/:id/answer         controllers.SurveyController.fillAnswer(id: Integer)
+
+GET	    /app/surveys/result/UserList			controllers.SurveyController.getUserSurveysId
+GET	    /app/surveys/result/AdminList			controllers.SurveyController.getAdminSurveysId
+
+GET	    /app/surveys/:id/admin/result			controllers.SurveyController.getAdminResult(id: Integer)
+GET	    /app/surveys/:id/user/result			controllers.SurveyController.getUserResult(id: Integer)
+GET     /app/surveys/:id                controllers.SurveyController.getSurvey(id: Integer)
+
 
 #Deleting all accounts (only for develop)
 GET		/app/clean							controllers.AccountController.clean
@@ -41,10 +49,14 @@ GET		/css/*file						controllers.Assets.at(path = "/public/stylesheets", file)
 GET		/node_modules/*file				controllers.Assets.at(path = "/public/node_modules", file)
 
 GET		/								controllers.HomeController.index()
-GET		/surveyView/:id					controllers.HomeController.index1(id: String)
+GET		/home							controllers.HomeController.index()
+GET		/info							controllers.HomeController.index()
+GET		/surveyView/:id					controllers.HomeController.indexWithView(id: Integer)
 GET		/login							controllers.HomeController.index()
 GET		/register						controllers.HomeController.index()
 GET		/surveyCreate					controllers.HomeController.index()
+GET		/invite     					controllers.HomeController.index()
+GET     /surveyResult/:id               controllers.HomeController.indexWithResult(id: Integer)
 
 #Swagger
 #GET     /swagger.json           controllers.ApiHelpController.getResources

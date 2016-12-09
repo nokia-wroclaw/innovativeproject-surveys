@@ -30,11 +30,11 @@ public class Response extends Model {
 		this.answer = answer;	
 	}
 	
-	public void setQuestion(String name){
+	public void setAnswer(String name){
 		this.answer = name;
 	}
 	
-	public String getQuestion(){
+	public String getAnswer(){
 		return answer;
 	}
 }
