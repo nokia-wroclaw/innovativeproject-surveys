@@ -16,7 +16,8 @@ public class Question extends Model {
 	@Id
 	public Integer id;
 	public String question;
-
+	public String questionType;
+	
 	@ManyToOne
 	public Survey survey;
 	@OneToMany(mappedBy="question")
@@ -34,6 +35,14 @@ public class Question extends Model {
 	
 	public String getQuestion(){
 		return question;
+	}
+	
+	public void setQuestionType(String questionType){
+		this.questionType = questionType;
+	}
+	
+	public String getQuestionType(){
+		return questionType;
 	}
 	
 }
