@@ -1,6 +1,8 @@
 package com.toshiba.ankiety;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,10 +21,14 @@ public class UserAreaActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String name = intent.getStringExtra("login");
 
+
+        SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+        preferences.getString("cookie", "");
+
         TextView tvWelcomeMsg = (TextView) findViewById(R.id.tvWelcomeMsg);
 
         // Display user details
-        String message = name + "! Welcome to survey app with anonimity";
+        String message = name + "! Welcome to survey app with anonimity ";
         tvWelcomeMsg.setText(message);
 
         tvInviteLink.setOnClickListener(new View.OnClickListener() {
@@ -33,12 +39,13 @@ public class UserAreaActivity extends AppCompatActivity {
             }
         });
 
-        bGo.setOnClickListener(new View.OnClickListener() {
+        /*bGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserAreaActivity.this, GetSurveyActivity.class);
                 UserAreaActivity.this.startActivity(intent);
             }
         });
+        */
     }
 }

@@ -10,11 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -70,37 +72,57 @@ public class RegisterActivity extends AppCompatActivity {
                         jsonBody.put("email", email);
                         jsonBody.put("password", password);
                         jsonBody.put("rePassword", password2);
-                        final String requestBody = jsonBody.toString();
 
                         new NukeSSLCerts().nuke();
-                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, "https://survey-innoproject.herokuapp.com/app/user/"+login, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
 
-                                if (response.equals("Registrated")){
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                    builder.setMessage("Thank you for registration! Please activate account")
-                                            .setNegativeButton("OK", null)
-                                            .create()
-                                            .show();
+                        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.PUT, "https://survey-innoproject.herokuapp.com/app/user/" + login, jsonBody, new Response.Listener<JSONObject>() {
+
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                try{
+
+                                    if (response.getString("message").equals("Registrated")) {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                        builder.setMessage("Thank you for registration! Please activate account")
+                                                .setNegativeButton("OK", null)
+                                                .create()
+                                                .show();
+                                    } else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                        builder.setMessage(response.toString())
+                                                .setNegativeButton("OK", null)
+                                                .create()
+                                                .show();
+                                    }
+                                }catch(JSONException e){
+                                    e.printStackTrace();
                                 }
-                                else{
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                    builder.setMessage(response)
-                                            .setNegativeButton("OK", null)
-                                            .create()
-                                            .show();
-                                }
+
+
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                builder.setMessage("Try again")
-                                        .setNegativeButton("OK", null)
-                                        .create()
-                                        .show();
+                                NetworkResponse networkResponse = error.networkResponse;
+                                if (networkResponse != null && networkResponse.statusCode == 403) {
+
+                                    String a = new String(networkResponse.data);
+                                    try{
+
+                                        JSONObject jsonObj = new JSONObject(a);
+                                        String b = jsonObj.getString("message");
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                                        builder.setMessage(b)
+                                                .setNegativeButton("OK", null)
+                                                .create()
+                                                .show();
+
+                                    }catch(JSONException e){
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         }) {
                             @Override
@@ -108,16 +130,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 return String.format("application/json; charset=utf-8");
                             }
 
-                            @Override
-                            public byte[] getBody() throws AuthFailureError {
-                                try {
-                                    return requestBody == null ? null : requestBody.getBytes("utf-8");
-                                } catch (UnsupportedEncodingException uee) {
-                                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
-                                            requestBody, "utf-8");
-                                    return null;
-                                }
-                            }
                         };
 
                         RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);

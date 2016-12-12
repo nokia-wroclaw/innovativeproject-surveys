@@ -2,7 +2,9 @@ package com.toshiba.ankiety;
 
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,11 +53,24 @@ import javax.net.ssl.HttpsURLConnection;
 
 import cz.msebera.android.httpclient.HttpStatus;
 
+import android.content.Context;
+
 public class LoginActivity extends AppCompatActivity {
+
+    public static final String PREFERENCES_NAME = "myPreferences";
+    private static final String PREFERENCES_TEXT_FIELD = "textField";
+
+    public SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        Context context;
+        context = getApplicationContext();
+        preferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
 
         final EditText etUsername = (EditText) findViewById(R.id.etUsername);
         final EditText etPassword = (EditText) findViewById(R.id.etPassword);
@@ -83,12 +98,12 @@ public class LoginActivity extends AppCompatActivity {
                     jsonBody.put("password", password);
 
                     new NukeSSLCerts().nuke();
-                    
+
                     JsonObjectRequest stringRequest = new JsonObjectRequest(1, "https://survey-innoproject.herokuapp.com/app/login", jsonBody, new Response.Listener<JSONObject>() {
+
 
                         @Override
                         public void onResponse(JSONObject response) {
-
                             etUsername.setText("");
                             etPassword.setText("");
 
@@ -115,11 +130,11 @@ public class LoginActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
 
                             NetworkResponse networkResponse = error.networkResponse;
+
                             if (networkResponse != null && networkResponse.statusCode == 403) {
 
                                 String a = new String(networkResponse.data);
                                 try{
-
                                     JSONObject jsonObj = new JSONObject(a);
                                     String b = jsonObj.getString("message");
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
@@ -139,6 +154,26 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public String getBodyContentType() {
                             return String.format("application/json; charset=utf-8");
+                        }
+
+                        @Override
+                        protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+
+                            if (response.headers.containsKey("Set-Cookie")) {
+                                String cookie = response.headers.get("Set-Cookie");
+                                if (cookie.length() > 0) {
+                                    String[] splitCookie = cookie.split(";");
+                                    String[] splitSessionId = splitCookie[0].split("=");
+                                    Log.d("cookie", splitSessionId[1] + "=" + splitSessionId[2]);
+
+                                    SharedPreferences.Editor preferencesEditor = preferences.edit();
+                                    preferencesEditor.putString("cookie", "PLAY-SESSION="+ splitSessionId[1]+"="+splitSessionId[2]);
+                                    preferencesEditor.putString("PLAY-SESSION", username);
+                                    preferencesEditor.commit();
+                                }
+                            }
+
+                            return super.parseNetworkResponse(response);
                         }
 
                     };
