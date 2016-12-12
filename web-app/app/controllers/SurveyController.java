@@ -25,7 +25,7 @@ public class SurveyController extends Controller {
     private String host = "https://survey-innoproject.herokuapp.com";
 
     public Result getSurvey(Integer id) {
-        String login = session().get("login");
+    	String login = session().get("login");
         if (login == null) {
             String session = request().getHeader("PLAY-SESSION");
             if (session != null) {
@@ -34,7 +34,7 @@ public class SurveyController extends Controller {
             return status(404, Json.toJson(new Message("You arent logged in")));
         }
         Logger.info("login " + login);
-        UserAccount ua = UserAccount.find.byId(login);
+       // UserAccount ua = UserAccount.find.byId(login);
 
         Survey survey = Survey.find.byId(id);
         if (survey == null) {
@@ -56,10 +56,35 @@ public class SurveyController extends Controller {
 		}*/
         Question[] questionArray = new Question[survey.question.size()];
         questionArray = survey.question.toArray(questionArray);
+      
+       
+        List<ResponseChoice> resQuestions = new LinkedList<ResponseChoice>();
+        
         for (Question q : survey.question) {
+        	if(q.questionType.equals("multi")){
+        		List<ResponseChoice> listResponseChoice  = ResponseChoice.find.select("*").where().eq("question_id", q.id).findList();
+        		
+        		// second option
+               /* ResponseChoice[] listResponseChoice1 = new ResponseChoice[q.responseChoice.size()];
+        		listResponseChoice1 = survey.question.toArray(listResponseChoice1); */
+        	        
+        		if(listResponseChoice.isEmpty()){
+        			
+        		}else{      			
+        			for(ResponseChoice x : listResponseChoice){
+            			resQuestions.add(x);
+            		}
+        		}
+        		
+        		
+        	}	
             Logger.info("get Question: " + q.getQuestion());
             Logger.info("get Question id: " + q.id);
         }
+        
+        ResponseChoice arrayResponse[] = new ResponseChoice[resQuestions.size()];
+        arrayResponse = resQuestions.toArray(arrayResponse);
+        
         SurveyJson surveyJson = new SurveyJson(survey, questionArray);
         return ok(Json.toJson(surveyJson));
     }
