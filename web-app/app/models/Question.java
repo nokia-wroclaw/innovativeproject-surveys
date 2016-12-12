@@ -22,6 +22,8 @@ public class Question extends Model {
 	public Survey survey;
 	@OneToMany(mappedBy="question")
 	public List<Response> response;
+	@OneToMany
+	public List<ResponseChoice> responseChoice;
 	
 	public static Finder<Integer, Question> find = new Finder<Integer, Question>(Question.class);
 	
