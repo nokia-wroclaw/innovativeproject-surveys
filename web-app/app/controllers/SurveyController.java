@@ -10,12 +10,10 @@ import play.libs.Json;
 import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Result;
-
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 
 public class SurveyController extends Controller {
 
@@ -74,9 +72,7 @@ public class SurveyController extends Controller {
         			for(ResponseChoice x : listResponseChoice){
             			resQuestions.add(x);
             		}
-        		}
-        		
-        		
+        		}        		    		
         	}	
             Logger.info("get Question: " + q.getQuestion());
             Logger.info("get Question id: " + q.id);
@@ -85,7 +81,7 @@ public class SurveyController extends Controller {
         ResponseChoice arrayResponse[] = new ResponseChoice[resQuestions.size()];
         arrayResponse = resQuestions.toArray(arrayResponse);
         
-        SurveyJson surveyJson = new SurveyJson(survey, questionArray);
+        SurveyJson surveyJson = new SurveyJson(survey, questionArray, arrayResponse);
         return ok(Json.toJson(surveyJson));
     }
 
@@ -160,7 +156,7 @@ public class SurveyController extends Controller {
         ResponseChoice arrayResponse[] = new ResponseChoice[list.size()];
         arrayResponse = list.toArray(arrayResponse);
         
-        JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest));
+        JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest, arrayResponse));
 
         /*Email email1 = new Email();
         email1.setSubject("Created Survey " + name);
@@ -492,13 +488,42 @@ public class SurveyController extends Controller {
 }
 
 class SurveyJson {
-    public Integer id;
+	public Integer id;
 
     public String name;
     public String description;
     public String email;
     public QuestionJson questions[];
-
+    public ResponseQuestionJson responseQuestions[];
+    
+    public SurveyJson(Survey s, Question q[], ResponseChoice r[]) {
+        id = s.id;
+        name = s.name;
+        description = s.description;
+        email = s.email;
+        this.questions = new QuestionJson[q.length];
+        this.responseQuestions = new ResponseQuestionJson[r.length];
+        
+        for (int i = 0; i < r.length; i++) {
+            this.responseQuestions[i] = new ResponseQuestionJson(r[i]);
+            this.responseQuestions[i].id = i + 1;
+        }
+             
+        for (int i = 0; i < q.length; i++) {        	
+        	if(q[i].questionType.equals("multi")){      		
+        		for(int i2=0; i < responseQuestions.length; i2++){   			
+        			if(responseQuestions[i2].questionId == q[i].id){
+        				this.responseQuestions[i2].questionId = i + 1;
+        			}       			
+        		}       		
+        	}      	
+            this.questions[i] = new QuestionJson(q[i]);
+            this.questions[i].id = i + 1;
+        }
+        
+        Logger.info("Send survey:\n" + Json.toJson(this));
+    }
+    
     public SurveyJson(Survey s, Question q[]) {
         id = s.id;
         name = s.name;
@@ -509,6 +534,7 @@ class SurveyJson {
             this.questions[i] = new QuestionJson(q[i]);
             this.questions[i].id = i + 1;
         }
+       
         Logger.info("Send survey:\n" + Json.toJson(this));
     }
 
@@ -519,21 +545,57 @@ class SurveyJson {
         description = s.description;
         email = s.email;
         this.questions = new QuestionJson[q.size()];
-        for (int i = 0; i < q.size(); i++) {
+       
+        List<ResponseChoice> resQuestions2;
+        List<ResponseChoice> resQuestions = new LinkedList<ResponseChoice>();
+        
+        for (Question qe : s.question) {
+        	if(qe.questionType.equals("multi")){
+        		resQuestions2 = ResponseChoice.find.select("*").where().eq("question_id", qe.id).findList();
+        		
+        		for(ResponseChoice x : resQuestions2){
+        			resQuestions.add(x);
+        		}
+        	}	
+            Logger.info("get Question: " + qe.getQuestion());
+            Logger.info("get Question id: " + qe.id);
+        }
+        
+        ResponseChoice r[] = new ResponseChoice[resQuestions.size()];
+        r = resQuestions.toArray(r);
+        
+        this.responseQuestions = new ResponseQuestionJson[r.length];
+        
+        for (int i = 0; i < r.length; i++) {
+            this.responseQuestions[i] = new ResponseQuestionJson(r[i]);
+            this.responseQuestions[i].id = i + 1;
+        }
+             
+        for (int i = 0; i < q.size(); i++) {        	
+        	if(q.get(i).questionType.equals("multi")){      		
+        		for(int i2=0; i < responseQuestions.length; i2++){   			
+        			if(responseQuestions[i2].questionId == q.get(i).id){
+        				this.responseQuestions[i2].questionId = i + 1;
+        			}       			
+        		}       		
+        	}      	
             this.questions[i] = new QuestionJson(q.get(i));
             this.questions[i].id = i + 1;
         }
-        Logger.info("Send survey:\n" + Json.toJson(this));
+        
+        Logger.info("Send survey:\n" + Json.toJson(this)); 
     }
 }
 
 class QuestionJson {
     public int id;
     public String question;
-
+    public String questionType;
+    
     public QuestionJson(Question q) {
         this.id = q.id;
         this.question = q.question;
+        this.questionType = q.questionType;
     }
 }
 
