@@ -537,6 +537,20 @@ class QuestionJson {
     }
 }
 
+class ResponseQuestionJson {
+    public int id;
+    public String response;
+    public Boolean isSelected;
+    public int questionId;
+    
+    public ResponseQuestionJson(ResponseChoice q) {
+        this.id = q.id;
+        this.response = q.text;
+        this.isSelected = q.isSelected;
+        this.questionId = q.questions.id;
+    }
+}
+
 class ResponseJson {
     public int id;
     public String answer;
