@@ -2,6 +2,8 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+
+import controllers.SurveyController.Message;
 import models.*;
 import play.Logger;
 import play.libs.Json;
@@ -11,6 +13,7 @@ import play.mvc.Result;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -68,7 +71,7 @@ public class SurveyController extends Controller {
      */
     public Result SurveyPost() {
 
-        JsonNode surveyJson = request().body().asJson();
+    	JsonNode surveyJson = request().body().asJson();
         String login = session().get("login");
         if (login == null) {
             String session = request().getHeader("PLAY-SESSION");
@@ -82,11 +85,7 @@ public class SurveyController extends Controller {
         String name = surveyJson.get("name").asText();
         String description = surveyJson.get("description").asText();
         String email = surveyJson.get("email").asText();
-
-
-        if (login == null) {
-            return status(404, Json.toJson(new Message("You arent logged in")));
-        }
+ 
         UserAccount ua = UserAccount.find.byId(login);
 
         Survey survey = new Survey(name, description, email);
@@ -94,19 +93,48 @@ public class SurveyController extends Controller {
         survey.save();
 
         ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
+        List<ResponseChoice> list = new LinkedList<ResponseChoice>();
+        
+        int i = 1;
         Logger.info("allquestions: " + Json.stringify(allquestion));
         for (JsonNode x : allquestion) {
             String quest = x.get("question").asText();
+            String questType = x.get("questionType").asText();
             Logger.info("post question: " + quest);
             Question question = new Question(quest);
             Logger.info("post question in Question: " + question.question);
             question.survey = survey;
+            question.setQuestionType(questType);
             question.save();
+            
+            if(questType.equals("open")){
+                i += 1;
+            }else if(questType.equals("true/false")){
+                i += 1;
+            }else if(questType.equals("multi")){
+          
+            	 ArrayNode questionResponse = (ArrayNode) surveyJson.withArray("possibleAnswers"+i);
+            	          	 
+            	  for (JsonNode x1 : questionResponse) {
+            		  String questResponse = x1.get("response").asText();
+            		  ResponseChoice res = new ResponseChoice(questResponse);
+            		  res.setIsSelected(false);
+            		  res.setQuestion(question);
+            		  res.save();  	
+            		  list.add(res);
+            	  }   	  
+            	 i += 1;
+            }
+       
         }
 
         List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
         Question arrayquest[] = new Question[allquestions.size()];
         arrayquest = allquestions.toArray(arrayquest);
+        
+        ResponseChoice arrayResponse[] = new ResponseChoice[list.size()];
+        arrayResponse = list.toArray(arrayResponse);
+        
         JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest));
 
         /*Email email1 = new Email();
