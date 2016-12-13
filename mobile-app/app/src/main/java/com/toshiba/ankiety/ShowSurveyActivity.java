@@ -46,8 +46,9 @@ public class ShowSurveyActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String id = intent.getStringExtra("id");
+        final String name = intent.getStringExtra("name");
 
-        tvMsg.setText("Survey id: "+ id);
+        tvMsg.setText(name);
 
 
         tvAnswers.setText("Answers:\n\n");
