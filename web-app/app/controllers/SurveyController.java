@@ -58,13 +58,13 @@ public class SurveyController extends Controller {
        
         List<ResponseChoice> resQuestions = new LinkedList<ResponseChoice>();
         
-        for (Question q : survey.question) {
+        /*for (Question q : survey.question) {
         	if(q.questionType.equals("multi")){
         		List<ResponseChoice> listResponseChoice  = ResponseChoice.find.select("*").where().eq("question_id", q.id).findList();
         		
         		// second option
                /* ResponseChoice[] listResponseChoice1 = new ResponseChoice[q.responseChoice.size()];
-        		listResponseChoice1 = survey.question.toArray(listResponseChoice1); */
+        		listResponseChoice1 = survey.question.toArray(listResponseChoice1);
         	        
         		if(listResponseChoice.isEmpty()){
         			
@@ -76,12 +76,12 @@ public class SurveyController extends Controller {
         	}	
             Logger.info("get Question: " + q.getQuestion());
             Logger.info("get Question id: " + q.id);
-        }
+        }*/
         
-        ResponseChoice arrayResponse[] = new ResponseChoice[resQuestions.size()];
-        arrayResponse = resQuestions.toArray(arrayResponse);
+        /*ResponseChoice arrayResponse[] = new ResponseChoice[resQuestions.size()];
+        arrayResponse = resQuestions.toArray(arrayResponse);*/
         
-        SurveyJson surveyJson = new SurveyJson(survey, questionArray, arrayResponse);
+        SurveyJson surveyJson = new SurveyJson(survey/*, questionArray, arrayResponse*/);
         return ok(Json.toJson(surveyJson));
     }
 
@@ -126,7 +126,7 @@ public class SurveyController extends Controller {
             Logger.info("post question in Question: " + question.question);
             question.survey = survey;
             question.setQuestionType(questType);
-            question.save();
+
             
             if(questType.equals("open")){
                 i += 1;
@@ -134,19 +134,21 @@ public class SurveyController extends Controller {
                 i += 1;
             }else if(questType.equals("multi")){
           
-            	 ArrayNode questionResponse = (ArrayNode) surveyJson.withArray("possibleAnswers"+i);
+            	 ArrayNode questionResponse = (ArrayNode) x.withArray("possibleAnswers");
             	          	 
             	  for (JsonNode x1 : questionResponse) {
             		  String questResponse = x1.get("response").asText();
             		  ResponseChoice res = new ResponseChoice(questResponse);
             		  res.setIsSelected(false);
             		  res.setQuestion(question);
-            		  res.save();  	
+            		  res.save();
+            		  question.responseChoice.add(res);
             		  list.add(res);
             	  }   	  
             	 i += 1;
             }
-       
+            question.save();
+            survey.question.add(question);
         }
 
         List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
@@ -156,7 +158,7 @@ public class SurveyController extends Controller {
         ResponseChoice arrayResponse[] = new ResponseChoice[list.size()];
         arrayResponse = list.toArray(arrayResponse);
         
-        JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest, arrayResponse));
+        JsonNode surveyJs = Json.toJson(new SurveyJson(survey/*, arrayquest, arrayResponse*/));
 
         /*Email email1 = new Email();
         email1.setSubject("Created Survey " + name);
@@ -223,7 +225,7 @@ public class SurveyController extends Controller {
         List<Question> allquestions1 = Question.find.select("*").where().eq("survey_id", survey.id).findList();
         Question arrayquest[] = new Question[allquestions1.size()];
         arrayquest = allquestions1.toArray(arrayquest);
-        JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest));
+        JsonNode surveyJs = Json.toJson(new SurveyJson(survey/*, arrayquest*/));
 
         return ok(surveyJs);
     }
@@ -496,15 +498,20 @@ class SurveyJson {
     public QuestionJson questions[];
     public ResponseQuestionJson responseQuestions[];
     
-    public SurveyJson(Survey s, Question q[], ResponseChoice r[]) {
+    public SurveyJson(Survey s/*, Question q[], ResponseChoice r[]*/) {
         id = s.id;
         name = s.name;
         description = s.description;
         email = s.email;
-        this.questions = new QuestionJson[q.length];
-        this.responseQuestions = new ResponseQuestionJson[r.length];
+        this.questions = new QuestionJson[s.question.size()];
+        //this.responseQuestions = new ResponseQuestionJson[r.length];
+        int i = 0;
+        for(Question q : s.question){
+            this.questions[i] = new QuestionJson(q);
+            i++;
+        }
         
-        for (int i = 0; i < r.length; i++) {
+        /*for (int i = 0; i < r.length; i++) {
             this.responseQuestions[i] = new ResponseQuestionJson(r[i]);
             this.responseQuestions[i].id = i + 1;
         }
@@ -519,12 +526,12 @@ class SurveyJson {
         	}      	
             this.questions[i] = new QuestionJson(q[i]);
             this.questions[i].id = i + 1;
-        }
+        }*/
         
         Logger.info("Send survey:\n" + Json.toJson(this));
     }
     
-    public SurveyJson(Survey s, Question q[]) {
+    /*public SurveyJson(Survey s, Question q[]) {
         id = s.id;
         name = s.name;
         description = s.description;
@@ -584,18 +591,27 @@ class SurveyJson {
         }
         
         Logger.info("Send survey:\n" + Json.toJson(this)); 
-    }
+    }*/
 }
 
 class QuestionJson {
     public int id;
     public String question;
     public String questionType;
+    public String[] possibleAnswers;
     
     public QuestionJson(Question q) {
         this.id = q.id;
         this.question = q.question;
         this.questionType = q.questionType;
+        if(this.questionType.equals("multi")) {
+            this.possibleAnswers = new String[q.responseChoice.size()];
+            int i = 0;
+            for(ResponseChoice rc : q.responseChoice){
+                this.possibleAnswers[i] = rc.text;
+                i++;
+            }
+        }
     }
 }
 
