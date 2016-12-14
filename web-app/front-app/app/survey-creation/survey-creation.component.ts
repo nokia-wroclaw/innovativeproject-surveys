@@ -101,7 +101,7 @@ export class SurveyCreationComponent {
         this.model.questions = [];
         let id = 1;
         for (let ques of this.questions.value) {
-            this.model.questions.push(new Question(id, ques.question));
+            this.model.questions.push(new Question(id, ques.question, '', []));
             id++;
         }
         console.log(JSON.stringify(this.model));
