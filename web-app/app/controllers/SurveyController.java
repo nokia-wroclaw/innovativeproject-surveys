@@ -35,6 +35,8 @@ public class SurveyController extends Controller {
        // UserAccount ua = UserAccount.find.byId(login);
 
         Survey survey = Survey.find.byId(id);
+        Logger.info("Survey GET:");
+        Logger.info("Question 0 id: "+survey.question.get(0).id);
         if (survey == null) {
             return status(404, Json.toJson(new Message("Survey not find")));
         }
@@ -111,7 +113,6 @@ public class SurveyController extends Controller {
 
         Survey survey = new Survey(name, description, email);
         survey.adminLogin = ua.login;
-        survey.save();
 
         ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
         List<ResponseChoice> list = new LinkedList<ResponseChoice>();
@@ -159,7 +160,7 @@ public class SurveyController extends Controller {
         arrayResponse = list.toArray(arrayResponse);
         
         JsonNode surveyJs = Json.toJson(new SurveyJson(survey/*, arrayquest, arrayResponse*/));
-
+        survey.save();
         /*Email email1 = new Email();
         email1.setSubject("Created Survey " + name);
         email1.setFrom("Surveys <from@surveys.com>");
@@ -601,6 +602,7 @@ class QuestionJson {
     public String[] possibleAnswers;
     
     public QuestionJson(Question q) {
+        q = Question.find.byId(q.id);
         this.id = q.id;
         this.question = q.question;
         this.questionType = q.questionType;
