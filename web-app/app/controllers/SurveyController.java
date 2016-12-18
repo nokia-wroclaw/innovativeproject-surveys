@@ -582,6 +582,7 @@ class SurveyJson {
         int i = 0;
         for(Question q : s.question){
             this.questions[i] = new QuestionJson(q);  
+            this.questions[i].id = i+1; 
             i++;
         }
         /*
