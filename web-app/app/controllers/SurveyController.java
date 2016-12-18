@@ -106,7 +106,7 @@ public class SurveyController extends Controller {
                  reponse1.keyToUser = "dfs";
                  reponse1.save();
                  
-                 survey.response.add(reponse1);
+               //  survey.response.add(reponse1);
              
      
 
@@ -569,7 +569,7 @@ class SurveyJson {
     public String description;
     public String email;
     public QuestionJson questions[];
-    public ResponseJson responseQuestions[];
+   // public ResponseJson responseQuestions[];
     
     public SurveyJson(Survey s/*, Question q[], ResponseChoice r[]*/) {
         id = s.id;
@@ -577,20 +577,20 @@ class SurveyJson {
         description = s.description;
         email = s.email;
         this.questions = new QuestionJson[s.question.size()];
-        this.responseQuestions = new ResponseJson[s.response.size()];
+       // this.responseQuestions = new ResponseJson[s.response.size()];
         //this.responseQuestions = new ResponseQuestionJson[r.length];
         int i = 0;
         for(Question q : s.question){
             this.questions[i] = new QuestionJson(q);  
             i++;
         }
-        
+        /*
         int i2 = 0;
         for(Response q2 : s.response){
             this.responseQuestions[i2] = new ResponseJson(q2,i2);  
             i2++;
         }
-        
+        */
         
         Logger.info("Send survey:\n" + Json.toJson(this));
     }
