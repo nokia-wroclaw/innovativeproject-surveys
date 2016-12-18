@@ -145,6 +145,27 @@ public class SurveyController extends Controller {
 
     return ok(ResponseJs);
     }
+    
+    public Result re5(){
+    Survey survey = Survey.find.byId(1);
+    List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
+    Logger.info(allquestions.size() + " : size");
+    int i = 0;
+
+    for (Question x : allquestions) {
+        String quest = "Pytanie5";
+        x.setQuestion(quest);
+        x.update();
+        //survey.question.get(i).question = quest;
+       // survey.update();
+        i += 1;
+    }
+    Survey survey2 = Survey.find.byId(1);
+    JsonNode surveyJs = Json.toJson(new SurveyJson(survey/*, arrayquest*/));
+    Question quest = Question.find.byId(1);
+    return ok(surveyJs);
+}
+    
     public Result getSurvey(Integer id) {
     	String login = session().get("login");
         if (login == null) {
@@ -275,31 +296,58 @@ public class SurveyController extends Controller {
         String name = surveyJson.get("name").asText();
         String description = surveyJson.get("description").asText();
         String email = surveyJson.get("email").asText();
-        if (login == null) {
-            return status(404, Json.toJson(new Message("You arent logged in")));
-        }
-
-        UserAccount ua = UserAccount.find.byId(login);
+        
+        findSurvey.setName(name);
+        findSurvey.setDescription(description);
+        findSurvey.setEmail(email);
+        findSurvey.update();
 
         if (!findSurvey.adminLogin.equals(login)) {
             return status(403, Json.toJson(new Message("You dont have permission.")));
         }
         Survey survey = Survey.find.byId(id);
         List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-
+       
         int i = 0;
+        int temp2 = 0; 
         ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
         for (JsonNode x : allquestion) {
             String quest = x.get("question").asText();
-            allquestions.get(i).question = quest;
-            allquestions.get(i).update();
+            String questType = x.get("questionType").asText();
+            allquestions.get(i).setQuestion(quest);
+            allquestions.get(i).setQuestionType(questType);
+            allquestions.get(i).update();        
+            temp2 = 0;
+            if(questType.equals("multi")){
+            	
+             List<ResponseChoice> allquestions2 = ResponseChoice.find.select("*").where().eq("question_id",allquestions.get(i).id).findList();
+           	 ArrayNode questionResponse = (ArrayNode) x.withArray("possibleAnswers");
+           	          	 
+           	  for (JsonNode x1 : questionResponse) {
+           		  
+           		 if(questionResponse.size() <= allquestions2.size()){
+           		  String questResponse = x1.get("response").asText();
+           		  allquestions2.get(temp2).setAnswer(questResponse);;
+           		  allquestions2.get(temp2).setIsSelected(false);
+           		  allquestions2.get(temp2).update();
+           		  temp2++;
+           		 }
+           		  //Add new possible answer to database
+           		  if(questionResponse.size() > allquestions2.size()){
+           			  
+           		  String questResponse = x1.get("response").asText();
+           		  ResponseChoice res = new ResponseChoice(questResponse);
+           		  res.setIsSelected(false);
+           		  res.setQuestion(allquestions.get(i));
+           		  res.save();
+           		  allquestions.get(i).responseChoice.add(res); 
+           		  allquestions.get(i).update();         	 
+           		  }
+           	  } 
+        }
             i += 1;
         }
-
-        List<Question> allquestions1 = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-        Question arrayquest[] = new Question[allquestions1.size()];
-        arrayquest = allquestions1.toArray(arrayquest);
-        JsonNode surveyJs = Json.toJson(new SurveyJson(survey/*, arrayquest*/));
+        JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
 
         return ok(surveyJs);
     }
