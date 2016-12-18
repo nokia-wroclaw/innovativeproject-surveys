@@ -22,6 +22,129 @@ public class SurveyController extends Controller {
 
     private String host = "https://survey-innoproject.herokuapp.com";
 
+    public Result re(){
+
+    	String name = "Ankieta1";
+        String description = "Nic";
+        String email = "mail";
+ 
+
+        Survey survey = new Survey(name, description, email);
+        survey.adminLogin = "Bartek";
+        survey.save();
+        List<ResponseChoice> list = new LinkedList<ResponseChoice>();
+        
+        int i = 1;
+            String quest = "Pytanie1";
+            String questType = "multi";
+            Question question = new Question(quest);
+            question.survey = survey;
+            question.setQuestionType(questType);
+            question.save();
+            
+            if(questType.equals("open")){
+              
+            }else if(questType.equals("true/false")){
+            
+            }else if(questType.equals("multi")){
+            	          	 
+            		  String questResponse = "odp1";
+            		  ResponseChoice res = new ResponseChoice(questResponse);
+            		  res.setIsSelected(false);
+            		  res.setQuestion(question);
+            		  res.save();
+            		  question.responseChoice.add(res);
+            		//  list.add(res);
+            		  
+            		  String questResponse2 = "odp2";
+            		  ResponseChoice res2 = new ResponseChoice(questResponse2);
+            		  res2.setIsSelected(false);
+            		  res2.setQuestion(question);
+            		  res2.save();
+            		  question.responseChoice.add(res2);
+            		 // list.add(res2); 
+            		  
+            		 // question.setAnswers(list);
+            		  question.update();
+            		  
+            		//  survey.save();
+            	        
+            	        survey.question.add(question);
+            	        survey.update();
+            	  }   	  
+   
+        
+        List<Question> allquestions = Question.find.select("*").where().eq("survey_id", 1).findList();
+        Question arrayquest[] = new Question[allquestions.size()];
+        arrayquest = allquestions.toArray(arrayquest);
+        
+        //ResponseChoice arrayResponse[] = new ResponseChoice[list.size()];
+       // arrayResponse = list.toArray(arrayResponse);
+        
+     
+        JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
+       
+    	
+    	return ok(surveyJs);
+    }
+    
+    public Result re3(){
+    	
+    	 Survey survey = Survey.find.byId(1);
+        
+
+         List<Question> allquestions = Question.find.select("*").where().eq("survey_id", 1).findList();
+
+        
+
+         String answer = "true||false||false";
+ 
+                 Response reponse1 = new Response(answer);
+                 reponse1.setAnswer(answer);
+                 reponse1.survey = survey;
+                 reponse1.question = allquestions.get(0);
+                 reponse1.keyToUser = "dfs";
+                 reponse1.save();
+                 
+                 survey.response.add(reponse1);
+             
+     
+
+                 JsonNode surveyJs = Json.toJson(new SurveyJson(survey));	
+             	return ok(surveyJs);
+    }
+    
+    public Result re2(){
+    	
+    	Question quest = Question.find.byId(1);
+    	Survey survey = Survey.find.byId(1);
+    	
+    	  JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
+          
+      	
+      	return ok(surveyJs);
+    }
+    
+    public Result re4(){
+    List<ResponseJson> response = new ArrayList<ResponseJson>();
+    List<Question> allQuestion = Question.find.where().eq("survey_id", 1).findList();
+    for (Question q : allQuestion) {
+        List<Response> allResponse = Response.find.where()
+                .eq("survey_id", 1)
+                .eq("question_id", q.id)
+                .findList();
+        int i = 0;
+        for (Response r : allResponse) {
+            response.add(new ResponseJson(r, i));
+            i++;
+        }
+    }
+
+
+    JsonNode ResponseJs = Json.toJson(response);
+
+    return ok(ResponseJs);
+    }
     public Result getSurvey(Integer id) {
     	String login = session().get("login");
         if (login == null) {
@@ -35,6 +158,8 @@ public class SurveyController extends Controller {
        // UserAccount ua = UserAccount.find.byId(login);
 
         Survey survey = Survey.find.byId(id);
+        Logger.info("Survey GET:");
+        Logger.info("Question 0 id: "+survey.question.get(0).id);
         if (survey == null) {
             return status(404, Json.toJson(new Message("Survey not find")));
         }
@@ -48,40 +173,8 @@ public class SurveyController extends Controller {
         if (!survey.adminLogin.equals(login) && !member) {
             return status(403, "Don't have permission");
         }
-        /*List<Question> questions = Question.find.select("*").where().eq("survey_id", id).findList();
-        for(Question q : questions){
-			q = Question.find.byId(q.id);
-		}*/
-        Question[] questionArray = new Question[survey.question.size()];
-        questionArray = survey.question.toArray(questionArray);
-      
-       
-        List<ResponseChoice> resQuestions = new LinkedList<ResponseChoice>();
         
-        for (Question q : survey.question) {
-        	if(q.questionType.equals("multi")){
-        		List<ResponseChoice> listResponseChoice  = ResponseChoice.find.select("*").where().eq("question_id", q.id).findList();
-        		
-        		// second option
-               /* ResponseChoice[] listResponseChoice1 = new ResponseChoice[q.responseChoice.size()];
-        		listResponseChoice1 = survey.question.toArray(listResponseChoice1); */
-        	        
-        		if(listResponseChoice.isEmpty()){
-        			
-        		}else{      			
-        			for(ResponseChoice x : listResponseChoice){
-            			resQuestions.add(x);
-            		}
-        		}        		    		
-        	}	
-            Logger.info("get Question: " + q.getQuestion());
-            Logger.info("get Question id: " + q.id);
-        }
-        
-        ResponseChoice arrayResponse[] = new ResponseChoice[resQuestions.size()];
-        arrayResponse = resQuestions.toArray(arrayResponse);
-        
-        SurveyJson surveyJson = new SurveyJson(survey, questionArray, arrayResponse);
+        SurveyJson surveyJson = new SurveyJson(survey);
         return ok(Json.toJson(surveyJson));
     }
 
@@ -112,9 +205,8 @@ public class SurveyController extends Controller {
         Survey survey = new Survey(name, description, email);
         survey.adminLogin = ua.login;
         survey.save();
-
+        
         ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
-        List<ResponseChoice> list = new LinkedList<ResponseChoice>();
         
         int i = 1;
         Logger.info("allquestions: " + Json.stringify(allquestion));
@@ -134,41 +226,25 @@ public class SurveyController extends Controller {
                 i += 1;
             }else if(questType.equals("multi")){
           
-            	 ArrayNode questionResponse = (ArrayNode) surveyJson.withArray("possibleAnswers"+i);
+            	 ArrayNode questionResponse = (ArrayNode) x.withArray("possibleAnswers");
             	          	 
             	  for (JsonNode x1 : questionResponse) {
             		  String questResponse = x1.get("response").asText();
             		  ResponseChoice res = new ResponseChoice(questResponse);
             		  res.setIsSelected(false);
             		  res.setQuestion(question);
-            		  res.save();  	
-            		  list.add(res);
-            	  }   	  
+            		  res.save();
+            		  question.responseChoice.add(res); 
+            	  } 
+            	 question.update();
             	 i += 1;
             }
-       
+            survey.question.add(question);
+            survey.update();
         }
-
-        List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-        Question arrayquest[] = new Question[allquestions.size()];
-        arrayquest = allquestions.toArray(arrayquest);
         
-        ResponseChoice arrayResponse[] = new ResponseChoice[list.size()];
-        arrayResponse = list.toArray(arrayResponse);
-        
-        JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest, arrayResponse));
-
-        /*Email email1 = new Email();
-        email1.setSubject("Created Survey " + name);
-        email1.setFrom("Surveys <from@surveys.com>");
-        email1.addTo(email);
-        email1.setBodyText(
-                "Survey was created on "+host+"/app/surveyView/" + survey.id + ". ");
-        String id = mailerClient.send(email1);
-
-        if (id == null) {
-            return status(404, Json.toJson(new Message("Problem with send Email")));
-        }*/
+        JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
+     
         return ok(surveyJs);
     }
 
@@ -223,7 +299,7 @@ public class SurveyController extends Controller {
         List<Question> allquestions1 = Question.find.select("*").where().eq("survey_id", survey.id).findList();
         Question arrayquest[] = new Question[allquestions1.size()];
         arrayquest = allquestions1.toArray(arrayquest);
-        JsonNode surveyJs = Json.toJson(new SurveyJson(survey, arrayquest));
+        JsonNode surveyJs = Json.toJson(new SurveyJson(survey/*, arrayquest*/));
 
         return ok(surveyJs);
     }
@@ -246,7 +322,6 @@ public class SurveyController extends Controller {
         email1.setBodyText("You are invited to participate in the survey on "
                 + host + "/app/surveysView/"+id+".");
         String ret = mailerClient.send(email1);
-
         if (ret == null) {
             return status(403, Json.toJson(new Message("Problem with send Email")));
         }*/
@@ -494,108 +569,56 @@ class SurveyJson {
     public String description;
     public String email;
     public QuestionJson questions[];
-    public ResponseQuestionJson responseQuestions[];
+    public ResponseJson responseQuestions[];
     
-    public SurveyJson(Survey s, Question q[], ResponseChoice r[]) {
+    public SurveyJson(Survey s/*, Question q[], ResponseChoice r[]*/) {
         id = s.id;
         name = s.name;
         description = s.description;
         email = s.email;
-        this.questions = new QuestionJson[q.length];
-        this.responseQuestions = new ResponseQuestionJson[r.length];
+        this.questions = new QuestionJson[s.question.size()];
+        this.responseQuestions = new ResponseJson[s.response.size()];
+        //this.responseQuestions = new ResponseQuestionJson[r.length];
+        int i = 0;
+        for(Question q : s.question){
+            this.questions[i] = new QuestionJson(q);  
+            i++;
+        }
         
-        for (int i = 0; i < r.length; i++) {
-            this.responseQuestions[i] = new ResponseQuestionJson(r[i]);
-            this.responseQuestions[i].id = i + 1;
+        int i2 = 0;
+        for(Response q2 : s.response){
+            this.responseQuestions[i2] = new ResponseJson(q2,i2);  
+            i2++;
         }
-             
-        for (int i = 0; i < q.length; i++) {        	
-        	if(q[i].questionType.equals("multi")){      		
-        		for(int i2=0; i < responseQuestions.length; i2++){   			
-        			if(responseQuestions[i2].questionId == q[i].id){
-        				this.responseQuestions[i2].questionId = i + 1;
-        			}       			
-        		}       		
-        	}      	
-            this.questions[i] = new QuestionJson(q[i]);
-            this.questions[i].id = i + 1;
-        }
+        
         
         Logger.info("Send survey:\n" + Json.toJson(this));
     }
     
-    public SurveyJson(Survey s, Question q[]) {
-        id = s.id;
-        name = s.name;
-        description = s.description;
-        email = s.email;
-        this.questions = new QuestionJson[q.length];
-        for (int i = 0; i < q.length; i++) {
-            this.questions[i] = new QuestionJson(q[i]);
-            this.questions[i].id = i + 1;
-        }
-       
-        Logger.info("Send survey:\n" + Json.toJson(this));
-    }
-
-    public SurveyJson(Survey s) {
-        List<Question> q = s.question;
-        id = s.id;
-        name = s.name;
-        description = s.description;
-        email = s.email;
-        this.questions = new QuestionJson[q.size()];
-       
-        List<ResponseChoice> resQuestions2;
-        List<ResponseChoice> resQuestions = new LinkedList<ResponseChoice>();
-        
-        for (Question qe : s.question) {
-        	if(qe.questionType.equals("multi")){
-        		resQuestions2 = ResponseChoice.find.select("*").where().eq("question_id", qe.id).findList();
-        		
-        		for(ResponseChoice x : resQuestions2){
-        			resQuestions.add(x);
-        		}
-        	}	
-            Logger.info("get Question: " + qe.getQuestion());
-            Logger.info("get Question id: " + qe.id);
-        }
-        
-        ResponseChoice r[] = new ResponseChoice[resQuestions.size()];
-        r = resQuestions.toArray(r);
-        
-        this.responseQuestions = new ResponseQuestionJson[r.length];
-        
-        for (int i = 0; i < r.length; i++) {
-            this.responseQuestions[i] = new ResponseQuestionJson(r[i]);
-            this.responseQuestions[i].id = i + 1;
-        }
-             
-        for (int i = 0; i < q.size(); i++) {        	
-        	if(q.get(i).questionType.equals("multi")){      		
-        		for(int i2=0; i < responseQuestions.length; i2++){   			
-        			if(responseQuestions[i2].questionId == q.get(i).id){
-        				this.responseQuestions[i2].questionId = i + 1;
-        			}       			
-        		}       		
-        	}      	
-            this.questions[i] = new QuestionJson(q.get(i));
-            this.questions[i].id = i + 1;
-        }
-        
-        Logger.info("Send survey:\n" + Json.toJson(this)); 
-    }
+ 
 }
 
 class QuestionJson {
     public int id;
     public String question;
     public String questionType;
+    public String[] possibleAnswers;
     
     public QuestionJson(Question q) {
+        q = Question.find.byId(q.id);
         this.id = q.id;
         this.question = q.question;
         this.questionType = q.questionType;
+        if(this.questionType.equals("multi")) {
+        	   Logger.info("1: " + this.questionType.equals("multi")); 
+            this.possibleAnswers = new String[q.responseChoice.size()];
+            Logger.info("2: " + q.responseChoice.size()); 
+            int i = 0;
+            for(ResponseChoice rc : q.responseChoice){
+                this.possibleAnswers[i] = rc.text;
+                i++;
+            }
+        }
     }
 }
 
@@ -609,7 +632,7 @@ class ResponseQuestionJson {
         this.id = q.id;
         this.response = q.text;
         this.isSelected = q.isSelected;
-        this.questionId = q.questions.id;
+        this.questionId = q.question.id;
     }
 }
 
@@ -622,4 +645,3 @@ class ResponseJson {
         this.id = id;
     }
 }
-

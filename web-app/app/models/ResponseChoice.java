@@ -14,7 +14,7 @@ public class ResponseChoice extends Model {
 	public Integer id;	
 	public String text;
 	@ManyToOne
-	public Question questions;
+	public Question question;
 	public Boolean isSelected;
 	
 	public static Finder<Integer, ResponseChoice> find = new Finder<Integer, ResponseChoice>(ResponseChoice.class);
@@ -35,9 +35,9 @@ public class ResponseChoice extends Model {
 		return isSelected;
 	}
 	public void setQuestion(Question question){
-		this.questions = question;
+		this.question = question;
 	}
 	public Question getQuestion(){
-		return questions;
+		return question;
 	}
 }
