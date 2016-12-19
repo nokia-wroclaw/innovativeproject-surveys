@@ -44,9 +44,27 @@ export class SurveyViewComponent {
                                 this.oldAnswers = response;
                                 for (let i = 0; i < this.survey.questions.length; i++) {
                                     if (typeof this.oldAnswers === "undefined" || i < this.oldAnswers.length) {
-                                        this.answers.push(new FormControl(this.oldAnswers[i].answer));
+                                        if(this.survey.questions[i].questionType != 'multi')
+                                            this.answers.push(new FormControl(this.oldAnswers[i].answer));
+                                        else {
+                                            let answ = this.oldAnswers[i].split("||");
+                                            let contr = new Array<FormControl>();
+                                            for (let a of answ) {
+                                                contr.push(new FormControl(a));
+                                            }
+                                            this.answers.push(new FormArray(contr));
+                                        }
                                     } else {
-                                        this.answers.push(new FormControl(''));
+                                        if(this.survey.questions[i].questionType != 'multi')
+                                            this.answers.push(new FormControl(''));
+                                        else {
+                                            let contr = new Array<FormControl>();
+                                            for (let a of this.survey.questions[i].possibleAnswers) {
+                                                contr.push(new FormControl('false'));
+                                            }
+                                            this.answers.push(new FormArray(contr));
+                                        }
+
                                     }
                                 }
                                 if (typeof this.oldAnswers !== "undefined" && this.oldAnswers.length > 0) {
@@ -67,17 +85,31 @@ export class SurveyViewComponent {
         this.loading = true;
         let answers = [];
         let i = 1;
-        for (let ans of this.answers.value) {
-            answers.push({
-                id: i,
-                answer: ans
-            });
+        for (let ans of this.answers.controls) {
+            if(this.survey.questions[i-1].questionType !== "multi")
+                answers.push({
+                    id: i,
+                    answer: ans.value
+                });
+            else {
+                let ansarr = ans as FormArray;
+                let ansstr = '';
+                for(let a of ansarr.controls){
+                    ansstr += a.value + '||';
+                }
+                ansstr = ansstr.slice(0, ansstr.length-3);
+                console.log(ansstr);
+                answers.push({
+                    id: i,
+                    answer: ansstr
+                });
+            }
             i++;
         }
         console.log(JSON.stringify(answers));
         this.service.fillSurvey(this.id, {Answers: answers})
             .subscribe(
-                data => {
+                () => {
                     this.alertService.success('Survey filled', true);
                     this.router.navigate(['/']);
                 },
