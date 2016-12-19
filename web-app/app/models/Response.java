@@ -1,6 +1,7 @@
 package models;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -19,7 +20,7 @@ public class Response extends Model {
 	public Question question;
 	@ManyToOne
 	public Survey survey;
-
+	@Column(length=1000)
 	public String keyToUser;
 	
 	public static Finder<Integer, Response> find = new Finder<Integer, Response>(Response.class);

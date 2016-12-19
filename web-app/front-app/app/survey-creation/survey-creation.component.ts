@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AlertService, SurveyService} from '../_services/index';
 import {Survey, User, Question} from '../_models/index';
-import {FormBuilder, FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
+import {FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 
 @Component({
@@ -12,6 +12,7 @@ export class SurveyCreationComponent {
     model: Survey = new Survey();
     currentUser: User;
     loading = false;
+    submitted = false;
     memb = [];
 
     surveyForm = new FormGroup({
@@ -19,7 +20,11 @@ export class SurveyCreationComponent {
         description: new FormControl('', Validators.required),
         questions: new FormArray(
             [new FormGroup({
-                question: new FormControl('', Validators.required)
+                type: new FormControl('open', Validators.required),
+                question: new FormControl('', Validators.required),
+                answers: new FormArray([
+                    new FormControl('')
+                ], Validators.required)
             })],
             Validators.required
         ),
@@ -33,7 +38,6 @@ export class SurveyCreationComponent {
 
     constructor(private surveyService: SurveyService,
                 private alertService: AlertService,
-                private formBuilder: FormBuilder,
                 private router: Router) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     }
@@ -47,6 +51,10 @@ export class SurveyCreationComponent {
     }
 
     create() {
+        this.submitted = true;
+        if(!this.surveyForm.valid){
+            return;
+        }
         this.loading = true;
         this.buildSurvey();
         this.surveyService.createSurvey(this.model)
@@ -72,9 +80,23 @@ export class SurveyCreationComponent {
             );
     }
 
+    addPossibleAnswer(i: number) {
+        let answers = this.questions.at(i).get("answers") as FormArray;
+        answers.push(new FormControl(''));
+    }
+
+    removePossibleAnswer(i: number, j: number) {
+        let answers = this.questions.at(i).get("answers") as FormArray;
+        answers.removeAt(j);
+    }
+
     addQuestion() {
         this.questions.push(new FormGroup({
-            question: new FormControl('', Validators.required)
+            type: new FormControl('open', Validators.required),
+            question: new FormControl('', Validators.required),
+            answers: new FormArray([
+                new FormControl('')
+            ], Validators.required)
         }));
         console.log(this.questions.value);
     }
@@ -100,14 +122,31 @@ export class SurveyCreationComponent {
         this.model.email = this.currentUser.email;
         this.model.questions = [];
         let id = 1;
-        for (let ques of this.questions.value) {
-            this.model.questions.push(new Question(id, ques.question));
+        for (let ques of this.questions.controls) {
+            let possibleAnswers = [];
+            if (ques.get('type').value === 'multi') {
+                let answers = ques.get('answers') as FormArray;
+                for (let answer of answers.controls)
+                    possibleAnswers.push({
+                        response: answer.value
+                    });
+            }
+            this.model.questions
+                .push(new Question(id, ques.get('question').value, ques.get('type').value, possibleAnswers));
             id++;
         }
         console.log(JSON.stringify(this.model));
         for (let mem of this.members.value) {
-            console.log("member "+JSON.stringify(mem));
+            console.log("member " + JSON.stringify(mem));
             this.memb.push({email: mem.member});
         }
+    }
+
+    isQuestionType(i: number, type: String): boolean {
+        return this.questions.at(i).get("type").value == type;
+    }
+
+    isFormError(formControl: FormControl){
+        return (this.submitted && !formControl.valid);
     }
 }

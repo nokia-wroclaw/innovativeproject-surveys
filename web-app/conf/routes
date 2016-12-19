@@ -12,6 +12,12 @@
 # Map static resources from the /public folder to the /assets URL path
 #GET     /exp/assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
+GET      /app/re 						controllers.SurveyController.re
+GET      /app/re2 						controllers.SurveyController.re2
+GET      /app/re3 						controllers.SurveyController.re3
+GET      /app/re4 						controllers.SurveyController.re4
+GET      /app/re5 						controllers.SurveyController.re5
+
 #Back-end routes
 POST	/app/login						controllers.AccountController.loginPost
 POST	/app/invitation				    controllers.AccountController.invite

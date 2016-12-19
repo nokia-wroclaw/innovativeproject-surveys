@@ -70,3 +70,13 @@ table button {
     background-color: rgba(0, 0, 0, 0.6);
     border-radius: 15px;
 }
+
+.i-rmv {
+    color: red;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+input {
+    margin-bottom: 5px;
+}

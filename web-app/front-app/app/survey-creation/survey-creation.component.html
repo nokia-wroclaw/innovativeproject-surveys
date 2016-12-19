@@ -1,62 +1,90 @@
 <div class="col-md-6 col-md-offset-3">
     <h1>Create survey!</h1>
-    <form [formGroup]="surveyForm" (ngSubmit)="create()" novalidate>
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" formControlName="name"/>
-            <div *ngIf="!surveyForm.controls.name.valid" class="help-block">Name is required</div>
+    <form [formGroup]="surveyForm" novalidate>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(surveyForm.get('name'))}">
+            <label for="name">Name:</label>
+            <input id="name" type="text" class="form-control" formControlName="name"/>
+            <span *ngIf="isFormError(surveyForm.get('name'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(surveyForm.get('name'))" class="help-block">Name is required</div>
         </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-            <input type="text" class="form-control" formControlName="description"/>
-            <div *ngIf="!surveyForm.controls.description.valid" class="help-block">Description is required</div>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(surveyForm.get('description'))}">
+            <label for="description">Description:</label>
+            <input id="description" type="text" class="form-control" formControlName="description"/>
+            <span *ngIf="isFormError(surveyForm.get('description'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(surveyForm.get('description'))" class="help-block">Description is required</div>
         </div>
         <h3>Members' emails</h3>
         <div formArrayName="members">
-            <div class="form-group" *ngFor="let mem of members.controls; let i = index">
-                <div [formGroupName]="i">
-                    <p><input type="text" class="form-control" formControlName="member"/></p>
-                    <div *ngIf="!surveyForm.controls.members.controls[i].valid" class="help-block">Member is
+            <div *ngFor="let mem of members.controls; let i = index">
+                <div class="form-group has-feedback" [formGroupName]="i"
+                     [ngClass]="{'has-error': isFormError(mem)}">
+                    <input type="text" class="form-control" formControlName="member"/>
+                    <span data-toggle="tooltip" title="Remove this member"
+                          *ngIf="i!=0 || members.controls.length > 1"
+                          class="glyphicon glyphicon-remove form-control-feedback i-rmv"
+                          (click)="removeMember(i)"></span>
+                    <div *ngIf="isFormError(mem)" class="help-block">Member is
                         required
                     </div>
-                    <p>
-                        <button [disabled]="loading" class="btn btn-primary" (click)="removeMember(i)">Remove member
-                        </button>
-                    </p>
                 </div>
             </div>
-            <p>
-                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="addMember()">Add member
-                </button>
-            </p>
+            <button [disabled]="loading" type="button" class="btn btn-primary" (click)="addMember()">
+                Add member
+            </button>
         </div>
-        <!--<div class="form-group" [hidden]="true">
-            <label for="email">E-mail</label>
-            <input type="text" class="form-control" formControlName="email"/>
-            <div *ngIf="!surveyForm.controls.email.valid" class="help-block">E-mail is required</div>
-        </div>-->
         <div formArrayName="questions">
-            <div class="form-group" *ngFor="let qwe of questions.controls; let i = index">
-                <div [formGroupName]="i">
-                    <label for="question">{{i+1}}. Question</label>
-                    <p><input type="text" class="form-control" formControlName="question"/></p>
-                    <div *ngIf="!surveyForm.controls.questions.controls[i].valid" class="help-block">Question is
-                        required
+            <div *ngFor="let qwe of questions.controls; let i = index">
+                <div class="form-group" [formGroupName]="i">
+                    <h4>{{i+1}}. Question</h4>
+                    <label>Type of question:</label>
+                    <select class="form-control" formControlName="type">
+                        <option value="open">Open question</option>
+                        <option value="true/false">Yes or no question</option>
+                        <option value='multi'>Multiple choice question</option>
+                    </select>
+                    <div class="has-feedback" [ngClass]="{'has-error': isFormError(qwe)}">
+                        <label>Question:</label>
+                        <input type="text" class="form-control" formControlName="question"/>
+                        <span data-toggle="tooltip" title="Remove this question"
+                              *ngIf="i!=0 || questions.controls.length > 1"
+                              class="glyphicon glyphicon-remove form-control-feedback i-rmv"
+                              (click)="removeQuestion(i)"></span>
+                        <div *ngIf="isFormError(qwe)" class="help-block">Question is
+                            required
+                        </div>
                     </div>
-                    <p *ngIf="i!=0">
-                        <button [disabled]="loading" class="btn btn-primary" (click)="removeQuestion(i)">Remove question
+                    <div *ngIf="isQuestionType(i, 'multi')">
+                        <div formArrayName="answers">
+                            <div *ngFor="let pans of questions.at(i).get('answers').controls; let j = index">
+                                <div class="has-feedback" [ngClass]="{'has-error': isFormError(pans)}">
+                                    <label [attr.for]="'answer-'+i+'-'+j">Answer {{j+1}}:</label>
+                                    <input id="answer-{{i}}-{{j}}" formControlName="{{j}}" type="text"
+                                           class="form-control"/>
+                                    <span data-toggle="tooltip" title="Remove this answer"
+                                          *ngIf="j!=0 || qwe.get('answers').controls.length > 1"
+                                          class="glyphicon glyphicon-remove form-control-feedback i-rmv"
+                                          (click)="removePossibleAnswer(i, j)"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <button [disabled]="loading" type="button" class="btn btn-primary"
+                                (click)="addPossibleAnswer(i)">
+                            Add answer
                         </button>
-                    </p>
+                    </div>
                 </div>
             </div>
-            <p>
-                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="addQuestion()">Add question
-                </button>
-            </p>
         </div>
+        <p>
+            <button [disabled]="loading" type="button" class="btn btn-primary" (click)="addQuestion()">Add question
+            </button>
+        </p>
         <div class="form-group">
             <p>
-                <button [disabled]="loading || !surveyForm.valid" class="btn btn-primary">Create</button>
+                <button [disabled]="loading" class="btn btn-primary" (click)="create()">Create
+                </button>
             </p>
             <img *ngIf="loading"
                  src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
