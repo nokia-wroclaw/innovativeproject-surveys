@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import controllers.SurveyController.Message;
 import models.*;
+import json.*;
 import play.Logger;
 import play.libs.Json;
 import play.libs.mailer.MailerClient;
@@ -21,150 +22,6 @@ public class SurveyController extends Controller {
     MailerClient mailerClient;
 
     private String host = "https://survey-innoproject.herokuapp.com";
-
-    public Result re(){
-
-    	String name = "Ankieta1";
-        String description = "Nic";
-        String email = "mail";
- 
-
-        Survey survey = new Survey(name, description, email);
-        survey.adminLogin = "Bartek";
-        survey.save();
-        List<ResponseChoice> list = new LinkedList<ResponseChoice>();
-        
-        int i = 1;
-            String quest = "Pytanie1";
-            String questType = "multi";
-            Question question = new Question(quest);
-            question.survey = survey;
-            question.setQuestionType(questType);
-            question.save();
-            
-            if(questType.equals("open")){
-              
-            }else if(questType.equals("true/false")){
-            
-            }else if(questType.equals("multi")){
-            	          	 
-            		  String questResponse = "odp1";
-            		  ResponseChoice res = new ResponseChoice(questResponse);
-            		  res.setIsSelected(false);
-            		  res.setQuestion(question);
-            		  res.save();
-            		  question.responseChoice.add(res);
-            		//  list.add(res);
-            		  
-            		  String questResponse2 = "odp2";
-            		  ResponseChoice res2 = new ResponseChoice(questResponse2);
-            		  res2.setIsSelected(false);
-            		  res2.setQuestion(question);
-            		  res2.save();
-            		  question.responseChoice.add(res2);
-            		 // list.add(res2); 
-            		  
-            		 // question.setAnswers(list);
-            		  question.update();
-            		  
-            		//  survey.save();
-            	        
-            	        survey.question.add(question);
-            	        survey.update();
-            	  }   	  
-   
-        
-        List<Question> allquestions = Question.find.select("*").where().eq("survey_id", 1).findList();
-        Question arrayquest[] = new Question[allquestions.size()];
-        arrayquest = allquestions.toArray(arrayquest);
-        
-        //ResponseChoice arrayResponse[] = new ResponseChoice[list.size()];
-       // arrayResponse = list.toArray(arrayResponse);
-        
-     
-        JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
-       
-    	
-    	return ok(surveyJs);
-    }
-    
-    public Result re3(){
-    	
-    	 Survey survey = Survey.find.byId(1);
-        
-
-         List<Question> allquestions = Question.find.select("*").where().eq("survey_id", 1).findList();
-
-        
-
-         String answer = "true||false||false";
- 
-                 Response reponse1 = new Response(answer);
-                 reponse1.setAnswer(answer);
-                 reponse1.survey = survey;
-                 reponse1.question = allquestions.get(0);
-                 reponse1.keyToUser = "dfs";
-                 reponse1.save();
-                 
-               //  survey.response.add(reponse1);
-             
-     
-
-                 JsonNode surveyJs = Json.toJson(new SurveyJson(survey));	
-             	return ok(surveyJs);
-    }
-    
-    public Result re2(){
-    	
-    	Question quest = Question.find.byId(1);
-    	Survey survey = Survey.find.byId(1);
-    	
-    	  JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
-          
-      	
-      	return ok(surveyJs);
-    }
-    
-    public Result re4(){
-    List<ResponseJson> response = new ArrayList<ResponseJson>();
-    List<Question> allQuestion = Question.find.where().eq("survey_id", 1).findList();
-    for (Question q : allQuestion) {
-        List<Response> allResponse = Response.find.where()
-                .eq("survey_id", 1)
-                .eq("question_id", q.id)
-                .findList();
-        int i = 0;
-        for (Response r : allResponse) {
-            response.add(new ResponseJson(r, i));
-            i++;
-        }
-    }
-
-
-    JsonNode ResponseJs = Json.toJson(response);
-
-    return ok(ResponseJs);
-    }
-    
-    public Result re5(){
-    Survey survey = Survey.find.byId(1);
-    List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-    Logger.info(allquestions.size() + " : size");
-    int i = 0;
-
-    for (Question x : allquestions) {
-        String quest = "Pytanie5";
-        x.setQuestion(quest);
-        x.update();
-        //survey.question.get(i).question = quest;
-       // survey.update();
-        i += 1;
-    }
-    Survey survey2 = Survey.find.byId(1);
-    JsonNode surveyJs = Json.toJson(new SurveyJson(survey/*, arrayquest*/));
-    Question quest = Question.find.byId(1);
-    return ok(surveyJs);
-}
     
     public Result getSurvey(Integer id) {
     	String login = session().get("login");
@@ -176,7 +33,6 @@ public class SurveyController extends Controller {
             return status(404, Json.toJson(new Message("You arent logged in")));
         }
         Logger.info("login " + login);
-       // UserAccount ua = UserAccount.find.byId(login);
 
         Survey survey = Survey.find.byId(id);
         Logger.info("Survey GET:");
@@ -527,7 +383,6 @@ public class SurveyController extends Controller {
             }
         }
 
-
         JsonNode ResponseJs = Json.toJson(response);
 
         return ok(ResponseJs);
@@ -559,10 +414,6 @@ public class SurveyController extends Controller {
             result.add(new SurveyJson(survey));
         }
 
-		/*if (surMem.isEmpty()) {
-            return status(404, Json.toJson(new Message("You arent member of any survey")));
-		}*/
-
         JsonNode surveyJs = Json.toJson(result);
         return ok(surveyJs);
 
@@ -592,9 +443,6 @@ public class SurveyController extends Controller {
             result.add(new SurveyJson(survey));
         }
 
-		/*if (surveylist.isEmpty()) {
-            return status(404, Json.toJson(new Message("You arent Admin of any survey")));
-		}*/
 
         JsonNode surveyJs = Json.toJson(result);
         return ok(surveyJs);
@@ -610,87 +458,3 @@ public class SurveyController extends Controller {
     }
 }
 
-class SurveyJson {
-	public Integer id;
-
-    public String name;
-    public String description;
-    public String email;
-    public QuestionJson questions[];
-   // public ResponseJson responseQuestions[];
-    
-    public SurveyJson(Survey s/*, Question q[], ResponseChoice r[]*/) {
-        id = s.id;
-        name = s.name;
-        description = s.description;
-        email = s.email;
-        this.questions = new QuestionJson[s.question.size()];
-       // this.responseQuestions = new ResponseJson[s.response.size()];
-        //this.responseQuestions = new ResponseQuestionJson[r.length];
-        int i = 0;
-        for(Question q : s.question){
-            this.questions[i] = new QuestionJson(q);  
-            this.questions[i].id = i+1; 
-            i++;
-        }
-        /*
-        int i2 = 0;
-        for(Response q2 : s.response){
-            this.responseQuestions[i2] = new ResponseJson(q2,i2);  
-            i2++;
-        }
-        */
-        
-        Logger.info("Send survey:\n" + Json.toJson(this));
-    }
-    
- 
-}
-
-class QuestionJson {
-    public int id;
-    public String question;
-    public String questionType;
-    public String[] possibleAnswers;
-    
-    public QuestionJson(Question q) {
-        q = Question.find.byId(q.id);
-        this.id = q.id;
-        this.question = q.question;
-        this.questionType = q.questionType;
-        if(this.questionType.equals("multi")) {
-        	   Logger.info("1: " + this.questionType.equals("multi")); 
-            this.possibleAnswers = new String[q.responseChoice.size()];
-            Logger.info("2: " + q.responseChoice.size()); 
-            int i = 0;
-            for(ResponseChoice rc : q.responseChoice){
-                this.possibleAnswers[i] = rc.text;
-                i++;
-            }
-        }
-    }
-}
-
-class ResponseQuestionJson {
-    public int id;
-    public String response;
-    public Boolean isSelected;
-    public int questionId;
-    
-    public ResponseQuestionJson(ResponseChoice q) {
-        this.id = q.id;
-        this.response = q.text;
-        this.isSelected = q.isSelected;
-        this.questionId = q.question.id;
-    }
-}
-
-class ResponseJson {
-    public int id;
-    public String answer;
-
-    public ResponseJson(Response answer, int id) {
-        this.answer = answer.answer;
-        this.id = id;
-    }
-}

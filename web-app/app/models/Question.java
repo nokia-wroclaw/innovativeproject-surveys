@@ -1,22 +1,16 @@
 package models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.avaje.ebean.Model;
 import com.avaje.ebean.Model.Finder;
-import com.avaje.ebean.annotation.DbJson;
-import com.avaje.ebean.annotation.DbJsonType;
+
 @Entity
 public class Question extends Model implements Serializable  {
 
