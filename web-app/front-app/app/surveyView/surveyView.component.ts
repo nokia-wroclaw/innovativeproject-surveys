@@ -47,7 +47,7 @@ export class SurveyViewComponent {
                                         if(this.survey.questions[i].questionType != 'multi')
                                             this.answers.push(new FormControl(this.oldAnswers[i].answer));
                                         else {
-                                            let answ = this.oldAnswers[i].split("||");
+                                            let answ = this.oldAnswers[i].answer.split("||");
                                             let contr = new Array<FormControl>();
                                             for (let a of answ) {
                                                 contr.push(new FormControl(a));
@@ -95,9 +95,10 @@ export class SurveyViewComponent {
                 let ansarr = ans as FormArray;
                 let ansstr = '';
                 for(let a of ansarr.controls){
+                    console.log(a.value);
                     ansstr += a.value + '||';
                 }
-                ansstr = ansstr.slice(0, ansstr.length-3);
+                ansstr = ansstr.slice(0, ansstr.length-2);
                 console.log(ansstr);
                 answers.push({
                     id: i,
