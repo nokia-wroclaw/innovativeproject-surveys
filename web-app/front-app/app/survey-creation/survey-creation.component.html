@@ -1,79 +1,80 @@
 <div class="col-md-6 col-md-offset-3">
     <h1>Create survey!</h1>
     <form [formGroup]="surveyForm" novalidate>
-        <div class="form-group">
-            <label for="name">Name</label>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(surveyForm.get('name'))}">
+            <label for="name">Name:</label>
             <input id="name" type="text" class="form-control" formControlName="name"/>
-            <div *ngIf="!surveyForm.get('name').valid" class="help-block">Name is required</div>
+            <span *ngIf="isFormError(surveyForm.get('name'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(surveyForm.get('name'))" class="help-block">Name is required</div>
         </div>
-        <div class="form-group">
-            <label>Description</label>
-            <input type="text" class="form-control" formControlName="description"/>
-            <div *ngIf="!surveyForm.get('description').valid" class="help-block">Description is required</div>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(surveyForm.get('description'))}">
+            <label for="description">Description:</label>
+            <input id="description" type="text" class="form-control" formControlName="description"/>
+            <span *ngIf="isFormError(surveyForm.get('description'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(surveyForm.get('description'))" class="help-block">Description is required</div>
         </div>
         <h3>Members' emails</h3>
         <div formArrayName="members">
-            <div class="form-group" *ngFor="let mem of members.controls; let i = index">
-                <div [formGroupName]="i">
-                    <p><input type="text" class="form-control" formControlName="member"/></p>
-                    <div *ngIf="!surveyForm.controls.members.controls[i].valid" class="help-block">Member is
+            <div *ngFor="let mem of members.controls; let i = index">
+                <div class="form-group has-feedback" [formGroupName]="i"
+                     [ngClass]="{'has-error': isFormError(mem)}">
+                    <input type="text" class="form-control" formControlName="member"/>
+                    <span data-toggle="tooltip" title="Remove this member"
+                          *ngIf="i!=0 || members.controls.length > 1"
+                          class="glyphicon glyphicon-remove form-control-feedback i-rmv"
+                          (click)="removeMember(i)"></span>
+                    <div *ngIf="isFormError(mem)" class="help-block">Member is
                         required
                     </div>
-                    <p>
-                        <button [disabled]="loading" class="btn btn-primary" (click)="removeMember(i)">Remove member
-                        </button>
-                    </p>
                 </div>
             </div>
-            <p>
-                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="addMember()">Add member
-                </button>
-            </p>
+            <button [disabled]="loading" type="button" class="btn btn-primary" (click)="addMember()">
+                Add member
+            </button>
         </div>
-        <!--<div class="form-group" [hidden]="true">
-            <label for="email">E-mail</label>
-            <input type="text" class="form-control" formControlName="email"/>
-            <div *ngIf="!surveyForm.controls.email.valid" class="help-block">E-mail is required</div>
-        </div>-->
         <div formArrayName="questions">
-            <div class="form-group" *ngFor="let qwe of questions.controls; let i = index">
-                <div [formGroupName]="i">
-                    <label>{{i+1}}. Question</label>
+            <div *ngFor="let qwe of questions.controls; let i = index">
+                <div class="form-group" [formGroupName]="i">
+                    <h4>{{i+1}}. Question</h4>
                     <label>Type of question:</label>
-                    <p>
-                        <select class="form-control" formControlName="type">
-                            <option value="open">Open question</option>
-                            <option value="true/false">Yes or no question</option>
-                            <option value='multi'>Multiple choice question</option>
-                        </select>
-                    </p>
-                    <p><input type="text" class="form-control" formControlName="question"/></p>
-                    <div *ngIf="!surveyForm.controls.questions.controls[i].valid" class="help-block">Question is
-                        required
-                    </div>
-                    <div *ngIf="isQuestionType(i, 'multi')">
-                        It's multi!
-                        <div formArrayName="answers">
-                            <div class="form-group"
-                                 *ngFor="let pans of questions.at(i).get('answers').controls; let j = index">
-                                <p><input formControlName="{{j}}" type="text" class="form-control"></p>
-                                <p>
-                                    <button (click)="removePossibleAnswer(i, j)" class="btn btn-primary">Remove answer
-                                    </button>
-                                </p>
-                            </div>
-                            <p>
-                                <button [disabled]="loading" (click)="addPossibleAnswer(i)" class="btn btn-primary">Add
-                                    answer
-                                </button>
-                            </p>
+                    <select class="form-control" formControlName="type">
+                        <option value="open">Open question</option>
+                        <option value="true/false">Yes or no question</option>
+                        <option value='multi'>Multiple choice question</option>
+                    </select>
+                    <div class="has-feedback" [ngClass]="{'has-error': isFormError(qwe)}">
+                        <label>Question:</label>
+                        <input type="text" class="form-control" formControlName="question"/>
+                        <span data-toggle="tooltip" title="Remove this question"
+                              *ngIf="i!=0 || questions.controls.length > 1"
+                              class="glyphicon glyphicon-remove form-control-feedback i-rmv"
+                              (click)="removeQuestion(i)"></span>
+                        <div *ngIf="isFormError(qwe)" class="help-block">Question is
+                            required
                         </div>
                     </div>
+                    <div *ngIf="isQuestionType(i, 'multi')">
+                        <div formArrayName="answers">
+                            <div *ngFor="let pans of questions.at(i).get('answers').controls; let j = index">
+                                <div class="has-feedback" [ngClass]="{'has-error': isFormError(pans)}">
+                                    <label [attr.for]="'answer-'+i+'-'+j">Answer {{j+1}}:</label>
+                                    <input id="answer-{{i}}-{{j}}" formControlName="{{j}}" type="text"
+                                           class="form-control"/>
+                                    <span data-toggle="tooltip" title="Remove this answer"
+                                          *ngIf="j!=0 || qwe.get('answers').controls.length > 1"
+                                          class="glyphicon glyphicon-remove form-control-feedback i-rmv"
+                                          (click)="removePossibleAnswer(i, j)"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <button [disabled]="loading" type="button" class="btn btn-primary"
+                                (click)="addPossibleAnswer(i)">
+                            Add answer
+                        </button>
+                    </div>
                 </div>
-                <p *ngIf="i!=0">
-                    <button [disabled]="loading" class="btn btn-primary" (click)="removeQuestion(i)">Remove question
-                    </button>
-                </p>
             </div>
         </div>
         <p>
@@ -82,7 +83,7 @@
         </p>
         <div class="form-group">
             <p>
-                <button [disabled]="loading || !surveyForm.valid" class="btn btn-primary" (click)="create()">Create
+                <button [disabled]="loading" class="btn btn-primary" (click)="create()">Create
                 </button>
             </p>
             <img *ngIf="loading"

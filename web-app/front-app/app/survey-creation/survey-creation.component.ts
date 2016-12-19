@@ -12,6 +12,7 @@ export class SurveyCreationComponent {
     model: Survey = new Survey();
     currentUser: User;
     loading = false;
+    submitted = false;
     memb = [];
 
     surveyForm = new FormGroup({
@@ -50,6 +51,10 @@ export class SurveyCreationComponent {
     }
 
     create() {
+        this.submitted = true;
+        if(!this.surveyForm.valid){
+            return;
+        }
         this.loading = true;
         this.buildSurvey();
         this.surveyService.createSurvey(this.model)
@@ -139,5 +144,9 @@ export class SurveyCreationComponent {
 
     isQuestionType(i: number, type: String): boolean {
         return this.questions.at(i).get("type").value == type;
+    }
+
+    isFormError(formControl: FormControl){
+        return (this.submitted && !formControl.valid);
     }
 }
