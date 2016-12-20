@@ -42,50 +42,54 @@ public class ShowSurveyActivity extends AppCompatActivity {
 
         final TextView tvMsg = (TextView) findViewById(R.id.tvMsg);
         final TextView tvQuestion = (TextView) findViewById(R.id.tvQuestion);
-        final TextView tvAnswers = (TextView) findViewById(R.id.tvAnswers);
+        final LinearLayout lm = (LinearLayout) findViewById(R.id.linearMain);
 
         Intent intent = getIntent();
         final String id = intent.getStringExtra("id");
-        final String name = intent.getStringExtra("name");
 
-        tvMsg.setText(name);
-
-
-        tvAnswers.setText("Answers:\n\n");
         new NukeSSLCerts().nuke();
-        JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/"+id+"/admin/result", null, new Response.Listener<JSONArray>() {
+
+
+
+        JsonObjectRequest strinRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/"+id, null, new Response.Listener<JSONObject>() {
 
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
 
                 Log.d("resp", response.toString());
 
-                try {
-                    int idmax=0;
-                    for (int i = 0; i < response.length(); ++i) {
-                        JSONObject rec = response.getJSONObject(i);
-                        int id = Integer.parseInt(rec.getString("id")) ;
-                        if(idmax<id)idmax=id;
+                    try {
+                        tvMsg.setText(response.getString("name"));
+
+                        JSONArray array = response.getJSONArray("questions");
+                        for (int i = 0; i < array.length(); ++i) {
+
+                            // Create LinearLayout
+                            LinearLayout ll = new LinearLayout(ShowSurveyActivity.this);
+                            ll.setOrientation(LinearLayout.HORIZONTAL);
+
+                            // Create TextView
+                            TextView qu = new TextView(ShowSurveyActivity.this);
+                            JSONObject rec = array.getJSONObject(i);
+                            qu.setText(rec.getString("question")+"\n");
+                            ll.addView(qu);
+
+                            // Create TextView
+                            TextView an = new TextView(ShowSurveyActivity.this);
+                            an.setText(an.getText()+getAnswer(id, Integer.toString(i)));
+                            ll.addView(an);
+
+                            //Add button to LinearLayout defined in XML
+                            lm.addView(ll);
+
+
+                        }
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
                     }
-                    //idmax+=1;
 
-                    for (int i = 0; i < response.length(); ++i) {
-                        JSONObject rec = response.getJSONObject(i);
-                        String ans = rec.getString("answer");
-                        int id = Integer.parseInt(rec.getString("id")) ;
-
-
-                        tvAnswers.setText(tvAnswers.getText()+ ans+"\n");
-                        if (id==idmax)tvAnswers.setText("\n\n"+tvAnswers.getText()+ "Next question "+"\n\n");
-
-                    }
-                }catch(JSONException e){
-                    e.printStackTrace();
-                }
-
-
-
-                }
+            }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -127,8 +131,86 @@ public class ShowSurveyActivity extends AppCompatActivity {
             }
         };
 
+
+
+        RequestQueue queue = Volley.newRequestQueue(ShowSurveyActivity.this);
+        queue.add(strinRequest);
+
+
+    }
+
+    String q;
+    String getAnswer(String id, final String quesId){
+
+
+        JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/"+id+"/admin/result", null, new Response.Listener<JSONArray>() {
+
+            @Override
+            public void onResponse(JSONArray response) {
+
+                Log.d("resp", response.toString());
+
+                try{
+
+                    for (int i = 0; i < response.length(); ++i) {
+                        JSONObject rec = response.getJSONObject(i);
+                        if(quesId.equals(Integer.toString(i)))
+                        q=(rec.getString("answer"));
+                        Log.d("odp1",q);
+
+
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.statusCode != 200) {
+
+                    String a = new String(networkResponse.data);
+                    try{
+
+                        JSONObject jsonObj = new JSONObject(a);
+                        String b = jsonObj.getString("message");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ShowSurveyActivity.this);
+                        builder.setMessage(b)
+                                .setNegativeButton("OK", null)
+                                .create()
+                                .show();
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return String.format("application/json; charset=utf-8");
+            }
+
+
+            SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("PLAY-SESSION", preferences.getString("PLAY-SESSION", ""));
+                return params;
+            }
+        };
+
+
+
         RequestQueue queue = Volley.newRequestQueue(ShowSurveyActivity.this);
         queue.add(stringRequest);
 
+        return q;
     }
 }
