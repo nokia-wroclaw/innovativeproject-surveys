@@ -62,14 +62,22 @@ public class ShowSurveyActivity extends AppCompatActivity {
                 Log.d("resp", response.toString());
 
                 try {
-
+                    int idmax=0;
+                    for (int i = 0; i < response.length(); ++i) {
+                        JSONObject rec = response.getJSONObject(i);
+                        int id = Integer.parseInt(rec.getString("id")) ;
+                        if(idmax<id)idmax=id;
+                    }
+                    //idmax+=1;
 
                     for (int i = 0; i < response.length(); ++i) {
                         JSONObject rec = response.getJSONObject(i);
                         String ans = rec.getString("answer");
+                        int id = Integer.parseInt(rec.getString("id")) ;
+
 
                         tvAnswers.setText(tvAnswers.getText()+ ans+"\n");
-
+                        if (id==idmax)tvAnswers.setText("\n\n"+tvAnswers.getText()+ "Next question "+"\n\n");
 
                     }
                 }catch(JSONException e){
