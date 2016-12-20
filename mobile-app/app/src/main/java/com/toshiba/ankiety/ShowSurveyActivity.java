@@ -58,7 +58,6 @@ public class ShowSurveyActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONArray response) {
 
-                //tvAnswers.setText(response.toString());
                 Log.d("resp", response.toString());
 
                 try {

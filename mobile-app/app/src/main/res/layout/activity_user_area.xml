@@ -60,13 +60,5 @@
         android:layout_below="@+id/tvInfo2">
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open surveys"
-        android:id="@+id/bGo"
-        android:layout_below="@+id/linearMain2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

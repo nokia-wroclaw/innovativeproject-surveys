@@ -38,11 +38,9 @@ public class UserAreaActivity extends AppCompatActivity {
         TextView tvInviteLink = (TextView) findViewById(R.id.tvInviteLink);
         final TextView tvInfo = (TextView) findViewById(R.id.tvInfo);
         final TextView tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
-        Button bGo = (Button) findViewById(R.id.bGo);
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("login");
-
 
         final LinearLayout lm = (LinearLayout) findViewById(R.id.linearMain);
         final LinearLayout lm2 = (LinearLayout) findViewById(R.id.linearMain2);
@@ -65,14 +63,6 @@ public class UserAreaActivity extends AppCompatActivity {
             }
         });
 
-        /*bGo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(UserAreaActivity.this, GetSurveyActivity.class);
-                UserAreaActivity.this.startActivity(intent);
-            }
-        });
-        */
 
             new NukeSSLCerts().nuke();
 
@@ -87,15 +77,12 @@ public class UserAreaActivity extends AppCompatActivity {
                             JSONObject rec = response.getJSONObject(i);
                             final int id = rec.getInt("id");
                             final String name = rec.getString("name");
-                            // ...
-                            tvInfo.setText("You can manage:");
-                            Log.d("aaaaa", response.toString());
 
+                            tvInfo.setText("You can manage:");
 
                             // Create LinearLayout
                             LinearLayout ll = new LinearLayout(UserAreaActivity.this);
                             ll.setOrientation(LinearLayout.HORIZONTAL);
-
 
                             // Create TextView
                             TextView qu = new TextView(UserAreaActivity.this);
@@ -114,7 +101,6 @@ public class UserAreaActivity extends AppCompatActivity {
                                     Intent invitationIntent = new Intent(UserAreaActivity.this, ShowSurveyActivity.class);
                                     invitationIntent.putExtra("id", Integer.toString(id));
                                     invitationIntent.putExtra("name", name);
-                                    //Log.d("id", Integer.toString(id));
                                     UserAreaActivity.this.startActivity(invitationIntent);
                                 }
                             });
@@ -217,10 +203,6 @@ public class UserAreaActivity extends AppCompatActivity {
                         ans.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //final String id = etSurveyId.getText().toString();
-                                //String question ="question";
-
-
 
                                 new NukeSSLCerts().nuke();
                                 JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/"+id, null, new Response.Listener<JSONObject>() {
@@ -291,27 +273,19 @@ public class UserAreaActivity extends AppCompatActivity {
                                 RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
                                 queue.add(stringRequest);
 
-
-
-
                             }
 
-
                         });
-                        
+
                         ll.addView(ans);
 
                         //Add button to LinearLayout defined in XML
                         lm2.addView(ll);
 
-
-
-
                     }
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
-
 
             }
         }, new Response.ErrorListener() {
