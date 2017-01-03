@@ -21,7 +21,6 @@
         <activity android:name=".InvitationActivity" />
         <activity android:name=".UserAreaActivity"/>
         <activity android:name=".SimpleSurveyActivity"/>
-        <activity android:name=".GetSurveyActivity"/>
         <activity android:name=".ShowSurveyActivity">
         </activity>
     </application>
