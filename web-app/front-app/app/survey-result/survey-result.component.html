@@ -7,4 +7,26 @@
 			<p>{{r}}</p>
 		</div>
 	</div>
+	<div *ngFor="let p of pieChartData; let i=index">
+		<h4>{{pieChartQuestions[i]}}</h4>
+		<canvas baseChart
+				[data]="p"
+				[labels]="pieChartLabels"
+				[chartType]="pieChartType"
+				(chartHover)="chartHovered($event)"
+				(chartClick)="chartClicked($event)">
+		</canvas>
+	</div>
+	<div *ngFor="let b of barChartData; let i=index">
+		<h4>{{barChartQuestions[i]}}</h4>
+		<canvas baseChart
+				[datasets]="b"
+				[labels]="barChartLabels[i]"
+				[options]="barChartOptions"
+				[legend]="barChartLegend"
+				[chartType]="barChartType"
+				(chartHover)="chartHovered($event)"
+				(chartClick)="chartClicked($event)">
+		</canvas>
+	</div>
 </div>

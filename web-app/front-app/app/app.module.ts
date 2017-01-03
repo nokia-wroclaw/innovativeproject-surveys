@@ -18,6 +18,7 @@ import { SurveyCreationComponent } from './survey-creation/index'
 import { InfoComponent } from './info/index'
 import { InviteComponent } from './invite/index'
 import { SurveyResultComponent } from './survey-result/index'
+import { ChartsModule } from 'ng2-charts/ng2-charts'
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { SurveyResultComponent } from './survey-result/index'
         FormsModule,
         ReactiveFormsModule,
         HttpModule,
-        routing
+        routing,
+        ChartsModule
     ],
     declarations: [
         AppComponent,

@@ -49,10 +49,6 @@ export class SurveyResultComponent {
                                         j = 0;
                                         this.result.questions.push(res);
                                     } else if (q.questionType == 'true/false') {
-                                        let res = {
-                                            question: q.question,
-                                            results: []
-                                        };
                                         let t = 0, f = 0;
                                         while (j < len) {
                                             if (response[i].answer == "true") {
@@ -64,27 +60,20 @@ export class SurveyResultComponent {
                                             j++;
                                         }
                                         j = 0;
-                                        res.results.push("Yes: " + t);
-                                        res.results.push("No: " + f);
-                                        this.result.questions.push(res);
+                                        this.pieChartQuestions.push(q.question);
+                                        this.pieChartData.push([t, f]);
                                     } else if (q.questionType == 'multi') {
-                                        let res = {
-                                            question: q.question,
-                                            results: []
-                                        };
+                                        this.barChartLabels.push(q.possibleAnswers);
                                         let posans = [];
-                                        for (let p of q.possibleAnswers) {
-                                            posans.push({
-                                                answer: p,
-                                                quantity: 0
-                                            });
+                                        for(let b of q.possibleAnswers){
+                                            posans.push(0);
                                         }
                                         while (j < len) {
                                             let splitted = response[i].answer.split("||");
                                             let k = 0;
                                             for (let s of splitted) {
                                                 if (s == "true") {
-                                                    posans[k].quantity++;
+                                                    posans[k]++;
                                                 }
                                                 k++;
                                             }
@@ -92,10 +81,8 @@ export class SurveyResultComponent {
                                             j++;
                                         }
                                         j = 0;
-                                        for (let p of posans) {
-                                            res.results.push("Answer: " + p.answer + " Quantity: " + p.quantity);
-                                        }
-                                        this.result.questions.push(res);
+                                        console.log(JSON.stringify(posans));
+                                        this.barChartData.push([{data: posans, label: 'Answers'}]);
                                     }
 
                                 }
@@ -109,4 +96,30 @@ export class SurveyResultComponent {
                     this.alertService.error(error.json().message);
                 });
     }
+
+    public pieChartLabels:string[] = ['Yes', 'No'];
+    public pieChartData = [];
+    public pieChartType:string = 'pie';
+    public pieChartQuestions = [];
+
+    // events
+    public chartClicked(e:any):void {
+        console.log(e);
+    }
+
+    public chartHovered(e:any):void {
+        console.log(e);
+    }
+
+    public barChartOptions:any = {
+        scaleShowVerticalLines: false,
+        responsive: true
+    };
+    public barChartLabels = [];
+    public barChartType:string = 'bar';
+    public barChartLegend:boolean = true;
+    public barChartQuestions = [];
+
+    public barChartData = [];
+
 }
