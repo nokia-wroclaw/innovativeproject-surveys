@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -213,6 +214,19 @@ public class AccountController extends Controller {
 		}
 
 		return ok();
+	}
+
+	public Result getAll(){
+		List<String> allUsersLogins = getUsersLogins(UserAccount.find.all());
+		return ok(Json.toJson(allUsersLogins));
+	}
+
+	private List<String> getUsersLogins(List<UserAccount> allUsers){
+		List<String> allUsersLogin = new ArrayList<>();
+		for(UserAccount user : allUsers){
+			allUsersLogin.add(user.login);
+		}
+		return allUsersLogin;
 	}
 }
 

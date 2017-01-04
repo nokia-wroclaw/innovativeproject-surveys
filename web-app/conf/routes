@@ -16,6 +16,7 @@
 POST	/app/login						controllers.AccountController.loginPost
 POST	/app/invitation				    controllers.AccountController.invite
 POST    /app/user/:login				controllers.AccountController.userPost(login: String)
+GET     /app/user/all                   controllers.AccountController.getAll
 
 PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
 
