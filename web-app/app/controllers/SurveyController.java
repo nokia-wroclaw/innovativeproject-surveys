@@ -214,29 +214,19 @@ public class SurveyController extends Controller {
         if (jsNode == null) {
             return status(403, Json.toJson(new Message("JSON wanted!")));
         }
-        String email = jsNode.findPath("email").textValue();
-        if (email == null || email.equals("")) {
+        String login = jsNode.findPath("login").textValue();
+        if (login == null || login.equals("")) {
             return status(403, Json.toJson(new Message("empty")));
         }
-        Logger.info("Invite " + email + " to " + id);
-        /*Email email1 = new Email();
-        email1.setSubject("The invitation to the survey");
-        email1.setFrom("Surveys <from@surveys.com>");
-        email1.addTo(email);
-        email1.setBodyText("You are invited to participate in the survey on "
-                + host + "/app/surveysView/"+id+".");
-        String ret = mailerClient.send(email1);
-        if (ret == null) {
-            return status(403, Json.toJson(new Message("Problem with send Email")));
-        }*/
+        Logger.info("Invite " + login + " to " + id);
 
-        List<UserAccount> ac = UserAccount.find.select("*").where().eq("email", email).findList();
+        UserAccount ac = UserAccount.find.byId(login);
 
-        if (ac.isEmpty()) {
+        if (ac == null) {
             return status(403, Json.toJson(new Message("Not found account!")));
         }
         Survey survey = Survey.find.byId(id);
-        SurveyMember sm = new SurveyMember(ac.get(0).login);
+        SurveyMember sm = new SurveyMember(login);
         sm.survey = survey;
         sm.save();
 
