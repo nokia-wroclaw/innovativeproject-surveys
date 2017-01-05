@@ -15,7 +15,7 @@
                   class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
             <div *ngIf="isFormError(surveyForm.get('description'))" class="help-block">Description is required</div>
         </div>
-        <h3>Members' emails</h3>
+        <h3>Members</h3>
         <div formArrayName="members">
             <div *ngFor="let mem of members.controls; let i = index">
                 <div class="form-group has-feedback" [formGroupName]="i"
@@ -29,10 +29,10 @@
                     <div *ngIf="isFormError(mem)" class="help-block">Member is
                         required
                     </div>
-                    <div *ngFor="let matchingUsername of matchingUsernames[i]"
+                    <button class="btn matching-user" *ngFor="let matchingUsername of matchingUsernames[i]"
                          (click)="setUsername(i, matchingUsername)">
                         {{matchingUsername}}
-                    </div>
+                    </button>
                 </div>
             </div>
             <button [disabled]="loading" type="button" class="btn btn-primary" (click)="addMember()">

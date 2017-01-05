@@ -80,3 +80,8 @@ table button {
 input {
     margin-bottom: 5px;
 }
+
+.matching-user {
+    margin-left: 2px;
+    margin-right: 2px;
+}

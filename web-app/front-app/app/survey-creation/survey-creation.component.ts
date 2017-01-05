@@ -183,6 +183,7 @@ export class SurveyCreationComponent {
     setUsername(i: number, username: string) {
         let members = this.surveyForm.get('members') as FormArray;
         members.at(i).get('member').setValue(username);
+        this.matchingUsernames[i] = [];
     }
 
 }
