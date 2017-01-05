@@ -20,13 +20,18 @@
             <div *ngFor="let mem of members.controls; let i = index">
                 <div class="form-group has-feedback" [formGroupName]="i"
                      [ngClass]="{'has-error': isFormError(mem)}">
-                    <input type="text" class="form-control" formControlName="member"/>
+                    <input type="text" class="form-control" formControlName="member"
+                           (keyup)="updateMatchingUsernames(i)"/>
                     <span data-toggle="tooltip" title="Remove this member"
                           *ngIf="i!=0 || members.controls.length > 1"
                           class="glyphicon glyphicon-remove form-control-feedback i-rmv"
                           (click)="removeMember(i)"></span>
                     <div *ngIf="isFormError(mem)" class="help-block">Member is
                         required
+                    </div>
+                    <div *ngFor="let matchingUsername of matchingUsernames[i]"
+                         (click)="setUsername(i, matchingUsername)">
+                        {{matchingUsername}}
                     </div>
                 </div>
             </div>

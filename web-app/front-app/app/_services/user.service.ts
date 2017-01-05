@@ -5,19 +5,34 @@ import {RegistrationUser} from '../_models/index';
 @Injectable()
 export class UserService {
 
-    host = "http://localhost:9000/"
+    host = "http://localhost:9000/";
 
-    constructor(private http: Http) {
-    }
-    create(user: RegistrationUser) {
-        var header = new Headers();
+    constructor(private http: Http) {}
+
+    getHeader(){
+        let header = new Headers();
         header.append("Content-Type", "application/json");
-        var options = new RequestOptions({
+        return header;
+    }
+
+    create(user: RegistrationUser) {
+        let options = new RequestOptions({
             method: RequestMethod.Post,
-            url: this.host+'app/user/' + user.login,
-            headers: header,
-            body: JSON.stringify(user),
-        })
+            url: this.host + 'app/user/' + user.login,
+            headers: this.getHeader(),
+            body: JSON.stringify(user)
+        });
         return this.http.request(new Request(options));
+    }
+
+    getAllUsernames() {
+        let options = new RequestOptions({
+            method: RequestMethod.Get,
+            url: this.host + 'app/user/all',
+            headers: this.getHeader()
+        });
+        return this.http.request(new Request(options)).map(
+            (response: Response) => response.json()
+        );
     }
 }

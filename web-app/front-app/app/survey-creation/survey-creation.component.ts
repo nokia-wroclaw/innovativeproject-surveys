@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {AlertService, SurveyService} from '../_services/index';
+import {AlertService, SurveyService, UserService} from '../_services/index';
 import {Survey, User, Question} from '../_models/index';
 import {FormGroup, FormArray, FormControl, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -14,6 +14,8 @@ export class SurveyCreationComponent {
     loading = false;
     submitted = false;
     memb = [];
+    usernames: string[];
+    matchingUsernames: string[][] = [[]];
 
     surveyForm = new FormGroup({
         name: new FormControl('', Validators.required),
@@ -38,8 +40,14 @@ export class SurveyCreationComponent {
 
     constructor(private surveyService: SurveyService,
                 private alertService: AlertService,
+                private userService: UserService,
                 private router: Router) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.userService.getAllUsernames().subscribe(
+            (response) => {
+                this.usernames = response;
+            }
+        )
     }
 
     get questions(): FormArray {
@@ -52,7 +60,7 @@ export class SurveyCreationComponent {
 
     create() {
         this.submitted = true;
-        if(!this.surveyForm.valid){
+        if (!this.surveyForm.valid) {
             return;
         }
         this.loading = true;
@@ -105,7 +113,7 @@ export class SurveyCreationComponent {
         this.members.push(new FormGroup({
             member: new FormControl('', Validators.required)
         }));
-        console.log(this.questions.value);
+        this.matchingUsernames.push([]);
     }
 
     removeQuestion(i: number) {
@@ -114,6 +122,7 @@ export class SurveyCreationComponent {
 
     removeMember(i: number) {
         this.members.removeAt(i);
+        this.matchingUsernames.splice(i, 1);
     }
 
     buildSurvey() {
@@ -138,7 +147,7 @@ export class SurveyCreationComponent {
         console.log(JSON.stringify(this.model));
         for (let mem of this.members.value) {
             console.log("member " + JSON.stringify(mem));
-            this.memb.push({email: mem.member});
+            this.memb.push({login: mem.member});
         }
     }
 
@@ -146,7 +155,34 @@ export class SurveyCreationComponent {
         return this.questions.at(i).get("type").value == type;
     }
 
-    isFormError(formControl: FormControl){
+    isFormError(formControl: FormControl) {
         return (this.submitted && !formControl.valid);
     }
+
+    findMatching(actual) {
+        console.log("findMatching runned!")
+        let matching = [];
+        for (let user of this.usernames) {
+            if (user.includes(actual) && matching.length <= 5) {
+                matching.push(user);
+            }
+        }
+        console.log("findMatching returned: " + JSON.stringify(matching));
+        return matching;
+    }
+
+    updateMatchingUsernames(i: number) {
+        let actual = this.members.at(i).get('member').value;
+        if (actual.length < 3) {
+            this.matchingUsernames[i] = [];
+        } else {
+            this.matchingUsernames[i] = this.findMatching(actual);
+        }
+    }
+
+    setUsername(i: number, username: string) {
+        let members = this.surveyForm.get('members') as FormArray;
+        members.at(i).get('member').setValue(username);
+    }
+
 }
