@@ -10,10 +10,13 @@ import com.avaje.ebean.Model;
 @Entity
 public class UnactivatedAccount extends Model {
 	
-	public Date expiredDate;
-	@Id
-	public String activationLink;
+	@Id 
+	public String login;
+	
 	public UserAccount ua;
+	public String activationLink;
+	public Date expiredDate;
+	
 	
 	public static Finder<String, UnactivatedAccount> find =
 			new Finder<String, UnactivatedAccount>(UnactivatedAccount.class);
@@ -26,6 +29,7 @@ public class UnactivatedAccount extends Model {
 		ua.save();
 		this.activationLink = activationLink;
 		this.expiredDate = new Date(System.currentTimeMillis()+172800000);
+		this.login = login;
 	}
 	
 }

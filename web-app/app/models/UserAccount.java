@@ -40,7 +40,7 @@ public class UserAccount extends Model{
 		
 		this.createdTime = new Date();
 	}
-	
+
 	public boolean checkPassword(String password) {
 		return PasswordCrypt.checkPassword(password, this.password);
 	}

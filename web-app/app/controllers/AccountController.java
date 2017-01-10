@@ -53,6 +53,10 @@ public class AccountController extends Controller {
 		if (!ua.checkPassword(password)) {
 			return status(403, Json.toJson(new Message("Bad password")));
 		}
+		UnactivatedAccount UnactivatedAcc = UnactivatedAccount.find.byId(login);
+		if (UnactivatedAcc != null) {
+			return status(403, Json.toJson(new Message("Account not activated.")));
+		}
 		session().put("login", login);
 		session().put("password", password);
 		JsonNode jsUser = Json.toJson(new AccountJson(ua));
@@ -84,16 +88,16 @@ public class AccountController extends Controller {
 			return status(403, Json.toJson(new Message("Password wanted")));
 		}
 		if (registerJson.get("rePassword") == null) {
-			return status(403, Json.toJson(new Message("Password wanted")));
+			return status(403, Json.toJson(new Message("rePassword wanted")));
 		}
 		if (registerJson.get("firstName") == null) {
-			return status(403, Json.toJson(new Message("Password wanted")));
+			return status(403, Json.toJson(new Message("firstName wanted")));
 		}
 		if (registerJson.get("lastName") == null) {
-			return status(403, Json.toJson(new Message("Password wanted")));
+			return status(403, Json.toJson(new Message("lastName wanted")));
 		}
 		if (registerJson.get("email") == null) {
-			return status(403, Json.toJson(new Message("Password wanted")));
+			return status(403, Json.toJson(new Message("email wanted")));
 		}
 
 		String password = registerJson.get("password").asText();
@@ -107,7 +111,7 @@ public class AccountController extends Controller {
 		}
 
 		if (rePassword == null || rePassword.equals("")) {
-			return status(403, Json.toJson(new Message("Password wanted")));
+			return status(403, Json.toJson(new Message("rePassword wanted")));
 		}
 
 		if (firstName == null || firstName.equals("")) {
@@ -194,13 +198,15 @@ public class AccountController extends Controller {
 	}
 
 	public Result activate(String link) {
-		UnactivatedAccount ua = UnactivatedAccount.find.byId(link);
-		if (ua == null) {
+		 List<UnactivatedAccount> ua = UnactivatedAccount.find.all();
+		 for (UnactivatedAccount a : ua) {
+		  if(a.activationLink == link){
+			 a.delete();
+			 return ok(Json.toJson(new Message("Konto aktywowane!")));
+		  	}
+		  }
 			return status(404, Json.toJson(new Message("Zły link aktywacyjny!")));
-		} else {
-			ua.delete();
-			return ok(Json.toJson(new Message("Konto aktywowane!")));
-		}
+
 	}
 
 	public Result clean() {
