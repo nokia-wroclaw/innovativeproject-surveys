@@ -29,8 +29,9 @@ public class SurveyController extends Controller {
             String session = request().getHeader("PLAY-SESSION");
             if (session != null) {
                 login = session;
+            } else {
+                return status(404, Json.toJson(new Message("You arent logged in")));
             }
-            return status(404, Json.toJson(new Message("You arent logged in")));
         }
         Logger.info("login " + login);
 
