@@ -169,6 +169,8 @@ public class LoginActivity extends AppCompatActivity {
                                     SharedPreferences.Editor preferencesEditor = preferences.edit();
                                     preferencesEditor.putString("cookie", "PLAY-SESSION="+ splitSessionId[1]+"="+splitSessionId[2]);
                                     preferencesEditor.putString("PLAY-SESSION", username);
+                                    preferencesEditor.putString("Cookies", cookie);
+                                    Log.d("COOKIES", cookie);
                                     preferencesEditor.commit();
                                 }
                             }

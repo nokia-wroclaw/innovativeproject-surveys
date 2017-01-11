@@ -75,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         new NukeSSLCerts().nuke();
 
-                        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.PUT, "https://survey-innoproject.herokuapp.com/app/user/" + login, jsonBody, new Response.Listener<JSONObject>() {
+                        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, "https://survey-innoproject.herokuapp.com/app/user/" + login, jsonBody, new Response.Listener<JSONObject>() {
 
                             @Override
                             public void onResponse(JSONObject response) {

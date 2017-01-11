@@ -1,7 +1,9 @@
 package com.toshiba.ankiety;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InvitationActivity extends AppCompatActivity {
     @Override
@@ -90,6 +94,17 @@ public class InvitationActivity extends AppCompatActivity {
                         @Override
                         public String getBodyContentType() {
                             return String.format("application/json; charset=utf-8");
+                        }
+
+
+                        SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> params = new HashMap<String, String>();
+
+                            params.put("Cookies", preferences.getString("COOKIES", ""));
+                            return params;
                         }
 
                     };

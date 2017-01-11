@@ -60,5 +60,15 @@
         android:layout_below="@+id/tvInfo2">
     </LinearLayout>
 
+    <Button
+        android:id="@+id/bLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearMain2"
+        android:text="Log out" />
 
 </RelativeLayout>

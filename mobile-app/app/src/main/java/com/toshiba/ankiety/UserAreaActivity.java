@@ -45,6 +45,7 @@ public class UserAreaActivity extends AppCompatActivity {
         final LinearLayout lm = (LinearLayout) findViewById(R.id.linearMain);
         final LinearLayout lm2 = (LinearLayout) findViewById(R.id.linearMain2);
 
+        final Button bLogout = (Button) findViewById(R.id.bLogout);
 
         SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
         preferences.getString("cookie", "");
@@ -159,7 +160,7 @@ public class UserAreaActivity extends AppCompatActivity {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<String, String>();
 
-                    params.put("PLAY-SESSION", preferences.getString("PLAY-SESSION", ""));
+                    params.put("PLAY_SESSION", preferences.getString("username", ""));
                     return params;
                 }
 
@@ -265,7 +266,7 @@ public class UserAreaActivity extends AppCompatActivity {
                                     public Map<String, String> getHeaders() throws AuthFailureError {
                                         Map<String, String> params = new HashMap<String, String>();
 
-                                        params.put("PLAY-SESSION", preferences.getString("PLAY-SESSION", ""));
+                                        params.put("Set-Cookie", preferences.getString("cookie", ""));
                                         return params;
                                     }
                                 };
@@ -338,5 +339,13 @@ public class UserAreaActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
         queue.add(strinRequest);
         queue.add(stringRequest);
+
+        bLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserAreaActivity.this, LoginActivity.class);
+                UserAreaActivity.this.startActivity(intent);
+            }
+        });
     }
 }
