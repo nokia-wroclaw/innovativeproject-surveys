@@ -103,7 +103,7 @@ public class InvitationActivity extends AppCompatActivity {
                         public Map<String, String> getHeaders() throws AuthFailureError {
                             Map<String, String> params = new HashMap<String, String>();
 
-                            params.put("Cookies", preferences.getString("COOKIES", ""));
+                            params.put("Cookie", preferences.getString("Cookies", ""));
                             return params;
                         }
 

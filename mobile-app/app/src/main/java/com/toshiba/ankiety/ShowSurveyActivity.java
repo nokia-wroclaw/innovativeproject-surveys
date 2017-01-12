@@ -126,7 +126,7 @@ public class ShowSurveyActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
 
-                params.put("PLAY-SESSION", preferences.getString("PLAY-SESSION", ""));
+                params.put("Cookie", preferences.getString("Cookies", ""));
                 return params;
             }
         };
@@ -201,7 +201,7 @@ public class ShowSurveyActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
 
-                params.put("PLAY-SESSION", preferences.getString("PLAY-SESSION", ""));
+                params.put("Cookie", preferences.getString("Cookies", ""));
                 return params;
             }
         };

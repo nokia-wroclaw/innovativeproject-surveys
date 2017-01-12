@@ -160,7 +160,7 @@ public class UserAreaActivity extends AppCompatActivity {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<String, String>();
 
-                    params.put("PLAY_SESSION", preferences.getString("username", ""));
+                    params.put("Cookie", preferences.getString("Cookies", ""));
                     return params;
                 }
 
@@ -266,7 +266,7 @@ public class UserAreaActivity extends AppCompatActivity {
                                     public Map<String, String> getHeaders() throws AuthFailureError {
                                         Map<String, String> params = new HashMap<String, String>();
 
-                                        params.put("Set-Cookie", preferences.getString("cookie", ""));
+                                        params.put("Cookie", preferences.getString("Cookies", ""));
                                         return params;
                                     }
                                 };
@@ -328,7 +328,7 @@ public class UserAreaActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
 
-                params.put("PLAY-SESSION", preferences.getString("PLAY-SESSION", ""));
+                params.put("Cookie", preferences.getString("Cookies", ""));
                 return params;
             }
 

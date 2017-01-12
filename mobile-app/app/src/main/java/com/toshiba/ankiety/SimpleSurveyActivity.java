@@ -51,6 +51,7 @@ public class SimpleSurveyActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String j = intent.getStringExtra("json");
+        Log.d("JSON", j);
 
         final JSONObject jsonans = new JSONObject();
 
@@ -177,7 +178,7 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                             public Map<String, String> getHeaders() throws AuthFailureError {
                                 Map<String, String> params = new HashMap<String, String>();
 
-                                params.put("PLAY-SESSION", preferences.getString("PLAY-SESSION", ""));
+                                params.put("Cookie", preferences.getString("Cookies", ""));
                                 return params;
                             }
 
