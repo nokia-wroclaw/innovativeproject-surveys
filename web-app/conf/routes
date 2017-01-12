@@ -18,7 +18,7 @@ POST	/app/invitation				    controllers.AccountController.invite
 POST    /app/user/:login				controllers.AccountController.userPost(login: String)
 GET     /app/user/all                   controllers.AccountController.getAll
 
-PUT		/app/activ/:link				controllers.AccountController.activate(link: String)
+PUT		/app/user/activate/:link				controllers.AccountController.activate(link: String)
 
 POST  	/app/surveys				    controllers.SurveyController.SurveyPost
 POST  	/app/surveys/:id/invitation		controllers.SurveyController.SurveyInvite(id: Integer)
@@ -58,6 +58,7 @@ GET		/register						controllers.HomeController.index()
 GET		/surveyCreate					controllers.HomeController.index()
 GET		/invite     					controllers.HomeController.index()
 GET     /surveyResult/:id               controllers.HomeController.indexWithResult(id: Integer)
+GET     /activ/:link                    controllers.HomeController.indexWithString(link: String)
 
 #Swagger
 #GET     /swagger.json           controllers.ApiHelpController.getResources

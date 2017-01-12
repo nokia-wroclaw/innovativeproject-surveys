@@ -13,6 +13,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -261,11 +262,15 @@ public class SurveyController extends Controller {
 
         List<Response> response = Response.find.select("*").where().eq("survey_id", id).findList();
 
-        for (int i = 0; i < response.size(); i++) {
-            if (!response.get(i).checkUser(password))
-                response.remove(i);
+        for (Iterator<Response> iterator = response.iterator(); iterator.hasNext();) {
+            Response current = iterator.next();
+            Logger.info(current.getAnswer());
+            if (!current.checkUser(password, login)) {
+                iterator.remove();
+                Logger.info("removed");
+            }
         }
-        Logger.info("Response size "+response.size());
+        Logger.info("Response "+response.size());
 
         String answer;
         ArrayNode allanswer = (ArrayNode) surveyJson.withArray("Answers");
@@ -274,12 +279,12 @@ public class SurveyController extends Controller {
         for (JsonNode x : allanswer) {
             answer = x.get("answer").asText();
             Response response1;
-            if (response.size() == 0) {
+            if (response.size() <= i) {
                 response1 = new Response(answer);
                 response1.survey = survey;
                 response1.question = allquestions.get(i);
                 response1.save();
-                response1.setUser(password);
+                response1.setUser(password, login);
             } else {
                 response1 = response.get(i);
                 response1.setAnswer(answer);
@@ -323,10 +328,16 @@ public class SurveyController extends Controller {
                 .where()
                 .eq("survey_id", id)
                 .findList();
-        for (int i = 0; i < allResponse.size(); i++) {
-            if (!allResponse.get(i).checkUser(password))
-                allResponse.remove(i);
+        Logger.info("Response size: "+allResponse.size());
+        for (Iterator<Response> iterator = allResponse.iterator(); iterator.hasNext();) {
+            Response current = iterator.next();
+            Logger.info(current.getAnswer());
+            if (!current.checkUser(password, login)) {
+                iterator.remove();
+                Logger.info("removed");
+            }
         }
+        Logger.info("Response size: "+allResponse.size());
         List<ResponseJson> result = new ArrayList<ResponseJson>();
         int i = 1;
         for (Response res : allResponse) {

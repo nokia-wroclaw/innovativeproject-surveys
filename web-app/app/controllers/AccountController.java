@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import models.*;
+import play.Logger;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -37,6 +38,8 @@ public class AccountController extends Controller {
 
 	public Result loginPost() {
 		JsonNode jsNode = request().body().asJson();
+		Logger.info(request().getHeader("Cookie"));
+		Logger.info(session().toString());
 		if (jsNode == null) {
 			return status(403, Json.toJson(new Message("JSON wanted!")));
 		}
@@ -65,7 +68,7 @@ public class AccountController extends Controller {
 		email1.setFrom("Surveys <registration@surveys.com>");
 		email1.addTo(email);
 		email1.setBodyText("Hi " + firstName
-				+ "!\n\nOto link aktywacyjny: "+host+"/activ/"
+				+ "!\n\nThis is your activation link: "+host+"/user/activate/"
 				+ link);
 		String id = mailerClient.send(email1);
 
@@ -150,7 +153,7 @@ public class AccountController extends Controller {
 		}
 		UnactivatedAccount newAcc = new UnactivatedAccount(login, password,
 				firstName, lastName, email, link);
-
+		Logger.info("Activation link: "+link);
 		newAcc.save();
 		sendAccEmail(email, link, firstName);
 		return ok(Json.toJson(new Message("Registrated")));
@@ -196,10 +199,10 @@ public class AccountController extends Controller {
 	public Result activate(String link) {
 		UnactivatedAccount ua = UnactivatedAccount.find.byId(link);
 		if (ua == null) {
-			return status(404, Json.toJson(new Message("Zły link aktywacyjny!")));
+			return status(404, Json.toJson(new Message("Wrong activation link!")));
 		} else {
 			ua.delete();
-			return ok(Json.toJson(new Message("Konto aktywowane!")));
+			return ok(Json.toJson(new Message("Account activated")));
 		}
 	}
 

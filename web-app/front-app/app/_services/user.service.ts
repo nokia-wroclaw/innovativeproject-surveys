@@ -9,7 +9,7 @@ export class UserService {
 
     constructor(private http: Http) {}
 
-    getHeader(){
+    getHeader() : Headers{
         let header = new Headers();
         header.append("Content-Type", "application/json");
         return header;
@@ -30,6 +30,18 @@ export class UserService {
             method: RequestMethod.Get,
             url: this.host + 'app/user/all',
             headers: this.getHeader()
+        });
+        return this.http.request(new Request(options)).map(
+            (response: Response) => response.json()
+        );
+    }
+
+    activate(link: string) {
+        let options = new RequestOptions({
+            method: RequestMethod.Put,
+            url: this.host + 'app/user/activate/' + link,
+            headers: this.getHeader(),
+            body: JSON.stringify({})
         });
         return this.http.request(new Request(options)).map(
             (response: Response) => response.json()

@@ -13,6 +13,7 @@ import { AlertService, AuthenticationService, UserService, InviteService, Survey
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
+import { AccountActivationComponent } from './account-activation/index'
 import { SurveyViewComponent } from './surveyView/index'
 import { SurveyCreationComponent } from './survey-creation/index'
 import { InfoComponent } from './info/index'
@@ -40,7 +41,8 @@ import { ChartsModule } from 'ng2-charts/ng2-charts'
         RegisterComponent,
 		SurveyViewComponent,
 		SurveyCreationComponent,
-        SurveyResultComponent
+        SurveyResultComponent,
+        AccountActivationComponent
     ],
     providers: [
         AuthGuard,
