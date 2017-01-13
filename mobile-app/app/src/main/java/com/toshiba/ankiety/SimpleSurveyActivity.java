@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -28,11 +31,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SimpleSurveyActivity extends AppCompatActivity {
+
+    JSONArray ja = new JSONArray();
+
+
+    JSONObject mainObj = new JSONObject();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +63,7 @@ public class SimpleSurveyActivity extends AppCompatActivity {
         final String j = intent.getStringExtra("json");
         Log.d("JSON", j);
 
-        final JSONObject jsonans = new JSONObject();
+
 
         try{
 
@@ -62,15 +72,18 @@ public class SimpleSurveyActivity extends AppCompatActivity {
             final String iD = response.get("id").toString();
 
             Log.d("j", response.get("name").toString());
-            tvMsg.setText("Survey name: "+response.get("name").toString());
+            tvMsg.setText("Survey name: " + response.get("name").toString());
 
            JSONArray a = response.getJSONArray("questions");
             Log.d("j", response.getJSONArray("questions").toString());
 
-            for (int i = 0; i < a.length(); ++i) {
+
+            for ( int i = 0; i < a.length(); ++i) {
+
                 JSONObject rec = a.getJSONObject(i);
                 int id = rec.getInt("id");
                 String ques = rec.getString("question");
+                String type = rec.getString("questionType");
 
 
                     // Create LinearLayout
@@ -82,20 +95,116 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                     qu.setText(ques);
                     ll.addView(qu);
 
-                    // Create TextView
-                    EditText ans = new EditText(this);
-                    ans.setText("");
-                    ans.setHint("Enter your answer");
-                    ans.setId(i);
-                    ll.addView(ans);
+                if (type.equals("open")){
+                        // Create TextView
+                        final EditText ans = new EditText(this);
+                        ans.setText("");
+                        ans.setId(i + 1);
+                        ans.setHint("Enter your answer");
+                        final String s = ans.getText().toString();
+                        ans.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View view) {
+                                try {
+                                    JSONObject jsonans = new JSONObject();
+                                    jsonans.put("answer", ans.getText());
+                                    jsonans.put("id", ans.getId());
+                                    ja.put(jsonans);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        ll.addView(ans);
+                    }
+                else{
+                    if (type.equals("true/false")){
+                        RadioGroup rg = new RadioGroup(this);
+                        rg.setId(i);
+                        ll.addView(rg);
+
+                                final RadioButton r = new RadioButton(this);
+                                r.setText("Yes");
+                                r.setId(i + 1);
+                        final int rid = r.getId();
+
+                        r.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View view) {
+                                try {
+                                    if (r.isChecked()) {
+                                        JSONObject jsonans = new JSONObject();
+                                        jsonans.put("answer", "true");
+                                        jsonans.put("id", rid);
+                                        ja.put(jsonans);
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                        rg.addView(r);
+
+                                final RadioButton r2 = new RadioButton(this);
+                                r2.setText("No");
+                        r2.setId(i+1);
+                                final int r2id = r2.getId();
+
+                        r2.setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View view) {
+                                         try {
+                                             if(r2.isChecked()){
+                                                 JSONObject jsonans = new JSONObject();
+                                                 jsonans.put("answer", "false");
+                                                 jsonans.put("id", r2id);
+                                                 ja.put(jsonans);
+                                             }
+
+                                         } catch (JSONException e) {
+                                             e.printStackTrace();
+                                         }
+                                    }
+                                });
+                                rg.addView(r2);
+                    }
+                    else{
+                        try{
+                            JSONArray possible = rec.getJSONArray("possibleAnswers");
+                            for (int l = 0; l < possible.length(); ++l) {
+                                String possAnsw = possible.getString(l);
+
+                                final CheckBox cb = new CheckBox(this);
+                                cb.setText(possAnsw);
+                                cb.setId(i + 1);
+
+                                cb.setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View view) {
+                                        try {
+                                            JSONObject jsonans = new JSONObject();
+                                            jsonans.put("answer", cb.getText());
+                                            jsonans.put("id", cb.getId());
+                                            ja.put(jsonans);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                                ll.addView(cb);
+
+                            }
+                        }
+                        catch(JSONException e){
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    }
 
                     //Add button to LinearLayout defined in XML
                     lm.addView(ll);
 
-                    EditText aa = (EditText) findViewById(i);
-
-                    jsonans.put("answer", aa.getText());
-                }
+            }
 
 
             bSendAnswer.setOnClickListener(new View.OnClickListener() {
@@ -104,38 +213,34 @@ public class SimpleSurveyActivity extends AppCompatActivity {
 
                     try {
 
-                        JSONArray ja = new JSONArray();
-                        ja.put(jsonans);
-
-                        JSONObject mainObj = new JSONObject();
                         mainObj.put("Answers", ja);
 
+                        Log.d("JSONANS", mainObj.toString());
 
 
                         new NukeSSLCerts().nuke();
 
-                        JsonObjectRequest stringRequest = new JsonObjectRequest(1, "https://survey-innoproject.herokuapp.com/app/surveys/"+iD+"/answer", mainObj, new Response.Listener<JSONObject>() {
+                        JsonObjectRequest stringRequest = new JsonObjectRequest(1, "https://survey-innoproject.herokuapp.com/app/surveys/" + iD + "/answer", mainObj, new Response.Listener<JSONObject>() {
 
 
                             @Override
                             public void onResponse(JSONObject response) {
 
-                                try{
-                                    if (response.getString("message")!=null) {
+                                try {
+                                    if (response.getString("message") != null) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(SimpleSurveyActivity.this);
                                         builder.setMessage(response.getString("message"))
                                                 .setNegativeButton("OK", null)
                                                 .create()
                                                 .show();
-                                    }
-                                    else {
+                                    } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(SimpleSurveyActivity.this);
                                         builder.setMessage(response.toString())
                                                 .setNegativeButton("OK", null)
                                                 .create()
                                                 .show();
                                     }
-                                }catch(JSONException e){
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -149,7 +254,7 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                                 if (networkResponse != null && networkResponse.statusCode == 403) {
 
                                     String a = new String(networkResponse.data);
-                                    try{
+                                    try {
                                         JSONObject jsonObj = new JSONObject(a);
                                         String b = jsonObj.getString("message");
                                         AlertDialog.Builder builder = new AlertDialog.Builder(SimpleSurveyActivity.this);
@@ -158,13 +263,13 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                                                 .create()
                                                 .show();
 
-                                    }catch(JSONException e){
+                                    } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
                                 }
                             }
                         }
-                        ){
+                        ) {
 
                             @Override
                             public String getBodyContentType() {
@@ -200,5 +305,7 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                 e.printStackTrace();
         }
 
+
     }
+
 }
