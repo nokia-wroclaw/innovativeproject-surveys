@@ -1,38 +1,66 @@
 <div class="col-md-6 col-md-offset-3">
     <h2>Register</h2>
-    <form name="form" (ngSubmit)="f.form.valid && register()" #f="ngForm" novalidate>
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName.valid }">
-            <label for="firstName">First Name</label>
-            <input type="text" class="form-control" name="firstName" [(ngModel)]="model.firstName" #firstName="ngModel" required />
-            <div *ngIf="f.submitted && !firstName.valid" class="help-block">First Name is required</div>
-        </div>
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !lastName.valid }">
-            <label for="lastName">Last Name</label>
-            <input type="text" class="form-control" name="lastName" [(ngModel)]="model.lastName" #lastName="ngModel" required />
-            <div *ngIf="f.submitted && !lastName.valid" class="help-block">Last Name is required</div>
-        </div>
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !login.valid }">
+    <form [formGroup]="form" novalidate>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(form.get('login'))}">
             <label for="login">Login</label>
-            <input type="text" class="form-control" name="login" [(ngModel)]="model.login" #login="ngModel" required />
-            <div *ngIf="f.submitted && !login.valid" class="help-block">Login is required</div>
+            <input id="login" type="text" class="form-control" formControlName="login" />
+            <span *ngIf="isFormError(form.get('login'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(form.get('login'))" class="help-block">Login is required</div>
         </div>
-        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(form.get('firstName'))}">
+            <label for="firstName">First Name</label>
+            <input id="firstName" type="text" class="form-control" formControlName="firstName" />
+            <span *ngIf="isFormError(form.get('firstName'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(form.get('firstName'))" class="help-block">First name is required</div>
+        </div>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(form.get('lastName'))}">
+            <label for="lastName">Last Name</label>
+            <input id="lastName" type="text" class="form-control" formControlName="lastName" />
+            <span *ngIf="isFormError(form.get('lastName'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(form.get('lastName'))" class="help-block">Last name is required</div>
+        </div>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(form.get('password'))}">
             <label for="password">Password</label>
-            <input type="password" class="form-control" name="password" [(ngModel)]="model.password" #password="ngModel" required />
-            <div *ngIf="f.submitted && !password.valid" class="help-block">Password is required</div>
+            <input id="password" type="text" class="form-control" formControlName="password" />
+            <span *ngIf="isFormError(form.get('password'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(form.get('password'))" class="help-block">Password is required</div>
         </div>
-		<div class="form-group" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
-            <label for="repassword">Repeat the password</label>
-            <input type="password" class="form-control" name="rePassword" [(ngModel)]="model.rePassword" #rePassword="ngModel" required />
-            <div *ngIf="f.submitted && !rePassword.valid" class="help-block">Password is required</div>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(form.get('rePassword'))}">
+            <label for="rePassword">Repeat password</label>
+            <input id="rePassword" type="text" class="form-control" formControlName="rePassword" />
+            <span *ngIf="isFormError(form.get('rePassword'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(form.get('rePassword'))" class="help-block">Passwords do not match</div>
         </div>
-		<div class="form-group" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" required />
-            <div *ngIf="f.submitted && !email.valid" class="help-block">Email is required</div>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(form.get('email'))}">
+            <label for="email">E-mail</label>
+            <input id="email" type="text" class="form-control" formControlName="email" />
+            <span *ngIf="isFormError(form.get('email'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(form.get('email'))" class="help-block">E-mail is required</div>
+        </div>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(form.get('resetQuestion'))}">
+            <label for="resetQuestion">Safety question</label>
+            <select id="resetQuestion" type="text" class="form-control" formControlName="resetQuestion">
+                <option *ngFor="let question of questions" value="{{question}}">{{question}}</option>
+            </select>
+            <span *ngIf="isFormError(form.get('resetQuestion'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(form.get('resetQuestion'))" class="help-block">Question is required</div>
+        </div>
+        <div class="form-group has-feedback" [ngClass]="{'has-error': isFormError(form.get('resetAnswer'))}">
+            <label for="resetAnswer">Safety question answer</label>
+            <input id="resetAnswer" type="text" class="form-control" formControlName="resetAnswer" />
+            <span *ngIf="isFormError(form.get('resetAnswer'))"
+                  class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+            <div *ngIf="isFormError(form.get('resetAnswer'))" class="help-block">Answer is required</div>
         </div>
         <div class="form-group">
-            <button [disabled]="loading" class="btn btn-primary">Register</button>
+            <button [disabled]="loading" (click)="register()" class="btn btn-primary">Register</button>
             <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
         </div>
     </form>
