@@ -23,9 +23,9 @@ public class UnactivatedAccount extends Model {
 	
 	public UnactivatedAccount(String login, String password,
 			String firstName, String lastName, String email,
-			String activationLink) {
+			String activationLink, String resetQuestion, String resetAnswer) {
 		
-		ua = new UserAccount(login, password, firstName, lastName, email);
+		ua = new UserAccount(login, password, firstName, lastName, email, resetQuestion, resetAnswer);
 		ua.save();
 		this.activationLink = activationLink;
 		this.expiredDate = new Date(System.currentTimeMillis()+172800000);
