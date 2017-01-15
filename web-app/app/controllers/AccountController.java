@@ -40,7 +40,7 @@ public class AccountController extends Controller {
 		if (jsNode == null) {
 			return status(403, Json.toJson(new Message("JSON wanted!")));
 		}
-		String login = jsNode.findPath("login").textValue();
+		String login = jsNode.findPath("login").textValue().toLowerCase();
 		String password = jsNode.findPath("password").textValue();
 		if (login == null || password == null) {
 			return status(403,
@@ -83,6 +83,8 @@ public class AccountController extends Controller {
 		}
 		if (login.equals("")) {
 			return status(403, Json.toJson(new Message("Empty login")));
+		} else {
+			login = login.toLowerCase();
 		}
 		if (registerJson.get("password") == null) {
 			return status(403, Json.toJson(new Message("Password wanted")));
