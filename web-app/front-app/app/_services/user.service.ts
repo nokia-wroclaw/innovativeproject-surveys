@@ -47,4 +47,17 @@ export class UserService {
             (response: Response) => response.json()
         );
     }
+
+    sendAnswer(body) {
+        let options = new RequestOptions({
+            method: RequestMethod.Put,
+            url: this.host + 'app/user/reset-code',
+            headers: this.getHeader(),
+            body: JSON.stringify(body)
+        });
+        return this.http.request(new Request(options)).map(
+            (response: Response) => response.json()
+        );
+    }
+
 }

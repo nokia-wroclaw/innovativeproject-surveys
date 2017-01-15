@@ -12,6 +12,10 @@ export class ResetPasswordComponent {
         email: new FormControl('', Validators.required)
     });
 
+    secondForm = new FormGroup({
+        answer: new FormControl('', Validators.required)
+    });
+
     stage: number = 1;
     submitted: boolean = false;
     loading: boolean = false;
@@ -33,11 +37,34 @@ export class ResetPasswordComponent {
         this.loading = true;
         this.userService.getResetQuestion(this.firstForm.value).subscribe(
             (data) => {
+                this.alertService.success("Answer for your safety question");
                 this.stage = 2;
                 this.submitted = false;
                 this.loading = false;
                 this.question = data.question;
                 console.log(this.question);
+            },
+            (error) => {
+                error = error.json();
+                this.submitted = false;
+                this.loading = false;
+                this.alertService.error(error.message);
+            }
+        )
+    }
+
+    sendAnswer() {
+        this.submitted = true;
+        if (!this.secondForm.valid) {
+            return;
+        }
+        this.loading = true;
+        this.userService.sendAnswer(this.secondForm.value).subscribe(
+            () => {
+                this.stage = 3;
+                this.submitted = false;
+                this.loading = false;
+                this.alertService.success("Check your e-mail for password reset code")
             },
             (error) => {
                 error = error.json();
