@@ -19,6 +19,7 @@ import { InfoComponent } from './info/index'
 import { InviteComponent } from './invite/index'
 import { SurveyResultComponent } from './survey-result/index'
 import { ChartsModule } from 'ng2-charts/ng2-charts'
+import {ResetPasswordComponent} from "./reset-password/reset-password.component";
 
 @NgModule({
     imports: [
@@ -40,7 +41,8 @@ import { ChartsModule } from 'ng2-charts/ng2-charts'
         RegisterComponent,
 		SurveyViewComponent,
 		SurveyCreationComponent,
-        SurveyResultComponent
+        SurveyResultComponent,
+        ResetPasswordComponent
     ],
     providers: [
         AuthGuard,

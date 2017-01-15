@@ -61,6 +61,7 @@ GET		/register						controllers.HomeController.index()
 GET		/surveyCreate					controllers.HomeController.index()
 GET		/invite     					controllers.HomeController.index()
 GET     /surveyResult/:id               controllers.HomeController.indexWithResult(id: Integer)
+GET     /reset-password                 controllers.HomeController.index()
 
 #Swagger
 #GET     /swagger.json           controllers.ApiHelpController.getResources
