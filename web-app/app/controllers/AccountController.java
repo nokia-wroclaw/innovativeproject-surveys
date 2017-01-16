@@ -169,6 +169,7 @@ public class AccountController extends Controller {
                 }
             }
         }
+        Logger.info(login+" activation link: "+link);
         UnactivatedAccount newAcc = new UnactivatedAccount(login, password,
                 firstName, lastName, email, link, resetQuestion, resetAnswer);
 
@@ -298,12 +299,8 @@ public class AccountController extends Controller {
             return status(403, Json.toJson(new MessageJson("Crypting error!")));
         }
         Logger.info("code: " + code);
-        try {
-            sendResetEmail(user.email, code, user.firstName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ok();
+        //sendResetEmail(user.email, code, user.firstName);
+        return ok(Json.toJson(new MessageJson("Check your e-mail for coed to password reset")));
     }
 
     public Result resetPassword() {
@@ -311,9 +308,13 @@ public class AccountController extends Controller {
         String login = session().get("resetLogin");
         String oldCode = session().get("resetCode");
         String code = body.get("code").asText();
-        String newPassword = body.get("newPassword").asText();
+        String newPassword = body.get("password").asText();
+        String newRePassword = body.get("rePassword").asText();
         if (code == null || code.equals("") || newPassword == null || newPassword.equals("") || login == null) {
             return status(403, Json.toJson(new MessageJson("Every field is required!")));
+        }
+        if (!newPassword.equals(newRePassword)) {
+            return status(403, Json.toJson(new MessageJson("Passwords don't match!")));
         }
         if (oldCode == null || !PasswordCrypt.checkPassword(code, oldCode)){
             return status(403, Json.toJson(new MessageJson("Wrong code!")));
@@ -321,7 +322,7 @@ public class AccountController extends Controller {
         UserAccount user = UserAccount.find.byId(login);
         user.changePassword(newPassword);
         user.update();
-        return ok();
+        return ok(Json.toJson(new MessageJson("You successfully reset your password")));
     }
 
     public void sendResetEmail(String email, String code, String firstName) {

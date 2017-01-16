@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
-import {FormGroup, FormControl, Validators} from '@angular/forms';
+import {FormGroup, FormControl, Validators, AbstractControl} from '@angular/forms';
 import {UserService, AlertService} from "../_services/index";
+import {Router} from "@angular/router";
 
 @Component({
     templateUrl: "reset-password.component.html"
@@ -16,13 +17,24 @@ export class ResetPasswordComponent {
         answer: new FormControl('', Validators.required)
     });
 
+    thirdForm = new FormGroup({
+        code: new FormControl('', Validators.required),
+        password: new FormControl('', Validators.compose([
+            Validators.required, Validators.minLength(8)
+        ])),
+        rePassword: new FormControl('', Validators.compose([
+            Validators.required, Validators.minLength(8)
+        ]))
+    })
+
     stage: number = 1;
     submitted: boolean = false;
     loading: boolean = false;
     question: string = '';
 
     constructor(private userService: UserService,
-                private alertService: AlertService) {
+                private alertService: AlertService,
+                private router: Router) {
     }
 
     isFormError(formControl: FormControl) {
@@ -60,17 +72,38 @@ export class ResetPasswordComponent {
         }
         this.loading = true;
         this.userService.sendAnswer(this.secondForm.value).subscribe(
-            () => {
+            (response) => {
                 this.stage = 3;
                 this.submitted = false;
                 this.loading = false;
-                this.alertService.success("Check your e-mail for password reset code")
+                this.alertService.success(response.message);
             },
             (error) => {
                 error = error.json();
                 this.submitted = false;
                 this.loading = false;
                 this.alertService.error(error.message);
+            }
+        )
+    }
+
+    resetPassword() {
+        this.submitted = true;
+        if (!this.thirdForm.valid) {
+            return;
+        }
+        this.loading = true;
+        console.log(JSON.stringify(this.thirdForm.value));
+        this.userService.resetPassword(this.thirdForm.value).subscribe(
+            (data) => {
+                this.router.navigate(['/']);
+                this.alertService.success(data.message, true);
+            },
+            (error) => {
+                error = error.json();
+                this.alertService.error(error.message);
+                this.loading = false;
+                this.submitted = false;
             }
         )
     }

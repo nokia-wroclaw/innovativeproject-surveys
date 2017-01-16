@@ -60,4 +60,16 @@ export class UserService {
         );
     }
 
+    resetPassword(body) {
+        let options = new RequestOptions({
+            method: RequestMethod.Put,
+            url: this.host + 'app/user/reset-password',
+            headers: this.getHeader(),
+            body: JSON.stringify(body)
+        });
+        return this.http.request(new Request(options)).map(
+            (response: Response) => response.json()
+        );
+    }
+
 }

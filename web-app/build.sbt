@@ -12,10 +12,6 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
-libraryDependencies ++= Seq(
-  "io.swagger" %% "swagger-play2" % "1.5.1"
-)
-
 // https://mvnrepository.com/artifact/com.typesafe.play/play-mailer_2.11
 libraryDependencies += "com.typesafe.play" %% "play-mailer" % "5.0.0"
 
