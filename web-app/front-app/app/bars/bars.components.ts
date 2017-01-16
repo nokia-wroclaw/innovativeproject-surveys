@@ -1,4 +1,4 @@
-import {Component, Injectable} from '@angular/core';
+import {Component} from '@angular/core';
 import {Location} from '@angular/common'
 import {Router} from '@angular/router';
 import {AuthGuard} from '../_guards/index';

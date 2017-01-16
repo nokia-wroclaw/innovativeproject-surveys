@@ -16,6 +16,9 @@
 POST	/app/login						controllers.AccountController.loginPost
 POST	/app/invitation				    controllers.AccountController.invite
 POST    /app/user/:login				controllers.AccountController.userPost(login: String)
+PUT     /app/user/reset-get             controllers.AccountController.getResetQuestion
+PUT     /app/user/reset-code            controllers.AccountController.getResetCode
+PUT     /app/user/reset-password        controllers.AccountController.resetPassword
 GET     /app/user/all                   controllers.AccountController.getAll
 
 PUT		/app/user/activate/:link				controllers.AccountController.activate(link: String)
@@ -59,6 +62,7 @@ GET		/surveyCreate					controllers.HomeController.index()
 GET		/invite     					controllers.HomeController.index()
 GET     /surveyResult/:id               controllers.HomeController.indexWithResult(id: Integer)
 GET     /activ/:link                    controllers.HomeController.indexWithString(link: String)
+GET     /reset-password                 controllers.HomeController.index()
 
 #Swagger
 #GET     /swagger.json           controllers.ApiHelpController.getResources

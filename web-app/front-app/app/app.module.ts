@@ -20,6 +20,8 @@ import { InfoComponent } from './info/index'
 import { InviteComponent } from './invite/index'
 import { SurveyResultComponent } from './survey-result/index'
 import { ChartsModule } from 'ng2-charts/ng2-charts'
+import {ResetPasswordComponent} from "./reset-password/reset-password.component";
+import {EqualValidator} from "./_validators/index";
 
 @NgModule({
     imports: [
@@ -42,7 +44,8 @@ import { ChartsModule } from 'ng2-charts/ng2-charts'
 		SurveyViewComponent,
 		SurveyCreationComponent,
         SurveyResultComponent,
-        AccountActivationComponent
+        AccountActivationComponent,
+        ResetPasswordComponent
     ],
     providers: [
         AuthGuard,
