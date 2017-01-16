@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {User} from '../_models/index';
-import {UserService, AlertService} from '../_services/index';
+import {UserService, AlertService, AuthenticationService} from '../_services/index';
 import {SurveyService} from '../_services/index';
 
 @Component({
@@ -17,6 +17,7 @@ export class HomeComponent {
     constructor(private userService: UserService,
                 private service: SurveyService,
                 private alertService: AlertService,
+                private authenticationService: AuthenticationService,
                 private router: Router) {
         this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.showUserSurveys();
@@ -31,6 +32,8 @@ export class HomeComponent {
                 },
                 error => {
                     this.alertService.error(error.json().message);
+                    this.authenticationService.logout();
+                    this.router.navigate(['/'])
                 });
 
 
@@ -44,6 +47,8 @@ export class HomeComponent {
                 },
                 error => {
                     this.alertService.error(error.json().message);
+                    this.authenticationService.logout();
+                    this.router.navigate(['/'])
                 });
 
 

@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import com.avaje.ebean.Model;
+import com.avaje.ebean.annotation.JsonIgnore;
 import cryptography.PasswordCrypt;
 
 @Entity
@@ -18,17 +19,19 @@ public class Response extends Model {
 	
 	@ManyToOne
 	public Question question;
+
 	@ManyToOne
 	public Survey survey;
+
 	@Column(length=1000)
 	public String keyToUser;
-	
+
 	public static Finder<Integer, Response> find = new Finder<Integer, Response>(Response.class);
-	
+
 	public Response(String answer) {
 		this.answer = answer;
 	}
-	
+
 	public void setAnswer(String name){
 		this.answer = name;
 	}
@@ -37,15 +40,15 @@ public class Response extends Model {
 		return this.answer;
 	}
 
-	public void setUser(String userPassword){
+	public void setUser(String userPassword, String userLogin){
 		try{
-			this.keyToUser = PasswordCrypt.createPassword(userPassword+this.id);
+			this.keyToUser = PasswordCrypt.createPassword(userLogin+userPassword+this.id);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 
-	public boolean checkUser(String password){
-		return PasswordCrypt.checkPassword(password+this.id, this.keyToUser);
+	public boolean checkUser(String password, String login){
+		return PasswordCrypt.checkPassword(login+password+this.id, this.keyToUser);
 	}
 }

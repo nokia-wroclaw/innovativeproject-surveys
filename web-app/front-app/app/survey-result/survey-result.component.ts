@@ -83,6 +83,7 @@ export class SurveyResultComponent {
                                         j = 0;
                                         console.log(JSON.stringify(posans));
                                         this.barChartData.push([{data: posans, label: 'Answers'}]);
+                                        this.barChartQuestions.push(q.question);
                                     }
 
                                 }

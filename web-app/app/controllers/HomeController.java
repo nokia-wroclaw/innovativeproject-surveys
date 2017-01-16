@@ -18,6 +18,10 @@ public class HomeController extends Controller {
         return index();
     }
 
+    public Result indexWithString(String param) {
+        return index();
+    }
+
     /**
      *
      * @return Page with front-end app.

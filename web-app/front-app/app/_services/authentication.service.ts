@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map'
 export class AuthenticationService {
 
     host = "http://localhost:9000/";
-    //host = "https://survey-innoproject.herokuapp.com/";
+    // host = "https://survey-innoproject.herokuapp.com/";
     constructor(private http: Http) { }
     login(username, password) {
 			var headers = new Headers();
