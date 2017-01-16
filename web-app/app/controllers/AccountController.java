@@ -205,12 +205,12 @@ public class AccountController extends Controller {
 	public Result activate(String link) {
 		 List<UnactivatedAccount> ua = UnactivatedAccount.find.all();
 		 for (UnactivatedAccount a : ua) {
-		  if(a.activationLink == link){
+		  if(a.activationLink.equals(link)){
 			 a.delete();
-			 return ok(Json.toJson(new Message("Konto aktywowane!")));
+			 return ok(Json.toJson(new Message("Account was activated!")));
 		  	}
 		  }
-			return status(404, Json.toJson(new Message("Zły link aktywacyjny!")));
+			return status(404, Json.toJson(new Message("Wrong activated link!")));
 	}
 
 	public Result clean() {

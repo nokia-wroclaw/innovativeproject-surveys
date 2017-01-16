@@ -114,7 +114,16 @@ export class SurveyResultComponent {
 
     public barChartOptions:any = {
         scaleShowVerticalLines: false,
-        responsive: true
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    min: 0,
+                    stepSize: 1
+                }
+            }]
+        }
     };
     public barChartLabels = [];
     public barChartType:string = 'bar';

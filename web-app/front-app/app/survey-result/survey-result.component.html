@@ -7,8 +7,9 @@
 			<p>{{r}}</p>
 		</div>
 	</div>
-	<div *ngFor="let p of pieChartData; let i=index">
+	<div *ngFor="let p of pieChartData; let i=index" style="margin-bottom: 40px;">
 		<h4>{{pieChartQuestions[i]}}</h4>
+		<div id="pie" class="col-md-4 col-md-offset-1">
 		<canvas baseChart
 				[data]="p"
 				[labels]="pieChartLabels"
@@ -16,9 +17,11 @@
 				(chartHover)="chartHovered($event)"
 				(chartClick)="chartClicked($event)">
 		</canvas>
+		</div>
 	</div>
 	<div *ngFor="let b of barChartData; let i=index">
 		<h4>{{barChartQuestions[i]}}</h4>
+		<div id="bar">
 		<canvas baseChart
 				[datasets]="b"
 				[labels]="barChartLabels[i]"
@@ -28,5 +31,6 @@
 				(chartHover)="chartHovered($event)"
 				(chartClick)="chartClicked($event)">
 		</canvas>
+		</div>
 	</div>
 </div>

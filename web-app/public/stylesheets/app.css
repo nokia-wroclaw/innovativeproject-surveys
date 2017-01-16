@@ -85,3 +85,19 @@ input {
     margin-left: 2px;
     margin-right: 2px;
 }
+
+#pie{
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    width: 500px;
+    height: 250px;
+}
+
+#bar{
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    width: 500px;
+    height: 250px;
+    margin: auto;
+}
