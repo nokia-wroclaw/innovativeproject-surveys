@@ -19,13 +19,11 @@ import play.mvc.*;
 import play.libs.Json;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
-import play.Logger;
 
 import javax.inject.Inject;
 
 /**
- * Controler managing all account featers.
- *
+ * Controller managing all account features.
  */
 public class AccountController extends Controller {
 
@@ -64,12 +62,12 @@ public class AccountController extends Controller {
 
     public void sendAccEmail(String email, String link, String firstName) {
         Email email1 = new Email();
-        email1.setSubject("Rejestracja na surveys");
-        email1.setFrom("Surveys <registration@surveys.com>");
+        email1.setSubject("Registration on surveys");
+        email1.setFrom("Surveys <no-replay@surveys.com>");
         email1.addTo(email);
-        email1.setBodyText("Hi " + firstName
-                + "!\n\nOto link aktywacyjny: " + host + "/activ/"
-                + link);
+        email1.setBodyText("Welcome " + firstName
+                + "!\n\nThank you for registration! To activate you account click this link: " + host + "/activ/"
+                + link + " .");
         String id = mailerClient.send(email1);
 
     }
@@ -116,31 +114,31 @@ public class AccountController extends Controller {
         String resetAnswer = registerJson.get("resetAnswer").asText();
 
         if (password == null || password.equals("")) {
-            return status(403, Json.toJson(new MessageJson("Password wanted")));
+            return status(403, Json.toJson(new MessageJson("Password required.")));
         }
 
         if (rePassword == null || rePassword.equals("")) {
-            return status(403, Json.toJson(new MessageJson("rePassword wanted")));
+            return status(403, Json.toJson(new MessageJson("rePassword required.")));
         }
 
         if (firstName == null || firstName.equals("")) {
-            return status(403, Json.toJson(new MessageJson("First name wanted")));
+            return status(403, Json.toJson(new MessageJson("First name required.")));
         }
 
         if (lastName == null || lastName.equals("")) {
-            return status(403, Json.toJson(new MessageJson("Last name wanted")));
+            return status(403, Json.toJson(new MessageJson("Last name required.")));
         }
 
         if (email == null || email.equals("")) {
-            return status(403, Json.toJson(new MessageJson("Email wanted")));
+            return status(403, Json.toJson(new MessageJson("Email required.")));
         }
 
         if (resetQuestion == null || resetQuestion.equals("")) {
-            return status(403, Json.toJson(new MessageJson("Question for password reset wanted!")));
+            return status(403, Json.toJson(new MessageJson("Question for password reset required.")));
         }
 
         if (resetAnswer == null || resetAnswer.equals("")) {
-            return status(403, Json.toJson(new MessageJson("Question for password reset wanted!")));
+            return status(403, Json.toJson(new MessageJson("Answer for question required.")));
         }
 
         @SuppressWarnings("rawtypes")
@@ -149,15 +147,15 @@ public class AccountController extends Controller {
                 .findList();
         if (userEm.size() != 0) {
             return status(403, Json.toJson(new MessageJson(
-                    "User with this e-mail already exists!")));
+                    "User with this e-mail already exists.")));
         }
         if (user != null) {
             return status(403, Json.toJson(new MessageJson(
-                    "User with this login already exists!")));
+                    "User with this login already exists.")));
         }
         if (!password.equals(rePassword)) {
             return status(403,
-                    Json.toJson(new MessageJson("Passwords don't match!")));
+                    Json.toJson(new MessageJson("Passwords don't match.")));
         }
         String link = Integer.toHexString(new Random().nextInt(0x1000000));
         List<UnactivatedAccount> unactiv = UnactivatedAccount.find.all();
@@ -169,13 +167,16 @@ public class AccountController extends Controller {
                 }
             }
         }
-        Logger.info(login+" activation link: "+link);
+        Logger.info(login + " activation link: " + link);
         UnactivatedAccount newAcc = new UnactivatedAccount(login, password,
                 firstName, lastName, email, link, resetQuestion, resetAnswer);
 
         newAcc.save();
-        sendAccEmail(email, link, firstName);
-        return ok(Json.toJson(new MessageJson("Registrated")));
+        try {
+            sendAccEmail(email, link, firstName);
+        } catch (Exception e) {
+        }
+        return ok(Json.toJson(new MessageJson("Account created successful.")));
     }
 
     public Result invite() {
@@ -218,12 +219,12 @@ public class AccountController extends Controller {
     public Result activate(String link) {
         List<UnactivatedAccount> ua = UnactivatedAccount.find.all();
         for (UnactivatedAccount a : ua) {
-            if (a.activationLink == link) {
+            if (a.activationLink.equals(link)) {
                 a.delete();
-                return ok(Json.toJson(new MessageJson("Konto aktywowane!")));
+                return ok(Json.toJson(new MessageJson("Account activated.")));
             }
         }
-        return status(404, Json.toJson(new MessageJson("Zły link aktywacyjny!")));
+        return status(404, Json.toJson(new MessageJson("Wrong activation link.")));
 
     }
 
@@ -241,11 +242,11 @@ public class AccountController extends Controller {
     }
 
     public Result getAll() {
-        List<String> allUsersLogins = getUsersLogins(UserAccount.find.all());
-        return ok(Json.toJson(allUsersLogins));
+        List<String> allUsername = getAllUsername(UserAccount.find.all());
+        return ok(Json.toJson(allUsername));
     }
 
-    private List<String> getUsersLogins(List<UserAccount> allUsers) {
+    private List<String> getAllUsername(List<UserAccount> allUsers) {
         List<String> allUsersLogin = new ArrayList<>();
         for (UserAccount user : allUsers) {
             allUsersLogin.add(user.login);
@@ -283,10 +284,10 @@ public class AccountController extends Controller {
             return status(403, Json.toJson(new MessageJson("Wrong login!")));
         }
         if (user.getResetCount() > 3) {
-            return status(403, Json.toJson(new MessageJson("You tried too many times!")));
+            return status(403, Json.toJson(new MessageJson("You tried too many times! Wait 15 minutes.")));
         }
         if (!user.checkAnswer(answer)) {
-            user.resetCount++;
+            user.setResetCount(user.getResetCount()+1);
             user.update();
             return status(403, Json.toJson(new MessageJson("Wrong answer!")));
         }
@@ -295,11 +296,14 @@ public class AccountController extends Controller {
         String code = RandomVaribles.getRandomString(8);
         try {
             session().put("resetCode", PasswordCrypt.createPassword(code));
-        } catch(Exception e) {
-            return status(403, Json.toJson(new MessageJson("Crypting error!")));
+        } catch (Exception e) {
+            return status(403, Json.toJson(new MessageJson("Cryptography error!")));
         }
         Logger.info("code: " + code);
-        //sendResetEmail(user.email, code, user.firstName);
+        try {
+            sendResetEmail(user.email, code, user.firstName);
+        } catch (Exception e) {
+        }
         return ok(Json.toJson(new MessageJson("Check your e-mail for coed to password reset")));
     }
 
@@ -316,7 +320,7 @@ public class AccountController extends Controller {
         if (!newPassword.equals(newRePassword)) {
             return status(403, Json.toJson(new MessageJson("Passwords don't match!")));
         }
-        if (oldCode == null || !PasswordCrypt.checkPassword(code, oldCode)){
+        if (oldCode == null || !PasswordCrypt.checkPassword(code, oldCode)) {
             return status(403, Json.toJson(new MessageJson("Wrong code!")));
         }
         UserAccount user = UserAccount.find.byId(login);

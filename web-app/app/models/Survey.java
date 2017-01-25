@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -34,6 +35,7 @@ public class Survey extends Model{
 		this.name = name;
 		this.description = description;
 		this.email = email;
+		this.question = new ArrayList<>();
 	}
 	
 	public void setId(Integer id){	

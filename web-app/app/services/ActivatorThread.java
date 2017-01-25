@@ -21,7 +21,7 @@ public class ActivatorThread extends Thread implements Runnable {
 				e1.printStackTrace();
 			}		
 			
-		    long intervalInMs = 5000*3600; // run every hour 
+		    long intervalInMs = 1000*60*15; // run every 15 min
 		    long nextRun = System.currentTimeMillis() + intervalInMs;
 		    method();
 		    if (nextRun > System.currentTimeMillis()) {
@@ -57,7 +57,13 @@ public class ActivatorThread extends Thread implements Runnable {
 		           
 				}
 			}
-		} 
+		}
+		List<UserAccount> userWithResetTries = UserAccount.find.where().ge("reset_count", 1).findList();
+		Logger.info("Number of accounts with reset tries: "+userWithResetTries.size());
+		for(UserAccount user : userWithResetTries){
+			user.setResetCount(0);
+			user.update();
+		}
 	}
 	
 	
