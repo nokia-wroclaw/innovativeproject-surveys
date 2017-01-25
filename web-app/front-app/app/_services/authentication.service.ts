@@ -6,8 +6,8 @@ import 'rxjs/add/operator/map'
 @Injectable()
 export class AuthenticationService {
 
-    host = "http://localhost:9000/";
-    // host = "https://survey-innoproject.herokuapp.com/";
+    // host = "http://localhost:9000/";
+    host = "https://survey-innoproject.herokuapp.com/";
     constructor(private http: Http) { }
     login(username, password) {
 			var headers = new Headers();

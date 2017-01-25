@@ -7,8 +7,8 @@ import 'rxjs/add/operator/map'
 @Injectable()
 export class SurveyService {
 
-    host = "http://localhost:9000/";
-    //host = "https://survey-innoproject.herokuapp.com/";
+    // host = "http://localhost:9000/";
+    host = "https://survey-innoproject.herokuapp.com/";
 
     constructor(private http: Http) {
     }

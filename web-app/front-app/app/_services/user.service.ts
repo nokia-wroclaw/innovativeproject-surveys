@@ -5,7 +5,8 @@ import { RegistrationUser } from '../_models/index';
 @Injectable()
 export class UserService {
 
-    host = "http://localhost:9000/";
+    // host = "http://localhost:9000/";
+    host = "https://survey-innoproject.herokuapp.com/";
 
     constructor(private http: Http) {}
 
