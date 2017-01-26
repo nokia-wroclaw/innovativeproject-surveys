@@ -31,6 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserAreaActivity extends AppCompatActivity {
+
+    JSONObject jSurvey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +54,8 @@ public class UserAreaActivity extends AppCompatActivity {
         preferences.getString("cookie", "");
 
         TextView tvWelcomeMsg = (TextView) findViewById(R.id.tvWelcomeMsg);
+
+
 
         // Display user details
         String message = name + "! Welcome to survey app with anonimity ";
@@ -91,18 +96,82 @@ public class UserAreaActivity extends AppCompatActivity {
                             ll.addView(qu);
 
                             // Create button
+
                             Button ans = new Button(UserAreaActivity.this);
                             ans.setText("");
 
                             ans.setHint("Results");
                             ans.setId(i);
+
                             ans.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent invitationIntent = new Intent(UserAreaActivity.this, ShowSurveyActivity.class);
-                                    invitationIntent.putExtra("id", Integer.toString(id));
-                                    invitationIntent.putExtra("name", name);
-                                    UserAreaActivity.this.startActivity(invitationIntent);
+
+                                    JsonObjectRequest strinRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/"+id, null, new Response.Listener<JSONObject>() {
+
+                                        @Override
+                                        public void onResponse(JSONObject response) {
+
+                                            Log.d("resp", response.toString());
+                                            jSurvey=response;
+
+                                            Intent invitationIntent = new Intent(UserAreaActivity.this, ShowSurveyActivity.class);
+                                            invitationIntent.putExtra("id", Integer.toString(id));
+                                            invitationIntent.putExtra("name", name);
+                                            invitationIntent.putExtra("js", jSurvey.toString());
+                                            UserAreaActivity.this.startActivity(invitationIntent);
+
+
+
+                                        }
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+
+                                            NetworkResponse networkResponse = error.networkResponse;
+                                            if (networkResponse != null && networkResponse.statusCode != 200) {
+
+                                                String a = new String(networkResponse.data);
+                                                try{
+
+                                                    JSONObject jsonObj = new JSONObject(a);
+                                                    String b = jsonObj.getString("message");
+                                                    AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
+                                                    builder.setMessage(b)
+                                                            .setNegativeButton("OK", null)
+                                                            .create()
+                                                            .show();
+
+                                                }catch(JSONException e){
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    }) {
+                                        @Override
+                                        public String getBodyContentType() {
+                                            return String.format("application/json; charset=utf-8");
+                                        }
+
+
+                                        SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+
+                                        @Override
+                                        public Map<String, String> getHeaders() throws AuthFailureError {
+                                            Map<String, String> params = new HashMap<String, String>();
+
+                                            params.put("Cookie", preferences.getString("Cookies", ""));
+                                            return params;
+                                        }
+                                    };
+
+
+
+                                    RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
+                                    queue.add(strinRequest);
+
+
+
                                 }
                             });
 
