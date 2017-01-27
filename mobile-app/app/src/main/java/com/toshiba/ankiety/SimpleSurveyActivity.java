@@ -182,20 +182,28 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                             for (int l = 0; l < possible.length(); ++l) {
                                 String possAnsw = possible.getString(l);
 
-
+                                final int numAns = l;
                                 final CheckBox cb = new CheckBox(this);
                                 cb.setText(possAnsw);
                                 cb.setId(i );
-                                cb.getId();
 
+
+                                final int ansChoiceId = cb.getId();
 
                                 cb.setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View view) {
-                                        multiAnwserList.set(cb.getId(),"True||");
-
+                                       //multiAnwserList.set(ansChoiceId,"True||");
+                                        //string ss = joinMultans;
                                        // String joinMultAns = String.join("",multiAnwserList);
-                                       AnwserList.set(cb.getId(),joinMultans);
+                                        int tests = numAns;
+                                        String mergeString="";
+                                        System.out.println("to num:" + tests);
+                                        for(int t2=0; t2 < multiAnwserList.size(); ++t2) {
+                                            if(t2!= tests) {
+                                                mergeString = mergeString + multiAnwserList.get(t2);
+                                            }else{mergeString = mergeString + "true||";multiAnwserList.set(t2,"true||");}
 
+                                        }AnwserList.set(ansChoiceId, mergeString);
                                             //JSONObject jsonans = new JSONObject();
                                            // multiAnwserList.set(cb.getID(),"TRUE||");
                                            // multiAnwserList.get(cb.getID());
