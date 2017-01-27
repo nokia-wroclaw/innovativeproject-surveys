@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -26,7 +27,6 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +42,8 @@ public class SimpleSurveyActivity extends AppCompatActivity {
 
 
     JSONObject mainObj = new JSONObject();
+
+    List<String> AnwserList =  new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,9 @@ public class SimpleSurveyActivity extends AppCompatActivity {
            JSONArray a = response.getJSONArray("questions");
             Log.d("j", response.getJSONArray("questions").toString());
 
+            for(int is = 0; is < a.length(); ++is){
+                AnwserList.add("false||");
+            }
 
             for ( int i = 0; i < a.length(); ++i) {
 
@@ -84,6 +89,7 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                 int id = rec.getInt("id");
                 String ques = rec.getString("question");
                 String type = rec.getString("questionType");
+
 
 
                     // Create LinearLayout
@@ -99,19 +105,18 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                         // Create TextView
                         final EditText ans = new EditText(this);
                         ans.setText("");
-                        ans.setId(i + 1);
+                        ans.setId(i );
                         ans.setHint("Enter your answer");
                         final String s = ans.getText().toString();
                         ans.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View view) {
-                                try {
-                                    JSONObject jsonans = new JSONObject();
-                                    jsonans.put("answer", ans.getText());
-                                    jsonans.put("id", ans.getId());
-                                    ja.put(jsonans);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+
+                                   //JSONObject jsonans = new JSONObject();
+                                    AnwserList.set(ans.getId(),ans.getText().toString());
+                                    //jsonans.put("answer", ans.getText());
+                                   // jsonans.put("id", ans.getId());
+                                   // ja.put(jsonans);
+
                             }
                         });
                         ll.addView(ans);
@@ -124,22 +129,19 @@ public class SimpleSurveyActivity extends AppCompatActivity {
 
                                 final RadioButton r = new RadioButton(this);
                                 r.setText("Yes");
-                                r.setId(i + 1);
+                                r.setId(i );
                         final int rid = r.getId();
 
                         r.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View view) {
-                                try {
-                                    if (r.isChecked()) {
-                                        JSONObject jsonans = new JSONObject();
-                                        jsonans.put("answer", "true");
-                                        jsonans.put("id", rid);
-                                        ja.put(jsonans);
-                                    }
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                    if (r.isChecked()) {
+                                       // JSONObject jsonans = new JSONObject();
+                                       AnwserList.set(rid,"true");
+                                      //  jsonans.put("answer", "true");
+                                      //  jsonans.put("id", rid);
+                                      //  ja.put(jsonans);
+                                    }
 
                             }
                         });
@@ -147,22 +149,18 @@ public class SimpleSurveyActivity extends AppCompatActivity {
 
                                 final RadioButton r2 = new RadioButton(this);
                                 r2.setText("No");
-                        r2.setId(i+1);
+                        r2.setId(i);
                                 final int r2id = r2.getId();
 
                         r2.setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View view) {
-                                         try {
+
                                              if(r2.isChecked()){
-                                                 JSONObject jsonans = new JSONObject();
-                                                 jsonans.put("answer", "false");
-                                                 jsonans.put("id", r2id);
-                                                 ja.put(jsonans);
+                                                 //AnwserList.set(ans.getId(),"false");
+                                                 AnwserList.set(r2id,"false");
                                              }
 
-                                         } catch (JSONException e) {
-                                             e.printStackTrace();
-                                         }
+
                                     }
                                 });
                                 rg.addView(r2);
@@ -170,24 +168,44 @@ public class SimpleSurveyActivity extends AppCompatActivity {
                     else{
                         try{
                             JSONArray possible = rec.getJSONArray("possibleAnswers");
+                            final List<String> multiAnwserList =  new ArrayList<>();
+                             String joinMultans="";
+
+                            for(int test=0; test < possible.length() ; ++test){
+                                multiAnwserList.add("false||");
+                                joinMultans = joinMultans + "false||";
+                                if(test== (possible.length()-1)) {
+                                    //joinMultans = joinMultans + "false||";// String.join("",multiAnwserList);
+                                    AnwserList.set(i,joinMultans);
+                                }}
+
                             for (int l = 0; l < possible.length(); ++l) {
                                 String possAnsw = possible.getString(l);
 
+
                                 final CheckBox cb = new CheckBox(this);
                                 cb.setText(possAnsw);
-                                cb.setId(i + 1);
+                                cb.setId(i );
+                                cb.getId();
+
 
                                 cb.setOnClickListener(new View.OnClickListener() {
                                     public void onClick(View view) {
-                                        try {
-                                            JSONObject jsonans = new JSONObject();
-                                            jsonans.put("answer", cb.getText());
-                                            jsonans.put("id", cb.getId());
-                                            ja.put(jsonans);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
+                                        multiAnwserList.set(cb.getId(),"True||");
+
+                                       // String joinMultAns = String.join("",multiAnwserList);
+                                       AnwserList.set(cb.getId(),joinMultans);
+
+                                            //JSONObject jsonans = new JSONObject();
+                                           // multiAnwserList.set(cb.getID(),"TRUE||");
+                                           // multiAnwserList.get(cb.getID());
+                                            //jsonans.putOpt()
+                                            //jsonans.put("answer", cb.getText());
+                                           // jsonans.put("id", cb.getId());
+                                           // ja.put(jsonans);
+
                                     }
+
                                 });
                                 ll.addView(cb);
 
@@ -213,6 +231,12 @@ public class SimpleSurveyActivity extends AppCompatActivity {
 
                     try {
 
+                     for(int c=0; c<AnwserList.size();++c){
+                                JSONObject jsonans = new JSONObject();
+                                jsonans.put("answer", AnwserList.get(c));
+                                 jsonans.put("id", c+1);
+                                ja.put(jsonans);
+                     }
                         mainObj.put("Answers", ja);
 
                         Log.d("JSONANS", mainObj.toString());
@@ -220,7 +244,7 @@ public class SimpleSurveyActivity extends AppCompatActivity {
 
                         new NukeSSLCerts().nuke();
 
-                        JsonObjectRequest stringRequest = new JsonObjectRequest(1, "https://survey-innoproject.herokuapp.com/app/surveys/" + iD + "/answer", mainObj, new Response.Listener<JSONObject>() {
+                        JsonObjectRequest stringRequest = new JsonObjectRequest(1, "http://10.0.2.2:9000/app/surveys/" + iD + "/answer", mainObj, new Response.Listener<JSONObject>() {
 
 
                             @Override
