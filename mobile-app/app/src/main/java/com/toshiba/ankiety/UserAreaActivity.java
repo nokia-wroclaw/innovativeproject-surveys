@@ -412,8 +412,14 @@ public class UserAreaActivity extends AppCompatActivity {
         bLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                
+                SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+                SharedPreferences.Editor preferencesEditor = preferences.edit();
+                preferencesEditor.putString("login", "logout");
                 Intent intent = new Intent(UserAreaActivity.this, LoginActivity.class);
                 UserAreaActivity.this.startActivity(intent);
+
+
             }
         });
     }
