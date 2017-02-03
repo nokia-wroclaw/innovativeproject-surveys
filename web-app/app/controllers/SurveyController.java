@@ -11,6 +11,7 @@ import play.libs.Json;
 import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Result;
+
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,9 +24,9 @@ public class SurveyController extends Controller {
     MailerClient mailerClient;
 
     private String host = "https://survey-innoproject.herokuapp.com";
-    
+
     public Result getSurvey(Integer id) {
-    	String login = session().get("login");
+        String login = session().get("login");
         if (login == null) {
             String session = request().getHeader("PLAY-SESSION");
             if (session != null) {
@@ -38,7 +39,7 @@ public class SurveyController extends Controller {
 
         Survey survey = Survey.find.byId(id);
         Logger.info("Survey GET:");
-        Logger.info("Question 0 id: "+survey.question.get(0).id);
+        Logger.info("Question 0 id: " + survey.question.get(0).id);
         if (survey == null) {
             return status(404, Json.toJson(new Message("Survey not find")));
         }
@@ -52,7 +53,7 @@ public class SurveyController extends Controller {
         if (!survey.adminLogin.equals(login) && !member) {
             return status(403, "Don't have permission");
         }
-        
+
         SurveyJson surveyJson = new SurveyJson(survey);
         return ok(Json.toJson(surveyJson));
     }
@@ -64,7 +65,7 @@ public class SurveyController extends Controller {
      */
     public Result SurveyPost() {
 
-    	JsonNode surveyJson = request().body().asJson();
+        JsonNode surveyJson = request().body().asJson();
         String login = session().get("login");
         if (login == null) {
             String session = request().getHeader("PLAY-SESSION");
@@ -78,15 +79,22 @@ public class SurveyController extends Controller {
         String name = surveyJson.get("name").asText();
         String description = surveyJson.get("description").asText();
         String email = surveyJson.get("email").asText();
- 
+
         UserAccount ua = UserAccount.find.byId(login);
 
         Survey survey = new Survey(name, description, email);
+        survey.question = new ArrayList<>();
         survey.adminLogin = ua.login;
+        if (survey.question == null) {
+            Logger.info("Before seve");
+        }
         survey.save();
-        
+        if (survey.question == null) {
+            Logger.info("After save");
+        }
+
         ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
-        
+
         int i = 1;
         Logger.info("allquestions: " + Json.stringify(allquestion));
         for (JsonNode x : allquestion) {
@@ -94,36 +102,37 @@ public class SurveyController extends Controller {
             String questType = x.get("questionType").asText();
             Logger.info("post question: " + quest);
             Question question = new Question(quest);
+            question.responseChoice = new ArrayList<ResponseChoice>();
             Logger.info("post question in Question: " + question.question);
             question.survey = survey;
             question.setQuestionType(questType);
             question.save();
-            
-            if(questType.equals("open")){
+
+            if (questType.equals("open")) {
                 i += 1;
-            }else if(questType.equals("true/false")){
+            } else if (questType.equals("true/false")) {
                 i += 1;
-            }else if(questType.equals("multi")){
-          
-            	 ArrayNode questionResponse = (ArrayNode) x.withArray("possibleAnswers");
-            	          	 
-            	  for (JsonNode x1 : questionResponse) {
-            		  String questResponse = x1.get("response").asText();
-            		  ResponseChoice res = new ResponseChoice(questResponse);
-            		  res.setIsSelected(false);
-            		  res.setQuestion(question);
-            		  res.save();
-            		  question.responseChoice.add(res); 
-            	  } 
-            	 question.update();
-            	 i += 1;
+            } else if (questType.equals("multi")) {
+
+                ArrayNode questionResponse = (ArrayNode) x.withArray("possibleAnswers");
+
+                for (JsonNode x1 : questionResponse) {
+                    String questResponse = x1.get("response").asText();
+                    ResponseChoice res = new ResponseChoice(questResponse);
+                    res.setIsSelected(false);
+                    res.setQuestion(question);
+                    res.save();
+                    question.responseChoice.add(res);
+                }
+                question.update();
+                i += 1;
             }
+
             survey.question.add(question);
-            survey.update();
         }
-        
+        survey.update();
         JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
-     
+
         return ok(surveyJs);
     }
 
@@ -154,7 +163,7 @@ public class SurveyController extends Controller {
         String name = surveyJson.get("name").asText();
         String description = surveyJson.get("description").asText();
         String email = surveyJson.get("email").asText();
-        
+
         findSurvey.setName(name);
         findSurvey.setDescription(description);
         findSurvey.setEmail(email);
@@ -165,44 +174,45 @@ public class SurveyController extends Controller {
         }
         Survey survey = Survey.find.byId(id);
         List<Question> allquestions = Question.find.select("*").where().eq("survey_id", survey.id).findList();
-       
+
         int i = 0;
-        int temp2 = 0; 
+        int temp2 = 0;
         ArrayNode allquestion = (ArrayNode) surveyJson.withArray("questions");
         for (JsonNode x : allquestion) {
             String quest = x.get("question").asText();
             String questType = x.get("questionType").asText();
             allquestions.get(i).setQuestion(quest);
             allquestions.get(i).setQuestionType(questType);
-            allquestions.get(i).update();        
+            allquestions.get(i).update();
             temp2 = 0;
-            if(questType.equals("multi")){
-            	
-             List<ResponseChoice> allquestions2 = ResponseChoice.find.select("*").where().eq("question_id",allquestions.get(i).id).findList();
-           	 ArrayNode questionResponse = (ArrayNode) x.withArray("possibleAnswers");
-           	          	 
-           	  for (JsonNode x1 : questionResponse) {
-           		  
-           		 if(questionResponse.size() <= allquestions2.size()){
-           		  String questResponse = x1.get("response").asText();
-           		  allquestions2.get(temp2).setAnswer(questResponse);;
-           		  allquestions2.get(temp2).setIsSelected(false);
-           		  allquestions2.get(temp2).update();
-           		  temp2++;
-           		 }
-           		  //Add new possible answer to database
-           		  if(questionResponse.size() > allquestions2.size()){
-           			  
-           		  String questResponse = x1.get("response").asText();
-           		  ResponseChoice res = new ResponseChoice(questResponse);
-           		  res.setIsSelected(false);
-           		  res.setQuestion(allquestions.get(i));
-           		  res.save();
-           		  allquestions.get(i).responseChoice.add(res); 
-           		  allquestions.get(i).update();         	 
-           		  }
-           	  } 
-        }
+            if (questType.equals("multi")) {
+
+                List<ResponseChoice> allquestions2 = ResponseChoice.find.select("*").where().eq("question_id", allquestions.get(i).id).findList();
+                ArrayNode questionResponse = (ArrayNode) x.withArray("possibleAnswers");
+
+                for (JsonNode x1 : questionResponse) {
+
+                    if (questionResponse.size() <= allquestions2.size()) {
+                        String questResponse = x1.get("response").asText();
+                        allquestions2.get(temp2).setAnswer(questResponse);
+                        ;
+                        allquestions2.get(temp2).setIsSelected(false);
+                        allquestions2.get(temp2).update();
+                        temp2++;
+                    }
+                    //Add new possible answer to database
+                    if (questionResponse.size() > allquestions2.size()) {
+
+                        String questResponse = x1.get("response").asText();
+                        ResponseChoice res = new ResponseChoice(questResponse);
+                        res.setIsSelected(false);
+                        res.setQuestion(allquestions.get(i));
+                        res.save();
+                        allquestions.get(i).responseChoice.add(res);
+                        allquestions.get(i).update();
+                    }
+                }
+            }
             i += 1;
         }
         JsonNode surveyJs = Json.toJson(new SurveyJson(survey));
@@ -263,7 +273,7 @@ public class SurveyController extends Controller {
 
         List<Response> response = Response.find.select("*").where().eq("survey_id", id).findList();
 
-        for (Iterator<Response> iterator = response.iterator(); iterator.hasNext();) {
+        for (Iterator<Response> iterator = response.iterator(); iterator.hasNext(); ) {
             Response current = iterator.next();
             Logger.info(current.getAnswer());
             if (!current.checkUser(password, login)) {
@@ -271,7 +281,7 @@ public class SurveyController extends Controller {
                 Logger.info("removed");
             }
         }
-        Logger.info("Response "+response.size());
+        Logger.info("Response " + response.size());
 
         String answer;
         ArrayNode allanswer = (ArrayNode) surveyJson.withArray("Answers");
@@ -329,8 +339,8 @@ public class SurveyController extends Controller {
                 .where()
                 .eq("survey_id", id)
                 .findList();
-        Logger.info("Response size: "+allResponse.size());
-        for (Iterator<Response> iterator = allResponse.iterator(); iterator.hasNext();) {
+        Logger.info("Response size: " + allResponse.size());
+        for (Iterator<Response> iterator = allResponse.iterator(); iterator.hasNext(); ) {
             Response current = iterator.next();
             Logger.info(current.getAnswer());
             if (!current.checkUser(password, login)) {
@@ -338,7 +348,7 @@ public class SurveyController extends Controller {
                 Logger.info("removed");
             }
         }
-        Logger.info("Response size: "+allResponse.size());
+        Logger.info("Response size: " + allResponse.size());
         List<ResponseJson> result = new ArrayList<ResponseJson>();
         int i = 1;
         for (Response res : allResponse) {

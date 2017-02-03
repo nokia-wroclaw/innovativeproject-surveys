@@ -21,11 +21,11 @@ public class Survey extends Model{
 	public String email;
 	
 	@OneToMany(mappedBy="survey")
-	public List<Question> question;
+	public List<Question> question = new ArrayList<Question>();
 	@OneToMany(mappedBy="survey")
-	public List<Response> response;
+	public List<Response> response = new ArrayList<Response>();
 	@OneToMany(mappedBy="survey")
-	public List<SurveyMember> surveyMember;
+	public List<SurveyMember> surveyMember = new ArrayList<SurveyMember>();
 	public String adminLogin;
 
 	
@@ -35,7 +35,6 @@ public class Survey extends Model{
 		this.name = name;
 		this.description = description;
 		this.email = email;
-		this.question = new ArrayList<>();
 	}
 	
 	public void setId(Integer id){	
