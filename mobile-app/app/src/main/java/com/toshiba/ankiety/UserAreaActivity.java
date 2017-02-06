@@ -69,189 +69,139 @@ public class UserAreaActivity extends AppCompatActivity {
             }
         });
 
-
-            new NukeSSLCerts().nuke();
-
-            JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/result/AdminList", null, new Response.Listener<JSONArray>() {
+            long cacheAge = preferences.getLong("CacheAge",0);
+            long currentTime = System.currentTimeMillis();
 
 
-                @Override
-                public void onResponse(JSONArray response) {
+            if(currentTime - cacheAge < 1000*20*1) { // use cached data to show UserInterface
+                String AdminList = preferences.getString("AdminListJsonArray", "");
 
-                    try{
-                        for (int i = 0; i < response.length(); ++i) {
-                            JSONObject rec = response.getJSONObject(i);
-                            final int id = rec.getInt("id");
-                            final String name = rec.getString("name");
+                new NukeSSLCerts().nuke();
+                JSONArray jsonAdminList = null;
+                try {
+                    jsonAdminList = new JSONArray(AdminList);
 
-                            tvInfo.setText("You can manage:");
+                    for (int i = 0; i < jsonAdminList.length(); ++i) {
+                        JSONObject rec = jsonAdminList.getJSONObject(i);
+                        final int id = rec.getInt("id");
+                        final String name1 = rec.getString("name");
 
-                            // Create LinearLayout
-                            LinearLayout ll = new LinearLayout(UserAreaActivity.this);
-                            ll.setOrientation(LinearLayout.HORIZONTAL);
+                        tvInfo.setText("You can manage:");
 
-                            // Create TextView
-                            TextView qu = new TextView(UserAreaActivity.this);
-                            qu.setText(name);
-                            ll.addView(qu);
+                        // Create LinearLayout
+                        LinearLayout ll = new LinearLayout(UserAreaActivity.this);
+                        ll.setOrientation(LinearLayout.HORIZONTAL);
 
-                            // Create button
+                        // Create TextView
+                        TextView qu = new TextView(UserAreaActivity.this);
+                        qu.setText(name1);
+                        ll.addView(qu);
 
-                            Button ans = new Button(UserAreaActivity.this);
-                            ans.setText("");
+                        // Create button
 
-                            ans.setHint("Results");
-                            ans.setId(i);
+                        Button ans = new Button(UserAreaActivity.this);
+                        ans.setText("");
 
-                            ans.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                    JsonObjectRequest strinRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/"+id, null, new Response.Listener<JSONObject>() {
-
-                                        @Override
-                                        public void onResponse(JSONObject response) {
-
-                                            Log.d("resp", response.toString());
-                                            jSurvey=response;
-
-                                            Intent invitationIntent = new Intent(UserAreaActivity.this, ShowSurveyActivity.class);
-                                            invitationIntent.putExtra("id", Integer.toString(id));
-                                            invitationIntent.putExtra("name", name);
-                                            invitationIntent.putExtra("js", jSurvey.toString());
-                                            UserAreaActivity.this.startActivity(invitationIntent);
+                        ans.setHint("Results");
+                        ans.setId(i);
 
 
+                        ans.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
-                                        }
-                                    }, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
+                                JsonObjectRequest surveyRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/" + id, null, new Response.Listener<JSONObject>() {
 
-                                            NetworkResponse networkResponse = error.networkResponse;
-                                            if (networkResponse != null && networkResponse.statusCode != 200) {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
 
-                                                String a = new String(networkResponse.data);
-                                                try{
+                                        Log.d("resp", response.toString());
+                                        jSurvey = response;
 
-                                                    JSONObject jsonObj = new JSONObject(a);
-                                                    String b = jsonObj.getString("message");
-                                                    AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
-                                                    builder.setMessage(b)
-                                                            .setNegativeButton("OK", null)
-                                                            .create()
-                                                            .show();
 
-                                                }catch(JSONException e){
-                                                    e.printStackTrace();
-                                                }
+                                        Intent invitationIntent = new Intent(UserAreaActivity.this, ShowSurveyActivity.class);
+                                        invitationIntent.putExtra("id", Integer.toString(id));
+                                        invitationIntent.putExtra("name", name1);
+                                        invitationIntent.putExtra("js", jSurvey.toString());
+                                        UserAreaActivity.this.startActivity(invitationIntent);
+
+
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+
+                                        NetworkResponse networkResponse = error.networkResponse;
+                                        if (networkResponse != null && networkResponse.statusCode != 200) {
+
+                                            String a = new String(networkResponse.data);
+                                            try {
+
+                                                JSONObject jsonObj = new JSONObject(a);
+                                                String b = jsonObj.getString("message");
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
+                                                builder.setMessage(b)
+                                                        .setNegativeButton("OK", null)
+                                                        .create()
+                                                        .show();
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
                                             }
                                         }
-                                    }) {
-                                        @Override
-                                        public String getBodyContentType() {
-                                            return String.format("application/json; charset=utf-8");
-                                        }
+                                    }
+                                }) {
+                                    @Override
+                                    public String getBodyContentType() {
+                                        return String.format("application/json; charset=utf-8");
+                                    }
 
 
-                                        SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+                                    SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
 
-                                        @Override
-                                        public Map<String, String> getHeaders() throws AuthFailureError {
-                                            Map<String, String> params = new HashMap<String, String>();
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        Map<String, String> params = new HashMap<String, String>();
 
-                                            params.put("Cookie", preferences.getString("Cookies", ""));
-                                            return params;
-                                        }
-                                    };
-
-
-
-                                    RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
-                                    queue.add(strinRequest);
+                                        params.put("Cookie", preferences.getString("Cookies", ""));
+                                        return params;
+                                    }
+                                };
 
 
-
-                                }
-                            });
-
-                            ll.addView(ans);
-
-                            //Add button to LinearLayout defined in XML
-                            lm.addView(ll);
+                                RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
+                                queue.add(surveyRequest);
 
 
+                            }
+                        });
+
+                        ll.addView(ans);
+
+                        //Add button to LinearLayout defined in XML
+                        lm.addView(ll);
 
 
-                        }
-                    }catch(JSONException e){
-                        e.printStackTrace();
                     }
-
-
-                }
-            }, new Response.ErrorListener() {
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                    NetworkResponse networkResponse = error.networkResponse;
-
-                    if (networkResponse != null && networkResponse.statusCode == 403) {
-
-                        String a = new String(networkResponse.data);
-                        try{
-                            JSONObject jsonObj = new JSONObject(a);
-                            String b = jsonObj.getString("message");
-                            AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
-                            builder.setMessage(b)
-                                    .setNegativeButton("OK", null)
-                                    .create()
-                                    .show();
-
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            ){
-
-                @Override
-                public String getBodyContentType() {
-                    return String.format("application/json; charset=utf-8");
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
 
-                SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+                String UserList = preferences.getString("UserListJsonArray", "");
+                JSONArray jsonUserList = null;
 
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<String, String>();
-
-                    params.put("Cookie", preferences.getString("Cookies", ""));
-                    return params;
-                }
+                try {
+                    jsonUserList = new JSONArray(UserList);
 
 
-            };
-
-
-
-        JsonArrayRequest strinRequest = new JsonArrayRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/result/UserList", null, new Response.Listener<JSONArray>() {
-
-
-            @Override
-            public void onResponse(JSONArray response) {
-
-                try{
-                    for (int i = 0; i < response.length(); ++i) {
-                        JSONObject rec = response.getJSONObject(i);
+                    for (int i = 0; i < jsonUserList.length(); ++i) {
+                        JSONObject rec = jsonUserList.getJSONObject(i);
                         final int id = rec.getInt("id");
-                        final String name = rec.getString("name");
+                        final String name2 = rec.getString("name");
                         // ...
                         tvInfo2.setText("You can answer:");
-                        Log.d("aaaaa", response.toString());
+                        Log.d("aaaaa", jsonUserList.toString());
 
 
                         // Create LinearLayout
@@ -261,7 +211,7 @@ public class UserAreaActivity extends AppCompatActivity {
 
                         // Create TextView
                         TextView qu = new TextView(UserAreaActivity.this);
-                        qu.setText(name);
+                        qu.setText(name2);
                         ll.addView(qu);
 
                         // Create button
@@ -275,7 +225,7 @@ public class UserAreaActivity extends AppCompatActivity {
                             public void onClick(View v) {
 
                                 new NukeSSLCerts().nuke();
-                                JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/"+id, null, new Response.Listener<JSONObject>() {
+                                JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/" + id, null, new Response.Listener<JSONObject>() {
 
                                     @Override
                                     public void onResponse(JSONObject response) {
@@ -286,15 +236,15 @@ public class UserAreaActivity extends AppCompatActivity {
 
                                         UserAreaActivity.this.startActivity(intent);
 
-                                        Log.d("json",response.toString());
+                                        Log.d("json", response.toString());
 
-                                        try{
+                                        try {
                                             AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
                                             builder.setMessage(response.getString("message"))
                                                     .setNegativeButton("OK", null)
                                                     .create()
                                                     .show();
-                                        }catch(JSONException e){
+                                        } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
 
@@ -307,7 +257,7 @@ public class UserAreaActivity extends AppCompatActivity {
                                         if (networkResponse != null && networkResponse.statusCode != 200) {
 
                                             String a = new String(networkResponse.data);
-                                            try{
+                                            try {
 
                                                 JSONObject jsonObj = new JSONObject(a);
                                                 String b = jsonObj.getString("message");
@@ -317,7 +267,7 @@ public class UserAreaActivity extends AppCompatActivity {
                                                         .create()
                                                         .show();
 
-                                            }catch(JSONException e){
+                                            } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
                                         }
@@ -351,64 +301,368 @@ public class UserAreaActivity extends AppCompatActivity {
 
                         //Add button to LinearLayout defined in XML
                         lm2.addView(ll);
-
                     }
                 }catch(JSONException e){
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                NetworkResponse networkResponse = error.networkResponse;
-
-                if (networkResponse != null && networkResponse.statusCode == 403) {
-
-                    String a = new String(networkResponse.data);
-                    try{
-                        JSONObject jsonObj = new JSONObject(a);
-                        String b = jsonObj.getString("message");
-                        AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
-                        builder.setMessage(b)
-                                .setNegativeButton("OK", null)
-                                .create()
-                                .show();
-
-                    }catch(JSONException e){
                         e.printStackTrace();
                     }
+
+            }
+            else // If cache is either old(expired), or non existent. Use normal http request
+            {
+
+                new NukeSSLCerts().nuke();
+                RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
+
+                JsonArrayRequest stringRequest = new JsonArrayRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/result/AdminList", null, new Response.Listener<JSONArray>() {
+
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        try {
+                            SharedPreferences pref = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor preferencesEditor = pref.edit();
+
+                            String str = response.toString();
+                            preferencesEditor.putString("AdminListJsonArray", str);
+                            long time = System.currentTimeMillis();
+                            preferencesEditor.putLong("CacheAge", time);
+
+                            preferencesEditor.apply();
+
+
+                            pref.getString("cookie", "");
+                            for (int i = 0; i < response.length(); ++i) {
+                                    JSONObject rec = response.getJSONObject(i);
+                                    final int id = rec.getInt("id");
+                                    final String name = rec.getString("name");
+
+                                    tvInfo.setText("You can manage:");
+
+                                    // Create LinearLayout
+                                    LinearLayout ll = new LinearLayout(UserAreaActivity.this);
+                                    ll.setOrientation(LinearLayout.HORIZONTAL);
+
+                                    // Create TextView
+                                    TextView qu = new TextView(UserAreaActivity.this);
+                                    qu.setText(name);
+                                    ll.addView(qu);
+
+                                    // Create button
+
+                                    Button ans = new Button(UserAreaActivity.this);
+                                    ans.setText("");
+
+                                    ans.setHint("Results");
+                                    ans.setId(i);
+
+                                ans.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        JsonObjectRequest strinRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/" + id, null, new Response.Listener<JSONObject>() {
+
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+
+                                                Log.d("resp", response.toString());
+                                                jSurvey = response;
+
+                                                Intent invitationIntent = new Intent(UserAreaActivity.this, ShowSurveyActivity.class);
+                                                invitationIntent.putExtra("id", Integer.toString(id));
+                                                invitationIntent.putExtra("name", name);
+                                                invitationIntent.putExtra("js", jSurvey.toString());
+                                                UserAreaActivity.this.startActivity(invitationIntent);
+
+
+                                            }
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                                NetworkResponse networkResponse = error.networkResponse;
+                                                if (networkResponse != null && networkResponse.statusCode != 200) {
+
+                                                    String a = new String(networkResponse.data);
+                                                    try {
+
+                                                        JSONObject jsonObj = new JSONObject(a);
+                                                        String b = jsonObj.getString("message");
+                                                        AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
+                                                        builder.setMessage(b)
+                                                                .setNegativeButton("OK", null)
+                                                                .create()
+                                                                .show();
+
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        }) {
+                                            @Override
+                                            public String getBodyContentType() {
+                                                return String.format("application/json; charset=utf-8");
+                                            }
+
+
+                                            SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+
+                                            @Override
+                                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                                Map<String, String> params = new HashMap<String, String>();
+
+                                                params.put("Cookie", preferences.getString("Cookies", ""));
+                                                return params;
+                                            }
+                                        };
+
+
+                                        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
+                                        queue.add(strinRequest);
+
+
+                                    }
+                                });
+
+                                ll.addView(ans);
+
+                                //Add button to LinearLayout defined in XML
+                                lm.addView(ll);
+
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        NetworkResponse networkResponse = error.networkResponse;
+
+                        if (networkResponse != null && networkResponse.statusCode == 403) {
+
+                            String a = new String(networkResponse.data);
+                            try {
+                                JSONObject jsonObj = new JSONObject(a);
+                                String b = jsonObj.getString("message");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
+                                builder.setMessage(b)
+                                        .setNegativeButton("OK", null)
+                                        .create()
+                                        .show();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                 }
+                ) {
+
+                    @Override
+                    public String getBodyContentType() {
+                        return String.format("application/json; charset=utf-8");
+                    }
+
+
+                    SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<String, String>();
+
+                        params.put("Cookie", preferences.getString("Cookies", ""));
+                        return params;
+                    }
+
+
+                };
+
+
+                JsonArrayRequest strinRequest = new JsonArrayRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/result/UserList", null, new Response.Listener<JSONArray>() {
+
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        SharedPreferences pref = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor preferencesEditor = pref.edit();
+
+                        String str = response.toString();
+                        preferencesEditor.putString("UserListJsonArray", str);
+                        long time = System.currentTimeMillis();
+
+                        preferencesEditor.putLong("CacheAge", time);
+                        preferencesEditor.apply();
+
+                        try {
+                            for (int i = 0; i < response.length(); ++i) {
+                                JSONObject rec = response.getJSONObject(i);
+                                final int id = rec.getInt("id");
+                                final String name = rec.getString("name");
+                                // ...
+                                tvInfo2.setText("You can answer:");
+                                Log.d("aaaaa", response.toString());
+
+
+                                // Create LinearLayout
+                                LinearLayout ll = new LinearLayout(UserAreaActivity.this);
+                                ll.setOrientation(LinearLayout.HORIZONTAL);
+
+
+                                // Create TextView
+                                TextView qu = new TextView(UserAreaActivity.this);
+                                qu.setText(name);
+                                ll.addView(qu);
+
+                                // Create button
+                                Button ans = new Button(UserAreaActivity.this);
+                                ans.setText("");
+
+                                ans.setHint("Fill/View");
+                                ans.setId(i);
+                                ans.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        new NukeSSLCerts().nuke();
+                                        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, "https://survey-innoproject.herokuapp.com/app/surveys/" + id, null, new Response.Listener<JSONObject>() {
+
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+
+                                                Intent intent = new Intent(UserAreaActivity.this, SimpleSurveyActivity.class);
+                                                intent.putExtra("id", id);
+                                                intent.putExtra("json", response.toString());
+
+                                                UserAreaActivity.this.startActivity(intent);
+
+                                                Log.d("json", response.toString());
+
+                                                try {
+                                                    AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
+                                                    builder.setMessage(response.getString("message"))
+                                                            .setNegativeButton("OK", null)
+                                                            .create()
+                                                            .show();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+
+                                                NetworkResponse networkResponse = error.networkResponse;
+                                                if (networkResponse != null && networkResponse.statusCode != 200) {
+
+                                                    String a = new String(networkResponse.data);
+                                                    try {
+
+                                                        JSONObject jsonObj = new JSONObject(a);
+                                                        String b = jsonObj.getString("message");
+                                                        AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
+                                                        builder.setMessage(b)
+                                                                .setNegativeButton("OK", null)
+                                                                .create()
+                                                                .show();
+
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        }) {
+                                            @Override
+                                            public String getBodyContentType() {
+                                                return String.format("application/json; charset=utf-8");
+                                            }
+
+
+                                            SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+
+                                            @Override
+                                            public Map<String, String> getHeaders() throws AuthFailureError {
+                                                Map<String, String> params = new HashMap<String, String>();
+
+                                                params.put("Cookie", preferences.getString("Cookies", ""));
+                                                return params;
+                                            }
+                                        };
+
+                                        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
+                                        queue.add(stringRequest);
+
+                                    }
+
+                                });
+
+                                ll.addView(ans);
+
+                                //Add button to LinearLayout defined in XML
+                                lm2.addView(ll);
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        NetworkResponse networkResponse = error.networkResponse;
+
+                        if (networkResponse != null && networkResponse.statusCode == 403) {
+
+                            String a = new String(networkResponse.data);
+                            try {
+                                JSONObject jsonObj = new JSONObject(a);
+                                String b = jsonObj.getString("message");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(UserAreaActivity.this);
+                                builder.setMessage(b)
+                                        .setNegativeButton("OK", null)
+                                        .create()
+                                        .show();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                ) {
+
+                    @Override
+                    public String getBodyContentType() {
+                        return String.format("application/json; charset=utf-8");
+                    }
+
+
+                    SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
+
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<String, String>();
+
+                        params.put("Cookie", preferences.getString("Cookies", ""));
+                        return params;
+                    }
+
+
+                };
+
+                queue.add(strinRequest);
+                queue.add(stringRequest);
             }
-        }
-        ){
-
-            @Override
-            public String getBodyContentType() {
-                return String.format("application/json; charset=utf-8");
-            }
-
-
-            SharedPreferences preferences = getSharedPreferences("myPreferences", Context.MODE_PRIVATE);
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-
-                params.put("Cookie", preferences.getString("Cookies", ""));
-                return params;
-            }
-
-
-        };
-
-
-        RequestQueue queue = Volley.newRequestQueue(UserAreaActivity.this);
-        queue.add(strinRequest);
-        queue.add(stringRequest);
-
         bLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
